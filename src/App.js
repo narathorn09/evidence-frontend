@@ -1,26 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Home from "./page/home";
+import Sidebar from "./components/sidebar";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Narathorn
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route
+          exact
+          path="/home"
+          element={
+            <>
+              <Sidebar>
+                <Home />
+              </Sidebar>
+            </>
+          }
+        />
+        <Route
+          exact
+          path="/2"
+          element={
+            <>
+              <Sidebar>
+                2
+              </Sidebar>
+            </>
+          }
+        />
+        <Route
+          exact
+          path="/3"
+          element={
+            <>
+              <Sidebar>
+                3
+              </Sidebar>
+            </>
+          }
+        />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
