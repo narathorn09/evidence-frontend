@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./page/home";
-import Sidebar from "./components/sidebar";
+import Sidebar from "./layout/sidebar";
 
 const App = () => {
   return (
@@ -9,7 +9,7 @@ const App = () => {
       <Routes>
         <Route
           exact
-          path="/home"
+          path="/"
           element={
             <>
               <Sidebar>

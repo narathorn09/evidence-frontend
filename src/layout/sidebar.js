@@ -1,4 +1,4 @@
-import { Layout, Menu, Button, theme } from "antd";
+import { Layout, Menu, Button } from "antd";
 import {
   UserOutlined,
   VideoCameraOutlined,
@@ -6,16 +6,15 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
 } from "@ant-design/icons";
-import { Link, useMatch, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
 import { Box } from "@mui/material";
-import logo from "./micro-icon.png"
 const { Sider, Header, Content, Footer } = Layout;
 
 const Sidebar = (props) => {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+  // const {
+  //   token: { colorBgContainer },
+  // } = theme.useToken();
 
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
@@ -25,7 +24,7 @@ const Sidebar = (props) => {
       key: "1",
       icon: <UserOutlined />,
       label: "Home",
-      link: "/home",
+      link: "/",
     },
     {
       key: "2",
@@ -63,7 +62,11 @@ const Sidebar = (props) => {
           }}
         >
           <div style={{ marginTop: 24, paddingRight: 30 }}>
-            <img src={logo} alt="logo" style={{ width: 33, height: 38 }} />
+            <img
+              src="./assets/micro-icon.png"
+              alt="logo"
+              style={{ width: 33, height: 38 }}
+            />
           </div>
           <div>
             <div style={{ marginBottom: -40 }}>Forensic Science</div>
@@ -118,8 +121,9 @@ const Sidebar = (props) => {
         <Layout style={{ padding: "0 0px 0px", background: "#001529" }}>
           <Layout
             style={{
-              borderRadius: "8px 0 0  0",
+              borderRadius: "8px 8px 0  0",
               padding: 24,
+              marginRight: 24,
             }}
           >
             <Content
@@ -134,7 +138,7 @@ const Sidebar = (props) => {
               {props.children}
             </Content>
           </Layout>
-          <Footer>asdasd</Footer>
+          <Footer>© 2023 Forensic Science, All Rights Reserved.</Footer>
         </Layout>
       </Layout>
     </Layout>
