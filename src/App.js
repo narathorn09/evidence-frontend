@@ -1,7 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./page/home";
-import Sidebar from "./components/sidebar";
+import Sidebar from "./layout/sidebar";
+import Login from "./page/login";
 
 const App = () => {
   return (
@@ -9,12 +10,19 @@ const App = () => {
       <Routes>
         <Route
           exact
-          path="/home"
+          path="/login"
           element={
             <>
-              <Sidebar>
-                <Home />
-              </Sidebar>
+              <Login />
+            </>
+          }
+        />
+        <Route
+          exact
+          path="/"
+          element={
+            <>
+              <Home />
             </>
           }
         />
@@ -23,9 +31,7 @@ const App = () => {
           path="/2"
           element={
             <>
-              <Sidebar>
-                2
-              </Sidebar>
+              <Sidebar>2</Sidebar>
             </>
           }
         />
@@ -34,9 +40,7 @@ const App = () => {
           path="/3"
           element={
             <>
-              <Sidebar>
-                3
-              </Sidebar>
+              <Sidebar>3</Sidebar>
             </>
           }
         />
