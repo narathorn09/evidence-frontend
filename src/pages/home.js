@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { request, axiosPrivate } from "../axios-config";
+import { request } from "../axios-config";
 import Box from "@mui/material/Box";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
@@ -50,14 +50,14 @@ const rows = [
 const Home = () => {
   const [items, setItems] = useState([]);
 
-  useEffect(  () => {
+  useEffect(() => {
     const fetchData = async () => {
-       await request.get(`/member`).then((response) => {
-         setItems(response.data);
-         console.log(response.data);
-       });
-    } 
-    fetchData()
+      await request.get(`/member`).then((response) => {
+        setItems(response.data);
+        console.log(response.data);
+      });
+    };
+    fetchData();
   }, []);
 
   return (
@@ -77,7 +77,7 @@ const Home = () => {
         disableRowSelectionOnClick
         slots={{ toolbar: GridToolbar }}
       />
-      {items.map((item,index)=>{
+      {items.map((item, index) => {
         return <div key={index}>{item?.mem_username || "no data"}</div>;
       })}
     </Box>
