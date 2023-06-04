@@ -1,8 +1,6 @@
 import React from "react";
-// import Sidebar from "../components/sidebar";
 import Box from "@mui/material/Box";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import Sidebar from "../layout/sidebar";
 
 const columns = [
   { field: "id", headerName: "ID", width: 90 },
@@ -50,25 +48,23 @@ const rows = [
 
 const Home = () => {
   return (
-    <Sidebar>
-      <Box sx={{ height: 400, width: "100%" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
+    <Box sx={{ height: 400, width: "100%" }}>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
             },
-          }}
-          pageSizeOptions={[5]}
-          checkboxSelection
-          disableRowSelectionOnClick
-          slots={{ toolbar: GridToolbar }}
-        />
-      </Box>
-    </Sidebar>
+          },
+        }}
+        pageSizeOptions={[5]}
+        checkboxSelection
+        disableRowSelectionOnClick
+        slots={{ toolbar: GridToolbar }}
+      />
+    </Box>
   );
 };
 
