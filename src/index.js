@@ -1,10 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
+import "./input.css";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
-import { ConfigProvider, theme } from "antd";
+import { ConfigProvider } from "antd";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
