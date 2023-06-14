@@ -28,27 +28,31 @@ export const itemAdmin = [
         key: "G1-child1",
         label: "ผู้ดูแลระบบ",
         link: "/user-management/admin/list",
-        linkP: "/user-management/admin/"
+        linkP: "/user-management/admin/",
       },
       {
         key: "G1-child2",
         label: "ผู้การ",
         link: "/user-management/commmander",
+        linkP: "/user-management/commmander/",
       },
       {
         key: "G1-child3",
         label: "ผู้กำกับ",
         link: "/user-management/directer",
+        linkP: "/user-management/directer/",
       },
       {
         key: "G1-child4",
         label: "พนง. ตรวจสถานที่เกิดเหตุ",
         link: "/user-management/scene-investigator",
+        linkP: "/user-management/scene-investigator/",
       },
       {
         key: "G1-child5",
         label: "ผู้ชำนาญการ",
         link: "/user-management/expert",
+        linkP: "/user-management/expert/",
       },
     ],
   },
