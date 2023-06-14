@@ -22,7 +22,7 @@ const SidebarMobile = ({ navClose, isNavOpen }) => {
       style={{
         backgroundColor: token.colorPrimary,
       }}
-      width={"calc(100% - 20%)"}
+      width={"70vw"}
     >
       <Menu theme="dark" mode="inline">
         {items.map((item) => (

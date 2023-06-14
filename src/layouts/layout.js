@@ -50,7 +50,7 @@ const Layout = ({ children }) => {
                   item
                   xs={12}
                   mb={12}
-                  className="p-6 bg-white flex justify-center max-h-fit "
+                  className="p-6 bg-white flex justify-center max-full "
                   borderRadius={{ xs: "0px", md: "8px 0px 0px 0px" }}
                   sx={{
                     mt: "85px",

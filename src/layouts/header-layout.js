@@ -19,7 +19,7 @@ const Header = ({ isCollapsed, navopenDesktop, navopenMobile }) => {
       <div className="flex flex-row flex-1 items-center">
         <img
           className="w-20 h-20 mt-3"
-          src="./assets/micro-icon.png"
+          src="/assets/micro-icon.png"
           alt="logo"
         />
         <h4 className="text-white xs:hidden md:flex">Forensic Science</h4>

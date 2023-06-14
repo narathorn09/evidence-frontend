@@ -1,13 +1,14 @@
 import { Button, Checkbox, Form, Input, Layout } from "antd";
-import { Box} from "@mui/material";
+import { Box } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
- const [loadings, setLoadings] = useState(false);
+  const [loadings, setLoadings] = useState(false);
 
   const onFinish = (value) => {
+    console.log("value:", value);
     setLoadings(true);
     setTimeout(() => {
       setLoadings(false);
@@ -70,7 +71,7 @@ const Login = () => {
         >
           <Form.Item style={{ justifyContent: "center", display: "flex" }}>
             <img
-              src="./assets/logo-bg-black.png"
+              src="/assets/logo-bg-black.png"
               alt="logo"
               style={{ width: 100, height: 100, borderRadius: "50%" }}
             />

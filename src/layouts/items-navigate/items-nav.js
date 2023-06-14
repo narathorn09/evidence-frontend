@@ -1,27 +1,62 @@
-import {
+import Icon, {
   UserOutlined,
   VideoCameraOutlined,
   UploadOutlined,
+  TeamOutlined,
+  ApartmentOutlined,
 } from "@ant-design/icons";
+
+// import { LuUserCog } from "react-icons/lu";
+
+// const LuUserCogIcon = (props) => (
+//   <Icon
+//     component={LuUserCog}
+//     {...props}
+//     // type="message"
+//     style={{ fontSize: "26px"}}
+//     theme="outlined"
+//   />
+// );
 
 export const itemAdmin = [
   {
-    key: "1",
-    icon: <UserOutlined />,
-    label: "Home",
-    link: "/",
+    key: "G1",
+    title: "จัดการผู้ใช้",
+    icon: <TeamOutlined />,
+    childItems: [
+      {
+        key: "G1-child1",
+        label: "ผู้ดูแลระบบ",
+        link: "/user-management/admin/list",
+        linkP: "/user-management/admin/"
+      },
+      {
+        key: "G1-child2",
+        label: "ผู้การ",
+        link: "/user-management/commmander",
+      },
+      {
+        key: "G1-child3",
+        label: "ผู้กำกับ",
+        link: "/user-management/directer",
+      },
+      {
+        key: "G1-child4",
+        label: "พนง. ตรวจสถานที่เกิดเหตุ",
+        link: "/user-management/scene-investigator",
+      },
+      {
+        key: "G1-child5",
+        label: "ผู้ชำนาญการ",
+        link: "/user-management/expert",
+      },
+    ],
   },
   {
-    key: "2",
-    icon: <VideoCameraOutlined />,
-    label: "nav 2",
-    link: "/2",
-  },
-  {
-    key: "3",
-    icon: <UploadOutlined />,
-    label: "nav 3",
-    link: "/3",
+    key: "G2",
+    icon: <ApartmentOutlined />,
+    label: "จัดการกลุ่มงาน",
+    link: "/user-manage/456",
   },
 ];
 
