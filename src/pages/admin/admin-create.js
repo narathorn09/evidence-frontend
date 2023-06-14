@@ -1,32 +1,45 @@
-import { Button, Checkbox, Form, Input, Layout } from "antd";
+import { Button, Checkbox, Form, Input, Layout, Col, Row } from "antd";
 import { Box } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { request, requestPrivate } from "../../axios-config";
 
 const AdminCreate = () => {
   const navigate = useNavigate();
-  const onFinish = (value) => {
-    console.log("value:", value);
 
-    navigate("/");
+  const onFinish = async (value) => {
+    await request.post("/admin", value).then((response) => {
+      console.log("response:", response.data);
+      navigate(-1);
+    });
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
 
+  const tailLayout = {
+    wrapperCol: {
+      offset: 8,
+      span: 10,
+    },
+  };
   return (
-    <Box>
+    <Box sx={{ width: "100%" }}>
+      <Box sx={{ textAlign: "center" }}>
+        <h2>Add Admin</h2>
+      </Box>
+
       <Form
         size="middle "
         name="basic"
         labelCol={{
-          span: 24,
+          span: 8,
         }}
         wrapperCol={{
-          span: 24,
+          span: 10,
         }}
-        layout="vertical"
+        // layout="vertical"
         style={{
           //   display: "flex",
           alignItems: "center",
@@ -36,25 +49,31 @@ const AdminCreate = () => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item style={{ justifyContent: "center", display: "flex" }}>
-          <img
-            src="/assets/logo-bg-black.png"
-            alt="logo"
-            style={{ width: 100, height: 100, borderRadius: "50%" }}
-          />
-        </Form.Item>
         <Form.Item
-          style={{
-            justifyContent: "center",
-            display: "flex",
-            marginTop: -20,
-            marginBottom: 0,
-          }}
+          label="Firstname"
+          name="admin_fname"
+          rules={[
+            {
+              required: true,
+              message: "Please input your first name!",
+            },
+          ]}
         >
-          {/* <h2>Forensic Science</h2> */}
-          <h2>LOGIN</h2>
+          <Input />
         </Form.Item>
 
+        <Form.Item
+          label="Lastname"
+          name="admin_lname"
+          rules={[
+            {
+              required: true,
+              message: "Please input your last name!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
         <Form.Item
           label="Username"
           name="username"
@@ -80,15 +99,35 @@ const AdminCreate = () => {
         >
           <Input.Password />
         </Form.Item>
-
-        <Form.Item name="remember" valuePropName="checked">
-          <Checkbox>Remember me</Checkbox>
+        <Form.Item
+          name="confirm"
+          label="Confirm Password"
+          dependencies={["password"]}
+          hasFeedback
+          rules={[
+            {
+              required: true,
+              message: "Please confirm your password!",
+            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue("password") === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(
+                  new Error("The new password that you entered do not match!")
+                );
+              },
+            }),
+          ]}
+        >
+          <Input.Password />
         </Form.Item>
-
-        <Form.Item style={{ justifyContent: "center", display: "flex" }}>
-          <Button type="primary" htmlType="submit" >
-            LOGIN
+        <Form.Item {...tailLayout}>
+          <Button type="primary" htmlType="submit">
+            Submit
           </Button>
+          <Button onClick={() => navigate(-1)}style={{marginLeft: 10}}>Cancel</Button>
         </Form.Item>
       </Form>
     </Box>

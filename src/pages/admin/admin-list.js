@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { request, requestPrivate } from "../../axios-config";
 import { Box, Button, IconButton, Grid } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { DeleteForever, PersonAddAlt1 } from "@mui/icons-material";
+import { DeleteForever, PersonAddAlt1, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const AdminList = () => {
@@ -45,14 +45,14 @@ const AdminList = () => {
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
       renderCell: (params) => (
-        <Button
-          variant="contained"
+        <IconButton
           onClick={() => {
             // history.push(`/edit-archive/${params?.row?._id}`);
           }}
+          sx={{ ":hover": { color: "#11bd14" } }}
         >
-          Edit
-        </Button>
+          <Edit />
+        </IconButton>
       ),
     },
     {
@@ -67,6 +67,7 @@ const AdminList = () => {
           onClick={() => {
             RemoveMember(params?.row?.mem_id, params?.row?.mem_username);
           }}
+          sx={{ ":hover": { color: "#ff3535" } }}
         >
           <DeleteForever />
         </IconButton>
@@ -89,11 +90,11 @@ const AdminList = () => {
     if (confirmed) {
       try {
         await request.delete(`/memberById/${memId}`).then(() => {
-          setRefetch(true);
+          setRefetch(!refetch);
           alert(`ลบชื่อผู้ใช้ ${username} สำเร็จ`);
         });
-      } catch (error) {
-        alert(`${error?.data?.message}`);
+      } catch (err) {
+        alert(`${err?.data?.message}`);
       }
     }
   };
@@ -139,6 +140,7 @@ const AdminList = () => {
         // checkboxSelection
         // disableRowSelectionOnClick
         // slots={{ toolbar: GridToolbar }}
+        sx={{ borderRadius: "8px" }}
       />
     </Box>
   );
