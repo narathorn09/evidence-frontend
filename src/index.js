@@ -12,7 +12,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 const themeMUI = createTheme({
   palette: {
     primary: {
-      main: "#001529",
+      main: "#2A2F4F",
     },
     secondary: {
       main: "#fffffF",
@@ -24,7 +24,7 @@ root.render(
   <ConfigProvider
     theme={{
       token: {
-        colorPrimary: "#001529",
+        colorPrimary: "#2A2F4F",
         colorBgBase: "#fffffF",
         // algorithm: theme.darkAlgorithm,
       },

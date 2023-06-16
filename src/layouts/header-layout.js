@@ -1,47 +1,78 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
-import { Layout as LayoutAnt, Button as ButtonAnt } from "antd";
+import { MenuUnfoldOutlined, UserOutlined } from "@ant-design/icons";
+import { Layout as LayoutAnt, Button as ButtonAnt, Select } from "antd";
+import { Box, Grid } from "@mui/material";
 
-const { Header: HeaderAnt } = LayoutAnt;
-
-const Header = ({ isCollapsed, navopenDesktop, navopenMobile }) => {
+const Header = () => {
   const navigate = useNavigate();
+  const [name, setName] = useState("นายนราธร หนูพุ่ม");
+
+  const handleSelectChange = (value) => {
+    if (value === "profile") {
+      navigate("/profile");
+    } else if (value === "logout") {
+      navigate("/login");
+    }
+  };
+
   return (
-    <HeaderAnt
-      className="pl-0 pr-6 w-full flex items-center flex-row fixed z-2"
-      style={{ height: 85, zIndex: 1 }}
+    <Grid
+      container
+      sx={{
+        width: "100vw",
+        height: "var(--header--height)",
+        top: "0",
+        pl: { xs: "0", sm: "0", md: "var(--sidebar--width)" },
+        pr: 3,
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        backdropFilter: " blur(8px)",
+        position: "fixed",
+        zIndex: 2,
+        borderBottom: "1px solid rgba(0,0,0,0.1)",
+        // transition: "width 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+      }}
     >
-      <div className="flex flex-row flex-1 items-center">
-        <img
-          className="w-20 h-20 mt-3"
-          src="/assets/micro-icon.png"
-          alt="logo"
-        />
-        <h4 className="text-white xs:hidden md:flex">Forensic Science</h4>
-        <div className="xs:hidden md:flex">
-          <ButtonAnt
-            className="w-8 h-8 text-white bg-main ml-8 hover:bg-white"
-            icon={isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={navopenDesktop}
+      <Grid
+        item
+        container
+        direction={"column"}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-end",
+        }}
+      >
+        <Grid sx={{ fontSize: "10px", textAlign: "left" }}>ผู้ดูแลระบบ</Grid>
+        <Grid>
+          <Select
+            value={name}
+            style={{
+              width: "fit-content",
+              height: "fit-content",
+              // marginRight: "-11px",
+              marginTop: "5px",
+              backgroundColor: "rgba(125, 50, 50, 0.1)",
+              borderRadius: "8px",
+              // padding: "-10px",
+              fontSize: "5px",
+            }}
+            bordered={false}
+            options={[
+              {
+                value: "profile",
+                label: "ข้อมูลส่วนตัว",
+              },
+              {
+                value: "logout",
+                label: "ออกจากระบบ",
+              },
+            ]}
+            onChange={handleSelectChange}
           />
-        </div>
-      </div>
-      <ButtonAnt icon={<LogoutOutlined />} onClick={() => navigate("/login")}>
-        Logout
-      </ButtonAnt>
-      <div className="xs:flex md:hidden">
-        <ButtonAnt
-          className="w-8 h-8 text-white bg-main ml-7 hover:bg-white"
-          icon={isCollapsed ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
-          onClick={navopenMobile}
-        />
-      </div>
-    </HeaderAnt>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

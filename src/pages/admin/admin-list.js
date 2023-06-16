@@ -4,6 +4,7 @@ import { Box, Button, IconButton, Grid } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { DeleteForever, PersonAddAlt1, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import BreadcrumbLayout from "../../components/breadcrumbs";
 
 const AdminList = () => {
   const navigate = useNavigate();
@@ -100,49 +101,58 @@ const AdminList = () => {
   };
 
   return (
-    <Box
-      sx={{
-        height: "auto",
-        width: { xs: "100%", sm: "fit-content", md: "fit-content" },
-        "& .super-app-theme--header": {
-          backgroundColor: "primary.main",
-          color: "white",
-        },
-      }}
-    >
-      <Grid sx={{ textAlign: "center" }}>
-        <h2>Admin Lists</h2>
-      </Grid>
-      <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <IconButton onClick={() => navigate("/user-management/admin/create")}>
-          <PersonAddAlt1 />
-        </IconButton>
-      </Grid>
-      <DataGrid
-        rows={
-          items
-            ? items?.map((e, index) => ({
-                ...e,
-                id: e.mem_id,
-                index: index + 1,
-              }))
-            : []
-        }
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 5,
-            },
+    <>
+      <BreadcrumbLayout
+        pages={[
+          { title: "จัดการผู้ใช้" },
+          { title: "รายชื่อผู้ดูแลระบบ" },
+        ]}
+      />
+      <Grid
+        sx={{
+          height: "auto",
+          // width: { xs: "100%", sm: "100%", md: "100%" },
+          width: "100%",
+          "& .super-app-theme--header": {
+            backgroundColor: "primary.main",
+            color: "white",
           },
         }}
-        pageSizeOptions={[5]}
-        // checkboxSelection
-        // disableRowSelectionOnClick
-        // slots={{ toolbar: GridToolbar }}
-        sx={{ borderRadius: "8px" }}
-      />
-    </Box>
+      >
+        <Grid sx={{ textAlign: "center" }}>
+          <h2>Admin Lists</h2>
+        </Grid>
+        <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+          <IconButton onClick={() => navigate("/user-management/admin/create")}>
+            <PersonAddAlt1 />
+          </IconButton>
+        </Grid>
+        <DataGrid
+          rows={
+            items
+              ? items?.map((e, index) => ({
+                  ...e,
+                  id: e.mem_id,
+                  index: index + 1,
+                }))
+              : []
+          }
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
+            },
+          }}
+          pageSizeOptions={[5]}
+          // checkboxSelection
+          // disableRowSelectionOnClick
+          // slots={{ toolbar: GridToolbar }}
+          sx={{ borderRadius: "8px" }}
+        />
+      </Grid>
+    </>
   );
 };
 

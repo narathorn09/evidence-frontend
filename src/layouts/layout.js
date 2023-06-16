@@ -31,45 +31,35 @@ const Layout = ({ children }) => {
       {location?.pathname !== "/login" ? (
         <div>
           <Grid container className="bg-main h-full max-h-screen">
-            <Header
-              isCollapsed={collapsed}
-              navopenDesktop={openNavDesktop}
-              navopenMobile={openNavMobile}
-            />
-            <div>
-              <div className="xs:hidden md:flex">
-                <SidebarDesktop isNavOpen={collapsed} />
-              </div>
-            </div>
-            <Grid
-              className="bg-white w-full transition-all duration-300 ease min-h-screen"
-              marginLeft={{ xs: "0px", md: collapsed ? "80px" : "250px" }}
-            >
-              <Grid className="bg-main">
-                <Grid
-                  item
-                  xs={12}
-                  mb={12}
-                  className="p-6 bg-white flex justify-center max-full "
-                  borderRadius={{ xs: "0px", md: "8px 0px 0px 0px" }}
-                  sx={{
-                    mt: "85px",
-                  }}
-                >
-                  <Suspense fallback={<Loading />}>
-                    {children || (
-                      <EmptyAnt
-                        className="self-center justify-self-center"
-                        image={EmptyAnt.PRESENTED_IMAGE_DEFAULT}
-                        description={
-                          <body className="opacity-50">No data</body>
-                        }
-                      />
-                    )}
-                  </Suspense>
-                </Grid>
-              </Grid>
+            <Header />
+            <Grid className="xs:hidden md:flex">
+              <SidebarDesktop />
             </Grid>
+            <Grid
+              item
+              sx={{
+                zIndex: 0,
+                display: "block",
+                // bgcolor: "red",
+                position: "relative",
+                marginLeft: { xs: "0", sm: "0", md: "var(--sidebar--width)" },
+                width: { xs: "100%", sm: "100%", md: "calc(100% - 240px)" },
+                pl: { xs: "24px", sm: "24px", md: "60px" },
+                pr: { xs: "24px", sm: "24px", md: "60px" },
+                pt: "calc(var(--header--height) + 24px)",
+              }}
+            >
+              <Suspense fallback={<Loading />}>
+                {children || (
+                  <EmptyAnt
+                    className="self-center justify-self-center"
+                    image={EmptyAnt.PRESENTED_IMAGE_DEFAULT}
+                    description={<body className="opacity-50">No data</body>}
+                  />
+                )}
+              </Suspense>
+            </Grid>
+            {/* </Grid> */}
           </Grid>
           {/* <Footer
             style={{
@@ -96,5 +86,3 @@ const Layout = ({ children }) => {
 };
 
 export default Layout;
-
-
