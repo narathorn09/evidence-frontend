@@ -12,9 +12,22 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const items = getItemsNav();
 
-
 const SidebarDesktop = () => {
   const location = useLocation();
+  const [selectedChildItem, setSelectedChildItem] = useState("");
+
+  useEffect(() => {
+    // Retrieve the selected child item from localStorage if available
+    const storedChildItem = localStorage.getItem("selectedChildItem");
+    if (storedChildItem) {
+      setSelectedChildItem(storedChildItem);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Save the selected child item to localStorage
+    localStorage.setItem("selectedChildItem", selectedChildItem);
+  }, [selectedChildItem]);
 
   return (
     <Box
@@ -62,14 +75,14 @@ const SidebarDesktop = () => {
             alignItems: "center",
             width: "50px",
             height: "50px",
-            borderRight: "1px solid rgba(125, 50, 50, 0.4)",
+            borderRight: "1px solid var(--color--main-light4)",
           }}
         >
           <BiotechIcon
             sx={{
               width: "40px",
               height: "40px",
-              color: "rgba(125, 50, 50, 1)",
+              color: "var(--color--main)",
             }}
           />
         </Grid>
@@ -85,7 +98,7 @@ const SidebarDesktop = () => {
           <Grid
             sx={{
               fontWeight: "bold",
-              color: "rgba(125, 50, 50, 1)",
+              color: "var(--color--main)",
               fontSize: "14px",
             }}
           >
@@ -95,7 +108,7 @@ const SidebarDesktop = () => {
             sx={{
               fontWeight: "light",
               fontSize: "10px",
-              color: "rgb(125, 50, 50, 1)",
+              color: "var(--color--main)",
             }}
           >
             หน่วยพิสูจน์หลักฐาน
@@ -114,9 +127,17 @@ const SidebarDesktop = () => {
             >
               <Accordion
                 square={true}
-                // defaultExpanded={true}
+                defaultExpanded={item.childItems.some(
+                  (subItem) =>
+                    subItem.link === localStorage.getItem("selectedChildItem")
+                )}
                 TransitionProps={{ unmountOnExit: true }}
-                sx={{ boxShadow: "none", p: 0, m: 0 }}
+                sx={{
+                  boxShadow: "none",
+                  p: 0,
+                  m: 0,
+                  mb: index === items.length - 1 ? 10 : 0,
+                }}
                 disableGutters={true}
               >
                 <AccordionSummary
@@ -124,7 +145,7 @@ const SidebarDesktop = () => {
                     <ExpandMoreIcon
                       sx={{
                         fontSize: "16px",
-                        color: "#7D3232",
+                        color: "var(--color--main)",
                         // transform: "rotate(-90deg)",
                       }}
                     />
@@ -137,7 +158,7 @@ const SidebarDesktop = () => {
                     mt: "0px",
                     height: "16px",
                     ":hover": {
-                      color: "#7D3232",
+                      color: "var(--color--main)",
                     },
                     display: "flex",
                     alignItems: "center",
@@ -153,7 +174,9 @@ const SidebarDesktop = () => {
                     {item.title}
                   </Grid>
                 </AccordionSummary>
-                <AccordionDetails sx={{ p: 0, m: 0 }}>
+                <AccordionDetails
+                  sx={{ p: 0, m: 0, mb: index === items.length - 1 ? 10 : 0 }}
+                >
                   <Grid container direction={"row"}>
                     <Grid
                       item
@@ -173,6 +196,7 @@ const SidebarDesktop = () => {
                             component={Link}
                             key={subItem.key}
                             to={subItem.link}
+                            onClick={() => setSelectedChildItem(subItem.link)}
                             sx={{
                               textAlign: "left",
                               textDecoration: "none",
@@ -183,15 +207,15 @@ const SidebarDesktop = () => {
                               marginBottom: "4px",
                               color:
                                 location?.pathname === subItem.link
-                                  ? "#7D3232"
+                                  ? "var(--color--main)"
                                   : "#000000",
                               backgroundColor:
                                 location?.pathname === subItem.link
-                                  ? "rgb(125, 50, 50, 0.1)"
+                                  ? "var(--color--main-light1)"
                                   : "",
                               borderLeft:
                                 location?.pathname === subItem.link
-                                  ? "3px solid #7D3232"
+                                  ? "3px solid var(--color--main)"
                                   : "3px solid rgba(0,0,0,0.01)",
                               fontWeight:
                                 location?.pathname === subItem.link
@@ -199,9 +223,9 @@ const SidebarDesktop = () => {
                                   : "0",
                               fontSize: ".875rem",
                               ":hover": {
-                                color: "#7D3232",
-                                borderLeft: "3px solid #7D3232",
-                                backgroundColor: "rgb(125, 50, 50, 0.04)",
+                                color: "var(--color--main)",
+                                borderLeft: "3px solid var(--color--main)",
+                                backgroundColor: "var(--color--main-light04)",
                                 borderRadius: "8px",
                               },
                             }}

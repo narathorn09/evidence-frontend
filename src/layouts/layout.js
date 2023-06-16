@@ -24,8 +24,6 @@ const Layout = ({ children }) => {
     setCollapsed(!collapsed);
   };
 
-  // console.log("location", location);
-
   return (
     <>
       {location?.pathname !== "/login" ? (
@@ -38,15 +36,19 @@ const Layout = ({ children }) => {
             <Grid
               item
               sx={{
-                zIndex: 0,
+                zIndex: 1,
                 display: "block",
-                // bgcolor: "red",
-                position: "relative",
+                position: "flex",
                 marginLeft: { xs: "0", sm: "0", md: "var(--sidebar--width)" },
-                width: { xs: "100%", sm: "100%", md: "calc(100% - 240px)" },
-                pl: { xs: "24px", sm: "24px", md: "60px" },
-                pr: { xs: "24px", sm: "24px", md: "60px" },
+                width: {
+                  xs: "100%",
+                  sm: "100%",
+                  md: "calc(100% - 240px)",
+                },
+                pl: { xs: "24px", sm: "24px", md: "40px" },
+                pr: { xs: "24px", sm: "24px", md: "40px" },
                 pt: "calc(var(--header--height) + 24px)",
+                pb: "48px"
               }}
             >
               <Suspense fallback={<Loading />}>
@@ -59,7 +61,6 @@ const Layout = ({ children }) => {
                 )}
               </Suspense>
             </Grid>
-            {/* </Grid> */}
           </Grid>
           {/* <Footer
             style={{

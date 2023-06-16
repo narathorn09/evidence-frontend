@@ -1,5 +1,5 @@
 import { Button, Checkbox, Form, Input, Layout, Col, Row } from "antd";
-import { Box } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { request, requestPrivate } from "../../axios-config";
@@ -34,10 +34,10 @@ const AdminCreate = () => {
           { title: "เพิ่มผู้ดูแลระบบ" },
         ]}
       />
-      <Box sx={{ width: "100%" , height: "1000px"}}>
-        <Box sx={{ textAlign: "left" }}>
+      <Box sx={{ width: "100%" , height: "100%"}}>
+        <Grid sx={{ textAlign: "left" }}>
           <h2>เพิ่มผู้ดูแลระบบ</h2>
-        </Box>
+        </Grid>
 
         <Form
           size="middle "

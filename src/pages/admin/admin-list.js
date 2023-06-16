@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { request, requestPrivate } from "../../axios-config";
 import { Box, Button, IconButton, Grid } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarExportContainer,
+  GridCsvExportMenuItem,
+} from "@mui/x-data-grid";
 import { DeleteForever, PersonAddAlt1, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
@@ -22,25 +27,25 @@ const AdminList = () => {
     },
     {
       field: "mem_username",
-      headerName: "Username",
-      width: 200,
+      headerName: "ชื่อผู้ใช้",
+      width: 250,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "admin_fname",
-      headerName: "First Name",
-      width: 200,
+      headerName: "ชื่อจริง",
+      width: 250,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "admin_lname",
-      headerName: "Last Name",
-      width: 200,
+      headerName: "นามสกุล",
+      width: 250,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "Edit",
-      headerName: "Edit",
+      headerName: "แก้ไข",
       width: 150,
       align: "center",
       headerAlign: "center",
@@ -50,7 +55,7 @@ const AdminList = () => {
           onClick={() => {
             // history.push(`/edit-archive/${params?.row?._id}`);
           }}
-          sx={{ ":hover": { color: "#11bd14" } }}
+          sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >
           <Edit />
         </IconButton>
@@ -58,9 +63,9 @@ const AdminList = () => {
     },
     {
       field: "Delete",
-      headerName: "Delete",
+      headerName: "ลบ",
       headerClassName: "super-app-theme--header",
-      width: 100,
+      width: 150,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => (
@@ -68,7 +73,7 @@ const AdminList = () => {
           onClick={() => {
             RemoveMember(params?.row?.mem_id, params?.row?.mem_username);
           }}
-          sx={{ ":hover": { color: "#ff3535" } }}
+          sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >
           <DeleteForever />
         </IconButton>
@@ -99,30 +104,60 @@ const AdminList = () => {
       }
     }
   };
+  const csvOptions = {
+    fileName: "รายชื่อผู้ดูแลระบบ-FS",
+    utf8WithBom: true,
+    fields: ["index", "mem_username", "admin_fname", "admin_lname"],
+  };
+
+  function CustomExportButton(props) {
+    return (
+      <GridToolbarExportContainer
+        {...props}
+        component={Button}
+        sx={{ fontFamily: "Prompt", fontSize: "14px", mb: "4px" }}
+      >
+        <GridCsvExportMenuItem
+          options={csvOptions}
+          sx={{
+            fontFamily: "Prompt",
+            fontSize: "14px",
+            width: "100%",
+            height: "30px",
+          }}
+        />
+        {/* <JsonExportMenuItem /> */}
+      </GridToolbarExportContainer>
+    );
+  }
+
+  function CustomToolbar(props) {
+    return (
+      <GridToolbarContainer {...props}>
+        <CustomExportButton />
+      </GridToolbarContainer>
+    );
+  }
 
   return (
     <>
       <BreadcrumbLayout
-        pages={[
-          { title: "จัดการผู้ใช้" },
-          { title: "รายชื่อผู้ดูแลระบบ" },
-        ]}
+        pages={[{ title: "จัดการผู้ใช้" }, { title: "รายชื่อผู้ดูแลระบบ" }]}
       />
       <Grid
         sx={{
           height: "auto",
-          // width: { xs: "100%", sm: "100%", md: "100%" },
           width: "100%",
           "& .super-app-theme--header": {
-            backgroundColor: "primary.main",
+            backgroundColor: "var(--color--main-light9)",
             color: "white",
           },
         }}
       >
-        <Grid sx={{ textAlign: "center" }}>
-          <h2>Admin Lists</h2>
+        <Grid sx={{ textAlign: "eft" }}>
+          <h2>รายชื่อผู้ดูแลระบบ</h2>
         </Grid>
-        <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
           <IconButton onClick={() => navigate("/user-management/admin/create")}>
             <PersonAddAlt1 />
           </IconButton>
@@ -138,18 +173,10 @@ const AdminList = () => {
               : []
           }
           columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
+          slots={{
+            toolbar: CustomToolbar,
           }}
-          pageSizeOptions={[5]}
-          // checkboxSelection
-          // disableRowSelectionOnClick
-          // slots={{ toolbar: GridToolbar }}
-          sx={{ borderRadius: "8px" }}
+          sx={{ borderRadius: "8px", height: "400px" }}
         />
       </Grid>
     </>

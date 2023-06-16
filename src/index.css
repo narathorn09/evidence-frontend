@@ -7,6 +7,26 @@
 :root {
   --sidebar--width: 300px;
   --header--height: 64px;
+
+
+  --color--main: #7D3232;
+
+  --color--main-light01: rgb(125, 50, 50, 0.01);
+  --color--main-light02: rgb(125, 50, 50, 0.02);
+  --color--main-light03: rgb(125, 50, 50, 0.03);
+  --color--main-light04: rgb(125, 50, 50, 0.04);
+  --color--main-light05: rgb(125, 50, 50, 0.05);
+
+  --color--main-light1: rgb(125, 50, 50, 0.1);
+  --color--main-light2: rgb(125, 50, 50, 0.2);
+  --color--main-light3: rgb(125, 50, 50, 0.3);
+  --color--main-light4: rgb(125, 50, 50, 0.4);
+  --color--main-light5: rgb(125, 50, 50, 0.5);
+  --color--main-light6: rgb(125, 50, 50, 0.6);
+  --color--main-light7: rgb(125, 50, 50, 0.7);
+  --color--main-light8: rgb(125, 50, 50, 0.8);
+  --color--main-light9: rgb(125, 50, 50, 0.9);
+ 
 }
 
 body {
