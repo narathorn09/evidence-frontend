@@ -3,15 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { Select } from "antd";
 import { Grid, IconButton } from "@mui/material";
 import { MenuRounded } from "@mui/icons-material";
+import { request, requestPrivate } from "../axios-config";
 
 const Header = ({ openNavMobile }) => {
   const navigate = useNavigate();
   const [name, setName] = useState("นายนราธร หนูพุ่ม");
 
-  const handleSelectChange = (value) => {
+  const handleSelectChange =async (value) => {
     if (value === "profile") {
       navigate("/profile");
     } else if (value === "logout") {
+      const logout = await requestPrivate.get("/logout");
+      console.log(logout);
       navigate("/login");
     }
   };

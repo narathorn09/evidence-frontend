@@ -9,7 +9,9 @@ export const request = axios.create({
 
 export const requestPrivate = axios.create({
   baseURL: process.env.REACT_APP_API_SERVER,
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json",
+  },
+  // credentials: "include",
   withCredentials: true,
 });
-
