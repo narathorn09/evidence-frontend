@@ -1,27 +1,23 @@
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, lazy } from "react";
 import { useLocation } from "react-router-dom";
 import { Empty as EmptyAnt } from "antd";
 import { Grid } from "@mui/material";
-import SidebarDesktop from "./sidebar-desktop";
-import SidebarMobile from "./sidebar-mobile";
-import Header from "./header-layout";
-import Loading from "../components/loading";
+
+const Header = lazy(() => import("./header-layout"));
+const SidebarMobile = lazy(() => import("./sidebar-mobile"));
+const SidebarDesktop = lazy(() => import("./sidebar-desktop"));
+const Loading = lazy(() => import("../components/loading"));
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [isopenNavMobile, setIsOpenNavMobile] = useState(false);
 
   const openNavMobile = () => {
-    setOpen(true);
+    setIsOpenNavMobile(true);
   };
 
-  const onClose = () => {
-    setOpen(false);
-  };
-
-  const openNavDesktop = () => {
-    setCollapsed(!collapsed);
+  const closeNavMobile = () => {
+    setIsOpenNavMobile(false);
   };
 
   return (
@@ -29,7 +25,7 @@ const Layout = ({ children }) => {
       {location?.pathname !== "/login" ? (
         <div>
           <Grid container className="bg-main h-full max-h-screen">
-            <Header />
+            <Header openNavMobile={openNavMobile} />
             <Grid className="xs:hidden md:flex">
               <SidebarDesktop />
             </Grid>
@@ -48,7 +44,7 @@ const Layout = ({ children }) => {
                 pl: { xs: "24px", sm: "24px", md: "40px" },
                 pr: { xs: "24px", sm: "24px", md: "40px" },
                 pt: "calc(var(--header--height) + 24px)",
-                pb: "48px"
+                pb: "48px",
               }}
             >
               <Suspense fallback={<Loading />}>
@@ -77,7 +73,11 @@ const Layout = ({ children }) => {
           >
             <body>© 2023 Forensic Science, All Rights Reserved.</body>
           </Footer> */}
-          <SidebarMobile navClose={onClose} isNavOpen={open} />
+          <SidebarMobile
+            openNavMobile={openNavMobile}
+            closeNavMobile={closeNavMobile}
+            isopenNavMobile={isopenNavMobile}
+          />
         </div>
       ) : (
         <>{children}</>

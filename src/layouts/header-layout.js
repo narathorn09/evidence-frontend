@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MenuUnfoldOutlined, UserOutlined } from "@ant-design/icons";
-import { Layout as LayoutAnt, Button as ButtonAnt, Select } from "antd";
-import { Box, Grid } from "@mui/material";
+import { Select } from "antd";
+import { Grid, IconButton } from "@mui/material";
+import { MenuRounded } from "@mui/icons-material";
 
-const Header = () => {
+const Header = ({ openNavMobile }) => {
   const navigate = useNavigate();
   const [name, setName] = useState("นายนราธร หนูพุ่ม");
 
@@ -19,22 +19,42 @@ const Header = () => {
   return (
     <Grid
       container
+      direction={"row"}
       sx={{
         width: "100vw",
         height: "var(--header--height)",
         top: "0",
-        pl: { xs: "0", sm: "0", md: "var(--sidebar--width)" },
+        pl: {
+          xs: "24px",
+          sm: "24px",
+          md: "calc(var(--sidebar--width) + 24px)",
+        },
         pr: 3,
         backgroundColor: "rgba(255, 255, 255, 0.9)",
         backdropFilter: " blur(8px)",
         position: "fixed",
         zIndex: 2,
         borderBottom: "1px solid rgba(0,0,0,0.1)",
-        // transition: "width 100ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
       }}
     >
       <Grid
         item
+        xs={6}
+        sx={{
+          display: { xs: "flex", sm: "flex", md: "none" },
+          justifyContent: "flex-start",
+          alignItems: "center",
+        }}
+      >
+        <IconButton onClick={openNavMobile}>
+          <MenuRounded sx={{ color: "var(--color--main)" }} />
+        </IconButton>
+      </Grid>
+      <Grid
+        item
+        xs={6}
+        sm={6}
+        md={12}
         container
         direction={"column"}
         sx={{
@@ -50,11 +70,9 @@ const Header = () => {
             style={{
               width: "fit-content",
               height: "fit-content",
-              // marginRight: "-11px",
               marginTop: "5px",
               backgroundColor: "rgba(125, 50, 50, 0.1)",
               borderRadius: "8px",
-              // padding: "-10px",
               fontSize: "5px",
             }}
             bordered={false}
