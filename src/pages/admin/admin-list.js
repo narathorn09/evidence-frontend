@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { request, requestPrivate } from "../../axios-config";
+import { request } from "../../axios-config";
 import { Box, Button, IconButton, Grid } from "@mui/material";
 import {
   DataGrid,
@@ -10,8 +10,10 @@ import {
 import { DeleteForever, PersonAddAlt1, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
+import useAxiosPrivate from "../../hook/use-axios-private";
 
 const AdminList = () => {
+  const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [refetch, setRefetch] = useState(false);
@@ -95,7 +97,7 @@ const AdminList = () => {
     const confirmed = window.confirm(`คุณต้องการลบชื่อผู้ใช้ ${username}?`);
     if (confirmed) {
       try {
-        await request.delete(`/memberById/${memId}`).then(() => {
+        await requestPrivate.delete(`/memberById/${memId}`).then(() => {
           setRefetch(!refetch);
           alert(`ลบชื่อผู้ใช้ ${username} สำเร็จ`);
         });

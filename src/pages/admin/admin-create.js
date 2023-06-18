@@ -2,7 +2,7 @@ import { Button, Checkbox, Form, Input, Layout, Col, Row } from "antd";
 import { Box, Grid } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { request, requestPrivate } from "../../axios-config";
+import { request } from "../../axios-config";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 
 const AdminCreate = () => {

@@ -1,28 +1,40 @@
 import { Button, Checkbox, Form, Input, Layout } from "antd";
 import { Box } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Biotech } from "@mui/icons-material";
-import { request,requestPrivate } from "../axios-config";
+import { request } from "../axios-config";
+import { useAuth } from "../contexts/auth-context";
 
 const Login = () => {
+  const { setAuthToken } = useAuth();
   const navigate = useNavigate();
   const [loadings, setLoadings] = useState(false);
 
-  const onFinish =  async (value) => {
-    try {
-      await requestPrivate.post("/login", JSON.stringify(value));
-      setLoadings(true);
-      setTimeout(() => {
+  const onFinish = useCallback(
+    async (values) => {
+      try {
+        setLoadings(true);
+        const response = await request.post("/login", values, {
+          withCredentials: true,
+        });
         setLoadings(false);
-        navigate("/");
-      }, 2000);
-    } catch (err) {
-      alert("Invalid username / password");
-    }
 
-    
-  };
+        if (response.status === 200) {
+          const { mem_type, accessToken } = response.data;
+          setAuthToken(accessToken); // Update authentication state with the token
+          navigate("/"); // Navigate to the desired page
+        } else {
+          alert("Invalid username / password");
+        }
+      } catch (err) {
+        console.error("Login error:", err);
+        alert("An error occurred during login");
+      }
+    },
+    [navigate, setAuthToken]
+  );
+
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
@@ -57,7 +69,6 @@ const Login = () => {
           width: "calc(100% + 16px)",
           maxWidth: 300,
           minWidth: 200,
-          
         }}
       >
         <Form
@@ -123,7 +134,7 @@ const Login = () => {
                   color: "var(--color--main)",
                   fontSize: "24px",
                   fontWeight: "bold",
-                  mt: "30px"
+                  mt: "30px",
                 }}
               >
                 LOGIN
@@ -158,9 +169,14 @@ const Login = () => {
           </Form.Item>
 
           {/* <Form.Item style={{ justifyContent: "center", display: "flex" }}> */}
-            <Button type="primary" htmlType="submit" loading={loadings} style={{ width: "100%"}}>
-              LOGIN
-            </Button>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loadings}
+            style={{ width: "100%" }}
+          >
+            LOGIN
+          </Button>
           {/* </Form.Item> */}
         </Form>
       </Box>

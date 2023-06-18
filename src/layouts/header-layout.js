@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Select } from "antd";
 import { Grid, IconButton } from "@mui/material";
 import { MenuRounded } from "@mui/icons-material";
-import { request, requestPrivate } from "../axios-config";
+import useAxiosPrivate from "../hook/use-axios-private";
 
 const Header = ({ openNavMobile }) => {
+   const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const [name, setName] = useState("นายนราธร หนูพุ่ม");
 

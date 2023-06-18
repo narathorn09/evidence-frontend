@@ -7,7 +7,9 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { ConfigProvider } from "antd";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { AuthProvider } from "./contexts/auth-context";
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 
 const themeMUI = createTheme({
   palette: {
@@ -36,7 +38,9 @@ root.render(
   >
     <React.StrictMode>
       <ThemeProvider theme={themeMUI}>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </ThemeProvider>
     </React.StrictMode>
   </ConfigProvider>
