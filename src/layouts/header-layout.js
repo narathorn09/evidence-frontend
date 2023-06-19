@@ -3,19 +3,26 @@ import { useNavigate } from "react-router-dom";
 import { Select } from "antd";
 import { Grid, IconButton } from "@mui/material";
 import { MenuRounded } from "@mui/icons-material";
+import { useAuth } from "../contexts/auth-context";
 import useAxiosPrivate from "../hook/use-axios-private";
 
 const Header = ({ openNavMobile }) => {
-   const requestPrivate = useAxiosPrivate();
+  const requestPrivate = useAxiosPrivate();
+  const { setAuthToken } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState("นายนราธร หนูพุ่ม");
 
-  const handleSelectChange =async (value) => {
-    if (value === "profile") {
-      navigate("/profile");
-    } else if (value === "logout") {
-      const logout = await requestPrivate.get("/logout");
-      console.log(logout);
+  const handleSelectChange = async (value) => {
+    try {
+      if (value === "profile") {
+        navigate("/profile");
+      } else if (value === "logout") {
+        await requestPrivate.get("/logout");
+        setAuthToken(null); // Clear the access token in the authentication context
+        localStorage.removeItem("token"); // Remove the access token from local storage
+        navigate("/login");
+      }
+    } catch (err) {
       navigate("/login");
     }
   };

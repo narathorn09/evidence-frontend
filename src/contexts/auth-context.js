@@ -6,41 +6,41 @@ import jwtDecode from "jwt-decode";
 
 const AuthContext = createContext();
 
-export const checkTokenExpired = (token) => {
-  if (token) {
+export const checkTokenExpired = (accessToken) => {
+  if (accessToken) {
     try {
+      const decoded = jwtDecode(accessToken);
 
-      const decoded = jwtDecode(token);
-      
       if (decoded.exp > Math.round(new Date().getTime() / 1000)) {
-        console.log(decoded)
-        return { user: decoded, token };
+        console.log(decoded);
+        return { user: decoded, accessToken };
       }
     } catch (err) {
-      console.error("Error decoding token:", err);
+      console.log("Error decoding token:", err);
     }
   }
 
-  return { user: null, token: null };
+  return { user: null, accessToken: null };
 };
 
 const useToken = () => {
-  const [auth, setAuth] = useState({ user: null, token: null });
+  const [auth, setAuth] = useState({ user: null, accessToken: null });
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const session = checkTokenExpired(token);
+    const accessToken = localStorage.getItem("token");
+    const session = checkTokenExpired(accessToken);
     setAuth(session);
   }, []);
 
-  const setAuthToken = (token) => {
-    const session = checkTokenExpired(token);
+  const setAuthToken = (accessToken) => {
+    const session = checkTokenExpired(accessToken);
     setAuth(session);
-    if (session.token) {
-      localStorage.setItem("token", session.token);
-    } else {
-      localStorage.removeItem("token");
+    if (session.accessToken) {
+      localStorage.setItem("token", session.accessToken);
     }
+    // } else {
+    //   localStorage.removeItem("token");
+    // }
   };
 
   return {
@@ -51,7 +51,7 @@ const useToken = () => {
 
 export const AuthProvider = ({ children }) => {
   const authContextValue = useToken();
-
+  // console.log("authContextValue", authContextValue);
   return (
     <AuthContext.Provider value={authContextValue}>
       {children}
