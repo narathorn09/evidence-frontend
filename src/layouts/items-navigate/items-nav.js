@@ -1,27 +1,66 @@
-import {
+import Icon, {
   UserOutlined,
   VideoCameraOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
+import { PeopleAlt, Workspaces,Home } from "@mui/icons-material";
 
 export const itemAdmin = [
   {
-    key: "1",
-    icon: <UserOutlined />,
-    label: "Home",
+    key: "G0",
+    label: "หน้าแรก",
+    icon: <Home sx={{ fontSize: "20px" }} />,
     link: "/",
   },
   {
-    key: "2",
-    icon: <VideoCameraOutlined />,
-    label: "nav 2",
-    link: "/2",
+    key: "G1",
+    label: "จัดการผู้ใช้",
+    icon: <PeopleAlt sx={{ fontSize: "20px" }} />,
+    childItems: [
+      {
+        key: "G1-child1",
+        label: "ผู้ดูแลระบบ",
+        link: "/user-management/admin/list",
+        linkP: "/user-management/admin/",
+      },
+      {
+        key: "G1-child2",
+        label: "ผู้การ",
+        link: "/user-management/commmander/list",
+        linkP: "/user-management/commmander/",
+      },
+      {
+        key: "G1-child3",
+        label: "ผู้กำกับ",
+        link: "/user-management/directer/list",
+        linkP: "/user-management/directer/",
+      },
+      {
+        key: "G1-child4",
+        label: "พนง. ตรวจสถานที่เกิดเหตุ",
+        link: "/user-management/scene-investigator/list",
+        linkP: "/user-management/scene-investigator/",
+      },
+      {
+        key: "G1-child5",
+        label: "ผู้ชำนาญการ",
+        link: "/user-management/expert/list",
+        linkP: "/user-management/expert/",
+      },
+    ],
   },
   {
-    key: "3",
-    icon: <UploadOutlined />,
-    label: "nav 3",
-    link: "/3",
+    key: "G2",
+    icon: <Workspaces sx={{ fontSize: "20px" }} />,
+    label: "จัดการกลุ่มงาน",
+    childItems: [
+      {
+        key: "G2-child1",
+        label: "กลุ่มงาน",
+        link: "/group-management/list",
+        linkP: "/group-management/",
+      },
+    ],
   },
 ];
 

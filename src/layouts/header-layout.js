@@ -1,47 +1,107 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
-import { Layout as LayoutAnt, Button as ButtonAnt } from "antd";
+import { Select } from "antd";
+import { Grid, IconButton } from "@mui/material";
+import { MenuRounded } from "@mui/icons-material";
+import { useAuth } from "../contexts/auth-context";
+import useAxiosPrivate from "../hook/use-axios-private";
 
-const { Header: HeaderAnt } = LayoutAnt;
-
-const Header = ({ isCollapsed, navopenDesktop, navopenMobile }) => {
+const Header = ({ openNavMobile }) => {
+  const requestPrivate = useAxiosPrivate();
+  const { setAuthToken } = useAuth();
   const navigate = useNavigate();
+  const [name, setName] = useState("นายนราธร หนูพุ่ม");
+
+  const handleSelectChange = async (value) => {
+    try {
+      if (value === "profile") {
+        navigate("/profile");
+      } else if (value === "logout") {
+        await requestPrivate.get("/logout");
+        setAuthToken(null); // Clear the access token in the authentication context
+        localStorage.removeItem("token"); // Remove the access token from local storage
+        navigate("/login");
+      }
+    } catch (err) {
+      navigate("/login");
+    }
+  };
+
   return (
-    <HeaderAnt
-      className="pl-0 pr-6 w-full flex items-center flex-row fixed z-2"
-      style={{ height: 85, zIndex: 1 }}
+    <Grid
+      container
+      direction={"row"}
+      sx={{
+        width: "100vw",
+        height: "var(--header--height)",
+        top: "0",
+        pl: {
+          xs: "24px",
+          sm: "24px",
+          md: "calc(var(--sidebar--width) + 24px)",
+        },
+        pr: 3,
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        backdropFilter: " blur(8px)",
+        position: "fixed",
+        zIndex: 2,
+        borderBottom: "1px solid rgba(0,0,0,0.1)",
+      }}
     >
-      <div className="flex flex-row flex-1 items-center">
-        <img
-          className="w-20 h-20 mt-3"
-          src="./assets/micro-icon.png"
-          alt="logo"
-        />
-        <h4 className="text-white xs:hidden md:flex">Forensic Science</h4>
-        <div className="xs:hidden md:flex">
-          <ButtonAnt
-            className="w-8 h-8 text-white bg-main ml-8 hover:bg-white"
-            icon={isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={navopenDesktop}
+      <Grid
+        item
+        xs={6}
+        sx={{
+          display: { xs: "flex", sm: "flex", md: "none" },
+          justifyContent: "flex-start",
+          alignItems: "center",
+        }}
+      >
+        <IconButton onClick={openNavMobile}>
+          <MenuRounded sx={{ color: "var(--color--main)" }} />
+        </IconButton>
+      </Grid>
+      <Grid
+        item
+        xs={6}
+        sm={6}
+        md={12}
+        container
+        direction={"column"}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-end",
+        }}
+      >
+        <Grid sx={{ fontSize: "10px", textAlign: "left" }}>ผู้ดูแลระบบ</Grid>
+        <Grid>
+          <Select
+            value={name}
+            style={{
+              width: "fit-content",
+              height: "fit-content",
+              marginTop: "5px",
+              backgroundColor: "rgba(125, 50, 50, 0.1)",
+              borderRadius: "8px",
+              fontSize: "5px",
+            }}
+            bordered={false}
+            options={[
+              {
+                value: "profile",
+                label: "ข้อมูลส่วนตัว",
+              },
+              {
+                value: "logout",
+                label: "ออกจากระบบ",
+              },
+            ]}
+            onChange={handleSelectChange}
           />
-        </div>
-      </div>
-      <ButtonAnt icon={<LogoutOutlined />} onClick={() => navigate("/login")}>
-        Logout
-      </ButtonAnt>
-      <div className="xs:flex md:hidden">
-        <ButtonAnt
-          className="w-8 h-8 text-white bg-main ml-7 hover:bg-white"
-          icon={isCollapsed ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
-          onClick={navopenMobile}
-        />
-      </div>
-    </HeaderAnt>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

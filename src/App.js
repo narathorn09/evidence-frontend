@@ -1,8 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./pages/home";
+import AdminList from "./pages/admin/admin-list";
 import Layout from "./layouts/layout";
 import Login from "./pages/login";
+import AdminCreate from "./pages/admin/admin-create";
 
 const App = () => {
   return (
@@ -10,8 +11,8 @@ const App = () => {
       <Layout>
         <Routes>
           <Route exact path="/login" element={<Login />} />
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/2" element={<>2</>} />
+          <Route exact path="/user-management/admin/list" element={<AdminList />} />
+          <Route exact path="/user-management/admin/create" element={<AdminCreate/>} />
           <Route exact path="/3" element={<>3</>} />
         </Routes>
       </Layout>
