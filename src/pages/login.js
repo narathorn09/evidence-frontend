@@ -18,23 +18,21 @@ const Login = () => {
         const response = await request.post("/login", values, {
           withCredentials: true,
         });
-        setLoadings(false);
 
         if (response.status === 200) {
-          const { mem_type, accessToken } = response.data;
-          setAuthToken(accessToken); // Update authentication state with the token
+          const { accessToken } = response.data;
+          await setAuthToken(accessToken); // Update authentication state with the token
           navigate("/"); // Navigate to the desired page
-        } else {
-          alert("Invalid username / password");
+          setLoadings(false);
         }
       } catch (err) {
-        console.error("Login error:", err);
-        alert("An error occurred during login");
+        // console.error("Login error:", err);
+        setLoadings(false);
+        alert("Invalid username / password");
       }
     },
     [navigate, setAuthToken]
   );
-
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
