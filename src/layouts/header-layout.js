@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Select } from "antd";
 import { Grid, IconButton } from "@mui/material";
@@ -7,31 +7,32 @@ import { useAuth } from "../contexts/auth-context";
 import useAxiosPrivate from "../hook/use-axios-private";
 
 const Header = ({ openNavMobile }) => {
-    const navigate = useNavigate();
-    const [me, setMe] = useState();
-    const requestPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+  const [me, setMe] = useState();
+  const requestPrivate = useAxiosPrivate();
 
-    useEffect(() => {
-      let isMounted = true;
-      const controller = new AbortController();
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
 
-      const getMe = async () => {
-        try {
-          const response = await requestPrivate.get("/me", {
-            signal: controller.signal,
-          });
-          isMounted && setMe(response?.data);
-          if (response.status !== 200) navigate("/login");
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      getMe();
-      return () => {
-        isMounted = false;
-        controller.abort();
-      };
-    }, []);
+    const getMe = async () => {
+      try {
+        const response = await requestPrivate.get("/me", {
+          signal: controller.signal,
+        });
+        isMounted && setMe(response?.data);
+        if (response.status !== 200) navigate("/login");
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getMe();
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, []);
+  console.log("meee", me);
 
   const { setAuthToken } = useAuth();
   const handleSelectChange = async (value) => {
@@ -96,11 +97,22 @@ const Header = ({ openNavMobile }) => {
           alignItems: "flex-end",
         }}
       >
-        <Grid sx={{ fontSize: "10px", textAlign: "left" }}>ผู้ดูแลระบบ</Grid>
+        <Grid sx={{ fontSize: "10px", textAlign: "left" }}>
+          {me?.role === "0" && "ผู้ดูแลระบบ"}
+          {me?.role === "1" && "ผู้การ"}
+          {me?.role === "2" && "พนง. ตรวจสถานที่เกิดเหตุ"}
+          {me?.role === "3" && "ผู้กำกับ"}
+          {me?.role === "4" && "ผู้ชำนาญการ"}
+        </Grid>
         <Grid>
           <Select
-            value = {(me?.fname ?? "") + " " + (me?.lname ?? "")}
-
+            value={
+              (me?.rank ?? "") +
+              " " +
+              (me?.fname ?? "") +
+              " " +
+              (me?.lname ?? "")
+            }
             style={{
               width: "100%",
               height: "fit-content",
