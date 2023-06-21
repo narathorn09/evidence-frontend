@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 
-const AdminList = () => {
+const ListAdmin = () => {
   const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
@@ -85,7 +85,7 @@ const AdminList = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await request.get(`/admin`).then((response) => {
+      await requestPrivate.get(`/admin`).then((response) => {
         setItems(response.data);
         console.log(response.data);
       });
@@ -185,4 +185,4 @@ const AdminList = () => {
   );
 };
 
-export default AdminList;
+export default ListAdmin;

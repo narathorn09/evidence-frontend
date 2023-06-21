@@ -26,8 +26,8 @@ export const itemAdmin = [
       {
         key: "G1-child2",
         label: "ผู้การ",
-        link: "/user-management/commmander/list",
-        linkP: "/user-management/commmander/",
+        link: "/user-management/commander/list",
+        linkP: "/user-management/commander/",
       },
       {
         key: "G1-child3",

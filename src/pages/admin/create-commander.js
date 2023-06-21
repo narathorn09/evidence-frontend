@@ -2,14 +2,15 @@ import { Button, Checkbox, Form, Input, Layout, Col, Row } from "antd";
 import { Box, Grid } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { request } from "../../axios-config";
 import BreadcrumbLayout from "../../components/breadcrumbs";
+import useAxiosPrivate from "../../hook/use-axios-private";
 
-const AdminCreate = () => {
+const CreateCommander = () => {
+  const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
   const onFinish = async (value) => {
-    await request.post("/admin", value).then((response) => {
+    await requestPrivate.post("/commander", value).then((response) => {
       console.log("response:", response.data);
       navigate(-1);
     });
@@ -34,9 +35,9 @@ const AdminCreate = () => {
           { title: "เพิ่มผู้ดูแลระบบ" },
         ]}
       />
-      <Box sx={{ width: "100%" , height: "100%"}}>
+      <Box sx={{ width: "100%", height: "100%" }}>
         <Grid sx={{ textAlign: "left" }}>
-          <h2>เพิ่มผู้ดูแลระบบ</h2>
+          <h2>เพิ่มผู้การ</h2>
         </Grid>
 
         <Form
@@ -60,8 +61,36 @@ const AdminCreate = () => {
           autoComplete="off"
         >
           <Form.Item
+            label="คำนำหน้า"
+            name="nametitle"
+            rules={[
+              {
+                required: true,
+                message: "Please input your first name!",
+              },
+            ]}
+            style={{ textAlign: "start" }}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="ยศ"
+            name="rank"
+            rules={[
+              {
+                required: true,
+                message: "Please input your first name!",
+              },
+            ]}
+            style={{ textAlign: "start" }}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
             label="ชื่อจริง"
-            name="admin_fname"
+            name="fname"
             rules={[
               {
                 required: true,
@@ -75,7 +104,7 @@ const AdminCreate = () => {
 
           <Form.Item
             label="นามสกุล"
-            name="admin_lname"
+            name="lname"
             rules={[
               {
                 required: true,
@@ -147,4 +176,4 @@ const AdminCreate = () => {
     </>
   );
 };
-export default AdminCreate;
+export default CreateCommander;
