@@ -32,8 +32,8 @@ export const itemAdmin = [
       {
         key: "G1-child3",
         label: "ผู้กำกับ",
-        link: "/user-management/directer/list",
-        linkP: "/user-management/directer/",
+        link: "/user-management/director/list",
+        linkP: "/user-management/director/",
       },
       {
         key: "G1-child4",

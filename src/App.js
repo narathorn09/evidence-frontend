@@ -7,6 +7,8 @@ import CreateAdmin from "./pages/admin/create-admin";
 import CreateCommander from "./pages/admin/create-commander";
 import ListCommander from "./pages/admin/list-commander";
 import { useAuth } from "./contexts/auth-context";
+import ListDirector from "./pages/admin/list-director";
+import CreateDirector from "./pages/admin/create-director";
 
 const App = () => {
   const { auth } = useAuth();
@@ -22,8 +24,11 @@ const App = () => {
              <Route exact path="/" element={<>admin</>} />
               <Route exact path="/user-management/admin/list" element={<ListAdmin />} />
               <Route exact path="/user-management/commander/list" element={<ListCommander />} />
+              <Route exact path="/user-management/director/list" element={<ListDirector />} />
+
               <Route exact path="/user-management/admin/create" element={<CreateAdmin/>} />
               <Route exact path="/user-management/commander/create" element={<CreateCommander/>} />
+              <Route exact path="/user-management/director/create" element={<CreateDirector/>} />
               <Route exact path="/3" element={<>3</>} />
             </>
           )}
