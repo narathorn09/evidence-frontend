@@ -9,7 +9,7 @@ import useAxiosPrivate from "../../hook/use-axios-private";
 const CreateAdmin = () => {
   const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
-  
+
   const onFinish = async (value) => {
     console.log(value);
     try {
@@ -29,7 +29,6 @@ const CreateAdmin = () => {
   };
 
   const handleUsernameChange = async (username) => {
-    console.log("Username changed:", username);
     try {
       const response = await requestPrivate.post(`/checkUsername`, {
         username: username,
@@ -105,6 +104,20 @@ const CreateAdmin = () => {
                   <span style={{ fontSize: "12px" }}>กรุณากรอกชื่อจริง!</span>
                 ),
               },
+              {
+                validator: (_, value) => {
+                  if (value && value.length > 50) {
+                    return Promise.reject({
+                      message: (
+                        <span style={{ fontSize: "12px" }}>
+                          ไม่สามารถกรอกเกิน 50 ตัวอักษรได้
+                        </span>
+                      ),
+                    });
+                  }
+                  return Promise.resolve();
+                },
+              },
             ]}
             style={{ textAlign: "start" }}
           >
@@ -120,6 +133,20 @@ const CreateAdmin = () => {
                 message: (
                   <span style={{ fontSize: "12px" }}>กรุณากรอกนามสกุล!</span>
                 ),
+              },
+              {
+                validator: (_, value) => {
+                  if (value && value.length > 50) {
+                    return Promise.reject({
+                      message: (
+                        <span style={{ fontSize: "12px" }}>
+                          ไม่สามารถกรอกเกิน 50 ตัวอักษรได้
+                        </span>
+                      ),
+                    });
+                  }
+                  return Promise.resolve();
+                },
               },
             ]}
           >
@@ -150,6 +177,20 @@ const CreateAdmin = () => {
                       </span>
                     ),
                   });
+                },
+              },
+              {
+                validator: (_, value) => {
+                  if (value && value.length > 20) {
+                    return Promise.reject({
+                      message: (
+                        <span style={{ fontSize: "12px" }}>
+                          ไม่สามารถกรอกเกิน 20 ตัวอักษรได้
+                        </span>
+                      ),
+                    });
+                  }
+                  return Promise.resolve();
                 },
               },
             ]}

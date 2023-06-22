@@ -27,6 +27,21 @@ const CreateCommander = () => {
     return;
   };
 
+  const handleUsernameChange = async (username) => {
+    try {
+      const response = await requestPrivate.post(`/checkUsername`, {
+        username: username,
+      });
+      if (response.data.length > 0) {
+        return true;
+      } else if (response.data.length === 0) {
+        return false;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const tailLayout = {
     wrapperCol: {
       offset: 4,
@@ -36,7 +51,7 @@ const CreateCommander = () => {
 
   return (
     <div>
-       <Helmet>
+      <Helmet>
         <title>Add Commander - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
@@ -116,6 +131,20 @@ const CreateCommander = () => {
                   <span style={{ fontSize: "12px" }}>กรุณากรอกชื่อจริง!</span>
                 ),
               },
+              {
+                validator: (_, value) => {
+                  if (value && value.length > 50) {
+                    return Promise.reject({
+                      message: (
+                        <span style={{ fontSize: "12px" }}>
+                          ไม่สามารถกรอกเกิน 50 ตัวอักษรได้
+                        </span>
+                      ),
+                    });
+                  }
+                  return Promise.resolve();
+                },
+              },
             ]}
             style={{ textAlign: "start" }}
           >
@@ -132,6 +161,20 @@ const CreateCommander = () => {
                   <span style={{ fontSize: "12px" }}>กรุณากรอกนามสกุล!</span>
                 ),
               },
+              {
+                validator: (_, value) => {
+                  if (value && value.length > 50) {
+                    return Promise.reject({
+                      message: (
+                        <span style={{ fontSize: "12px" }}>
+                          ไม่สามารถกรอกเกิน 50 ตัวอักษรได้
+                        </span>
+                      ),
+                    });
+                  }
+                  return Promise.resolve();
+                },
+              },
             ]}
           >
             <Input />
@@ -145,6 +188,35 @@ const CreateCommander = () => {
                 message: (
                   <span style={{ fontSize: "12px" }}>กรุณากรอกชื่อผู้ใช้!</span>
                 ),
+              },
+              {
+                validator: (_, value) => {
+                  if (value && value.length > 20) {
+                    return Promise.reject({
+                      message: (
+                        <span style={{ fontSize: "12px" }}>
+                          ไม่สามารถกรอกเกิน 20 ตัวอักษรได้
+                        </span>
+                      ),
+                    });
+                  }
+                  return Promise.resolve();
+                },
+              },
+              {
+                validator: async (_, value) => {
+                  let result = await handleUsernameChange(value);
+                  if (!value || !result) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject({
+                    message: (
+                      <span style={{ fontSize: "12px" }}>
+                        ชื่อผู้ใช้ไม่พร้อมใช้งาน
+                      </span>
+                    ),
+                  });
+                },
               },
             ]}
           >
@@ -182,11 +254,13 @@ const CreateCommander = () => {
                   if (!value || getFieldValue("password") === value) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(
-                    {message: (
-                      <span style={{ fontSize: "12px" }}>รหัสผ่านไม่ตรงกัน!</span>
-                    ),}
-                  );
+                  return Promise.reject({
+                    message: (
+                      <span style={{ fontSize: "12px" }}>
+                        รหัสผ่านไม่ตรงกัน!
+                      </span>
+                    ),
+                  });
                 },
               }),
             ]}
