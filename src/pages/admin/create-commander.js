@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Button, Form, Input, Select } from "antd";
 import { Box, Grid } from "@mui/material";
@@ -9,6 +9,7 @@ import useAxiosPrivate from "../../hook/use-axios-private";
 const CreateCommander = () => {
   const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
+  const [form] = Form.useForm();
 
   const onFinish = async (value) => {
     try {
@@ -42,6 +43,22 @@ const CreateCommander = () => {
     }
   };
 
+  const defaultValues = {
+    nametitle: "",
+    fname: "",
+    rank: "พล.ต.ต.",
+    lnanme: "",
+    username: "",
+    password: "",
+    confirm: "",
+  };
+  
+  // Reset fields and set default values
+  const handleResetFields = () => {
+    form.resetFields();
+    form.setFieldsValue(defaultValues);
+  };
+
   const tailLayout = {
     wrapperCol: {
       offset: 4,
@@ -49,6 +66,10 @@ const CreateCommander = () => {
     },
   };
 
+  useEffect(() => {
+    form.setFieldsValue(defaultValues);
+  }, []);
+  
   return (
     <div>
       <Helmet>
@@ -67,7 +88,7 @@ const CreateCommander = () => {
         </Grid>
 
         <Form
-          fields={[{ name: ["rank"], value: "พล.ต.ต." }]}
+          form={form}
           size="middle "
           name="basic"
           labelCol={{
@@ -273,6 +294,9 @@ const CreateCommander = () => {
             </Button>
             <Button onClick={() => navigate(-1)} style={{ marginLeft: 10 }}>
               ยกเลิก
+            </Button>
+            <Button onClick={handleResetFields} style={{ marginLeft: 10 }}>
+              รีเซ็ต
             </Button>
           </Form.Item>
         </Form>
