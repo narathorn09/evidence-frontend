@@ -1,6 +1,7 @@
-import { Button, Checkbox, Form, Input, Layout, Col, Row } from "antd";
+import React from "react";
+import { Helmet } from "react-helmet";
+import { Button, Form, Input, Select } from "antd";
 import { Box, Grid } from "@mui/material";
-import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
@@ -10,14 +11,20 @@ const CreateCommander = () => {
   const navigate = useNavigate();
 
   const onFinish = async (value) => {
-    await requestPrivate.post("/commander", value).then((response) => {
-      console.log("response:", response.data);
-      navigate(-1);
-    });
+    try {
+      const response = await requestPrivate.post("/commander", value);
+      if (response) {
+        alert(`เพิ่มสมาชิกสำเร็จ`);
+        navigate(-1);
+      }
+    } catch (err) {
+      alert(`เกิดปัญหาในการเพิ่มสมาชิก : ${err}`);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    // console.log("Failed:", errorInfo);
+    return;
   };
 
   const tailLayout = {
@@ -26,13 +33,17 @@ const CreateCommander = () => {
       span: 20,
     },
   };
+
   return (
-    <>
+    <div>
+       <Helmet>
+        <title>Add Commander - Forensic Science</title>
+      </Helmet>
       <BreadcrumbLayout
         pages={[
           { title: "จัดการผู้ใช้" },
-          { title: "รายชื่อผู้ดูแลระบบ", path: `/user-management/admin/list` },
-          { title: "เพิ่มผู้ดูแลระบบ" },
+          { title: "รายชื่อผู้การ", path: `/user-management/commander/list` },
+          { title: "เพิ่มผู้การ" },
         ]}
       />
       <Box sx={{ width: "100%", height: "100%" }}>
@@ -41,6 +52,7 @@ const CreateCommander = () => {
         </Grid>
 
         <Form
+          fields={[{ name: ["rank"], value: "พล.ต.ต." }]}
           size="middle "
           name="basic"
           labelCol={{
@@ -50,9 +62,7 @@ const CreateCommander = () => {
           wrapperCol={{
             span: 20,
           }}
-          // layout="vertical"
           style={{
-            //   display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -66,12 +76,20 @@ const CreateCommander = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your first name!",
+                message: (
+                  <span style={{ fontSize: "12px" }}>
+                    กรุณาเลือกคำนำหน้าชื่อ!
+                  </span>
+                ),
               },
             ]}
             style={{ textAlign: "start" }}
           >
-            <Input />
+            <Select>
+              <Select.Option value="นาย">นาย</Select.Option>
+              <Select.Option value="นาง">นาง</Select.Option>
+              <Select.Option value="นางสาว">นางสาว</Select.Option>
+            </Select>
           </Form.Item>
 
           <Form.Item
@@ -85,7 +103,7 @@ const CreateCommander = () => {
             ]}
             style={{ textAlign: "start" }}
           >
-            <Input />
+            <Input disabled={true} />
           </Form.Item>
 
           <Form.Item
@@ -94,7 +112,9 @@ const CreateCommander = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your first name!",
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณากรอกชื่อจริง!</span>
+                ),
               },
             ]}
             style={{ textAlign: "start" }}
@@ -108,7 +128,9 @@ const CreateCommander = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your last name!",
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณากรอกนามสกุล!</span>
+                ),
               },
             ]}
           >
@@ -120,7 +142,9 @@ const CreateCommander = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your username!",
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณากรอกชื่อผู้ใช้!</span>
+                ),
               },
             ]}
           >
@@ -133,7 +157,9 @@ const CreateCommander = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your password!",
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณากรอกรหัสผ่าน!</span>
+                ),
               },
             ]}
           >
@@ -147,7 +173,9 @@ const CreateCommander = () => {
             rules={[
               {
                 required: true,
-                message: "Please confirm your password!",
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณายืนยันรหัสผ่าน!</span>
+                ),
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
@@ -155,7 +183,9 @@ const CreateCommander = () => {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error("The new password that you entered do not match!")
+                    {message: (
+                      <span style={{ fontSize: "12px" }}>รหัสผ่านไม่ตรงกัน!</span>
+                    ),}
                   );
                 },
               }),
@@ -173,7 +203,7 @@ const CreateCommander = () => {
           </Form.Item>
         </Form>
       </Box>
-    </>
+    </div>
   );
 };
 export default CreateCommander;

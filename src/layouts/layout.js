@@ -33,13 +33,13 @@ const Layout = ({ children }) => {
               item
               sx={{
                 zIndex: 1,
-                display: "block",
+                // display: "block",
                 position: "flex",
                 marginLeft: { xs: "0", sm: "0", md: "var(--sidebar--width)" },
                 width: {
                   xs: "100%",
                   sm: "100%",
-                  md: "calc(100% - 240px)",
+                  md: "calc(100vw - var(--sidebar--width))",
                 },
                 pl: { xs: "24px", sm: "24px", md: "40px" },
                 pr: { xs: "24px", sm: "24px", md: "40px" },

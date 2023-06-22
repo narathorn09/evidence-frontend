@@ -32,7 +32,7 @@ const Header = ({ openNavMobile }) => {
       controller.abort();
     };
   }, []);
-  console.log("meee", me);
+  // console.log("me", me);
 
   const { setAuthToken } = useAuth();
   const handleSelectChange = async (value) => {

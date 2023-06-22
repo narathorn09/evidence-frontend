@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, IconButton, Grid } from "@mui/material";
+import { Helmet } from "react-helmet";
+import { Button, IconButton, Grid } from "@mui/material";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -47,19 +48,19 @@ const ListCommander = () => {
     {
       field: "fname",
       headerName: "ชื่อจริง",
-      width: 250,
+      width: 200,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "lname",
       headerName: "นามสกุล",
-      width: 250,
+      width: 200,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "Edit",
       headerName: "แก้ไข",
-      width: 150,
+      width: 100,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
@@ -78,7 +79,7 @@ const ListCommander = () => {
       field: "Delete",
       headerName: "ลบ",
       headerClassName: "super-app-theme--header",
-      width: 150,
+      width: 100,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => (
@@ -98,7 +99,6 @@ const ListCommander = () => {
     const fetchData = async () => {
       await requestPrivate.get(`/commander`).then((response) => {
         setItems(response.data);
-        console.log(response.data);
       });
     };
     fetchData();
@@ -117,6 +117,7 @@ const ListCommander = () => {
       }
     }
   };
+
   const csvOptions = {
     fileName: "รายชื่อผู้การ",
     utf8WithBom: true,
@@ -154,12 +155,15 @@ const ListCommander = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Lists Commander - Forensic Science</title>
+      </Helmet>
       <BreadcrumbLayout
-        pages={[{ title: "จัดการผู้ใช้" }, { title: "รายชื่อผู้ดูแลระบบ" }]}
+        pages={[{ title: "จัดการผู้ใช้" }, { title: "รายชื่อผู้การ" }]}
       />
       <Grid
         sx={{
-          height: "auto",
+          height: "100%",
           width: "100%",
           "& .super-app-theme--header": {
             backgroundColor: "var(--color--main-light9)",
@@ -167,7 +171,7 @@ const ListCommander = () => {
           },
         }}
       >
-        <Grid sx={{ textAlign: "eft" }}>
+        <Grid sx={{ textAlign: "left" }}>
           <h2>รายชื่อผู้การ</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>

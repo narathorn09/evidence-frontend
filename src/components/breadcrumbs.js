@@ -12,9 +12,9 @@ const BreadcrumbLayout = ({ pages }) => {
           separator={
             <Grid
               sx={{
-                fontSize: "12px",
+                fontSize: "13px",
                 opacity: 0.5,
-                mb: "-4px",
+                mb: -0.4
               }}
             >
               /
@@ -28,9 +28,9 @@ const BreadcrumbLayout = ({ pages }) => {
                 to={page?.path}
                 component={Link}
                 sx={{
-                  fontSize: "12px",
-                  textDecoration: "none",
-                  color: "#7D3232",
+                  fontSize: "13px",
+                  // textDecoration: "none",
+                  color: "var(--color--main)",
                 }}
               >
                 {page?.title}
@@ -38,8 +38,8 @@ const BreadcrumbLayout = ({ pages }) => {
             ) : (
               <Grid
                 key={page?.title}
-                // component={Link}
-                sx={{ fontSize: "12px", textDecoration: "none", mb: "-3px" }}
+                component={Link}
+                sx={{ fontSize: "13px", textDecoration: "none", color: "rgba(0,0,0,0.5)" , cursor: "default"}}
               >
                 {page?.title}
               </Grid>

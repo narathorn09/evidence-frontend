@@ -12,7 +12,7 @@ export const checkTokenExpired = (accessToken) => {
       const decoded = jwtDecode(accessToken);
 
       if (decoded.exp > Math.round(new Date().getTime() / 1000)) {
-        console.log(decoded);
+        // console.log(decoded);
         return { user: decoded, accessToken };
       }
     } catch (err) {

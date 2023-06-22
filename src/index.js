@@ -32,6 +32,7 @@ root.render(
         controlOutlineWidth: 0.5,
         controlItemBgHover: "rgb(125, 50, 50, 0.09)",
         controlItemBgActive: "rgb(125, 50, 50, 0.09)",
+        fontFamily: 'Prompt',
         // algorithm: theme.darkAlgorithm,
       },
     }}

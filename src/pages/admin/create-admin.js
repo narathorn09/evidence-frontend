@@ -1,8 +1,8 @@
-import { Button, Checkbox, Form, Input, Layout, Col, Row } from "antd";
+import React from "react";
+import { Helmet } from "react-helmet";
+import { Button, Form, Input } from "antd";
 import { Box, Grid } from "@mui/material";
-import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { request } from "../../axios-config";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 
@@ -11,14 +11,20 @@ const CreateAdmin = () => {
   const navigate = useNavigate();
 
   const onFinish = async (value) => {
-    await requestPrivate.post("/admin", value).then((response) => {
-      console.log("response:", response.data);
-      navigate(-1);
-    });
+    try {
+      const response = await requestPrivate.post("/admin", value);
+      if (response) {
+        alert(`เพิ่มสมาชิกสำเร็จ`);
+        navigate(-1);
+      }
+    } catch (err) {
+      alert(`เกิดปัญหาในการเพิ่มสมาชิก : ${err}`);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    // console.log("Failed:", errorInfo);
+    return;
   };
 
   const tailLayout = {
@@ -27,8 +33,12 @@ const CreateAdmin = () => {
       span: 20,
     },
   };
+
   return (
-    <>
+    <div>
+      <Helmet>
+        <title>Add Admin - Forensic Science</title>
+      </Helmet>
       <BreadcrumbLayout
         pages={[
           { title: "จัดการผู้ใช้" },
@@ -51,9 +61,7 @@ const CreateAdmin = () => {
           wrapperCol={{
             span: 20,
           }}
-          // layout="vertical"
           style={{
-            //   display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -67,7 +75,9 @@ const CreateAdmin = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your first name!",
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณากรอกชื่อจริง!</span>
+                ),
               },
             ]}
             style={{ textAlign: "start" }}
@@ -81,19 +91,24 @@ const CreateAdmin = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your last name!",
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณากรอกนามสกุล!</span>
+                ),
               },
             ]}
           >
             <Input />
           </Form.Item>
+
           <Form.Item
             label="ชื่อผู้ใช้"
             name="username"
             rules={[
               {
                 required: true,
-                message: "Please input your username!",
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณากรอกชื่อผู้ใช้!</span>
+                ),
               },
             ]}
           >
@@ -106,12 +121,15 @@ const CreateAdmin = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your password!",
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณากรอกรหัสผ่าน!</span>
+                ),
               },
             ]}
           >
             <Input.Password />
           </Form.Item>
+
           <Form.Item
             label="ยืนยันรหัสผ่าน"
             name="confirm"
@@ -120,7 +138,9 @@ const CreateAdmin = () => {
             rules={[
               {
                 required: true,
-                message: "Please confirm your password!",
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณายืนยันรหัสผ่าน!</span>
+                ),
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
@@ -128,7 +148,9 @@ const CreateAdmin = () => {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error("The new password that you entered do not match!")
+                    {message: (
+                      <span style={{ fontSize: "12px" }}>รหัสผ่านไม่ตรงกัน!</span>
+                    ),}
                   );
                 },
               }),
@@ -146,7 +168,8 @@ const CreateAdmin = () => {
           </Form.Item>
         </Form>
       </Box>
-    </>
+    </div>
   );
 };
+
 export default CreateAdmin;

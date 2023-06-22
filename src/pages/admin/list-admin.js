@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { request } from "../../axios-config";
-import { Box, Button, IconButton, Grid } from "@mui/material";
+import { Helmet } from "react-helmet";
+import { Button, IconButton, Grid } from "@mui/material";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -73,7 +73,7 @@ const ListAdmin = () => {
       renderCell: (params) => (
         <IconButton
           onClick={() => {
-            RemoveMember(params?.row?.mem_id, params?.row?.mem_username);
+            RemoveMember(params?.row?.id, params?.row?.username);
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >
@@ -87,7 +87,6 @@ const ListAdmin = () => {
     const fetchData = async () => {
       await requestPrivate.get(`/admin`).then((response) => {
         setItems(response.data);
-        console.log(response.data);
       });
     };
     fetchData();
@@ -106,6 +105,7 @@ const ListAdmin = () => {
       }
     }
   };
+
   const csvOptions = {
     fileName: "รายชื่อผู้ดูแลระบบ-FS",
     utf8WithBom: true,
@@ -142,13 +142,16 @@ const ListAdmin = () => {
   }
 
   return (
-    <>
+    <div>
+      <Helmet>
+        <title>Lists Admin - Forensic Science</title>
+      </Helmet>
       <BreadcrumbLayout
         pages={[{ title: "จัดการผู้ใช้" }, { title: "รายชื่อผู้ดูแลระบบ" }]}
       />
       <Grid
         sx={{
-          height: "auto",
+          height: "100%",
           width: "100%",
           "& .super-app-theme--header": {
             backgroundColor: "var(--color--main-light9)",
@@ -156,10 +159,10 @@ const ListAdmin = () => {
           },
         }}
       >
-        <Grid sx={{ textAlign: "eft" }}>
+        <Grid sx={{ textAlign: "left" }}>
           <h2>รายชื่อผู้ดูแลระบบ</h2>
         </Grid>
-        <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+        <Grid sx={{ display: "flex", justifyContent: "flex-end" ,mb: 1}}>
           <IconButton onClick={() => navigate("/user-management/admin/create")}>
             <PersonAddAlt1 />
           </IconButton>
@@ -171,6 +174,7 @@ const ListAdmin = () => {
                   ...e,
                   id: e.mem_id,
                   index: index + 1,
+                  username: e.mem_username
                 }))
               : []
           }
@@ -181,7 +185,7 @@ const ListAdmin = () => {
           sx={{ borderRadius: "8px", height: "400px" }}
         />
       </Grid>
-    </>
+    </div>
   );
 };
 
