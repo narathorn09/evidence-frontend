@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Button, Form, Input } from "antd";
 import { Box, Grid } from "@mui/material";
@@ -9,8 +9,9 @@ import useAxiosPrivate from "../../hook/use-axios-private";
 const CreateAdmin = () => {
   const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
-
+  
   const onFinish = async (value) => {
+    console.log(value);
     try {
       const response = await requestPrivate.post("/admin", value);
       if (response) {
@@ -25,6 +26,22 @@ const CreateAdmin = () => {
   const onFinishFailed = (errorInfo) => {
     // console.log("Failed:", errorInfo);
     return;
+  };
+
+  const handleUsernameChange = async (username) => {
+    console.log("Username changed:", username);
+    try {
+      const response = await requestPrivate.post(`/checkUsername`, {
+        username: username,
+      });
+      if (response.data.length > 0) {
+        return true;
+      } else if (response.data.length === 0) {
+        return false;
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const tailLayout = {
@@ -68,6 +85,15 @@ const CreateAdmin = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
+          // fields={fields}
+          // onFieldsChange={(fieldValues, allFields) => {
+          //   if (fieldValues[0].name[0] === 'username')
+          //   validUsername(fieldValues[0].value);
+          // }}
+          // onValuesChange={(changedValues, allValues) => {
+          //   // if (changedValues?.username)
+          //   handleUsernameChange(changedValues?.username);
+          // }}
         >
           <Form.Item
             label="ชื่อจริง"
@@ -103,12 +129,28 @@ const CreateAdmin = () => {
           <Form.Item
             label="ชื่อผู้ใช้"
             name="username"
+            initialValue={""}
             rules={[
               {
                 required: true,
                 message: (
                   <span style={{ fontSize: "12px" }}>กรุณากรอกชื่อผู้ใช้!</span>
                 ),
+              },
+              {
+                validator: async (_, value) => {
+                  let result = await handleUsernameChange(value);
+                  if (!value || !result) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject({
+                    message: (
+                      <span style={{ fontSize: "12px" }}>
+                        ชื่อผู้ใช้ไม่พร้อมใช้งาน
+                      </span>
+                    ),
+                  });
+                },
               },
             ]}
           >
@@ -147,11 +189,13 @@ const CreateAdmin = () => {
                   if (!value || getFieldValue("password") === value) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(
-                    {message: (
-                      <span style={{ fontSize: "12px" }}>รหัสผ่านไม่ตรงกัน!</span>
-                    ),}
-                  );
+                  return Promise.reject({
+                    message: (
+                      <span style={{ fontSize: "12px" }}>
+                        รหัสผ่านไม่ตรงกัน!
+                      </span>
+                    ),
+                  });
                 },
               }),
             ]}
