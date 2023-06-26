@@ -13,6 +13,8 @@ import ListGroup from "./pages/admin/list-group";
 import CreateGroup from "./pages/admin/create-group";
 import ListSceneInvestigator from "./pages/admin/list-scene-investigators";
 import CreateSceneInvestigator from "./pages/admin/create-scene-investigators";
+import ListExpert from "./pages/admin/list-expert";
+import CreateExpert from "./pages/admin/create-expert";
 
 const App = () => {
   const { auth } = useAuth();
@@ -30,11 +32,13 @@ const App = () => {
               <Route exact path="/user-management/commander/list" element={<ListCommander />} />
               <Route exact path="/user-management/director/list" element={<ListDirector />} />
               <Route exact path="/user-management/scene-investigator/list" element={<ListSceneInvestigator />} />
+              <Route exact path="/user-management/expert/list" element={<ListExpert />} />
 
               <Route exact path="/user-management/admin/create" element={<CreateAdmin/>} />
               <Route exact path="/user-management/commander/create" element={<CreateCommander/>} />
               <Route exact path="/user-management/director/create" element={<CreateDirector/>} />
               <Route exact path="/user-management/scene-investigator/create" element={<CreateSceneInvestigator/>} />
+              <Route exact path="/user-management/expert/create" element={<CreateExpert/>} />
               <Route exact path="/group-management/list" element={<ListGroup />} />
               <Route exact path="/group-management/create" element={<CreateGroup />} />
             </>
