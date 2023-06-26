@@ -84,7 +84,7 @@ const CreateDirector = () => {
       />
       <Box sx={{ width: "100%", height: "100%" }}>
         <Grid sx={{ textAlign: "left" }}>
-          <h2>เพิ่มผู้การ</h2>
+          <h2>เพิ่มผู้กำกับ</h2>
         </Grid>
 
         <Form
