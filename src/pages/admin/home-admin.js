@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CountUp from "react-countup";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Card } from "@mui/material";
 import { Statistic } from "antd";
 import useAxiosPrivate from "../../hook/use-axios-private";
 import { Groups, Workspaces } from "@mui/icons-material";
@@ -59,11 +59,11 @@ const HomeAdmin = () => {
           xs={12}
           sm={12}
           md={5.6}
+          component={Card}
           sx={{
             padding: 10,
             borderRadius: "8px",
-            bgcolor: "var(--color--main-light04)",
-            // boxShadow: "2px 2px 1px var(--color--main-light3)",
+            // boxShadow: "5px 5px 5px #f0f0f0, -5px -5px 5px #fbfbfb",
             display: "flex",
             justifyContent: "left",
             alignItems: "center",
@@ -138,13 +138,13 @@ const HomeAdmin = () => {
           xs={12}
           sm={12}
           md={5.6}
+          component={Card}
           //   columnGap={5}
           //   direction={"column"}
           sx={{
             padding: 10,
             borderRadius: "8px",
-            bgcolor: "var(--color--main-light04)",
-            // boxShadow: "2px 2px 1px var(--color--main-light3)",
+            // boxShadow: "5px 5px 5px #f0f0f0",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
