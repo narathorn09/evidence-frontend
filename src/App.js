@@ -15,6 +15,7 @@ import ListSceneInvestigator from "./pages/admin/list-scene-investigators";
 import CreateSceneInvestigator from "./pages/admin/create-scene-investigators";
 import ListExpert from "./pages/admin/list-expert";
 import CreateExpert from "./pages/admin/create-expert";
+import HomeAdmin from "./pages/admin/home-admin";
 
 const App = () => {
   const { auth } = useAuth();
@@ -27,7 +28,7 @@ const App = () => {
           //
           {role === "0" && ( //admin
             <>
-             <Route exact path="/" element={<>admin</>} />
+             <Route exact path="/" element={<HomeAdmin/>} />
               <Route exact path="/user-management/admin/list" element={<ListAdmin />} />
               <Route exact path="/user-management/commander/list" element={<ListCommander />} />
               <Route exact path="/user-management/director/list" element={<ListDirector />} />
