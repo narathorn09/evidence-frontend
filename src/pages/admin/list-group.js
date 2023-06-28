@@ -7,7 +7,7 @@ import {
   GridToolbarExportContainer,
   GridCsvExportMenuItem,
 } from "@mui/x-data-grid";
-import { DeleteForever, PersonAddAlt1, Edit } from "@mui/icons-material";
+import { DeleteForever, AddCircle, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
@@ -38,10 +38,12 @@ const ListGroup = () => {
       headerName: "ผู้กำกับ",
       width: 360,
       headerClassName: "super-app-theme--header",
-      valueGetter: (params) => params.row?.director_rank ?
-        `${params.row?.director_rank || ""} ${
-          params.row?.director_fname || ""
-        } ${params.row?.director_lname || ""}` : "-",
+      valueGetter: (params) =>
+        params.row?.director_rank
+          ? `${params.row?.director_rank || ""} ${
+              params.row?.director_fname || ""
+            } ${params.row?.director_lname || ""}`
+          : "-",
     },
     {
       field: "Edit",
@@ -162,11 +164,11 @@ const ListGroup = () => {
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
           <IconButton onClick={() => navigate("/group-management/create")}>
-            <PersonAddAlt1 />
+            <AddCircle />
           </IconButton>
         </Grid>
         <DataGrid
-          rows={
+          rows={ 
             items
               ? items?.map((e, index) => ({
                   ...e,
