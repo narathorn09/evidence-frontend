@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import CountUp from "react-countup";
 import { Box, Grid, Card } from "@mui/material";
 import { Statistic } from "antd";
@@ -52,6 +53,9 @@ const HomeAdmin = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>Home Admin - Forensic Science</title>
+      </Helmet>
       <Grid container direction={"row"} columnGap={4} rowGap={4}>
         <Grid
           container
