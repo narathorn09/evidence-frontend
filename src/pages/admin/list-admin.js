@@ -55,7 +55,7 @@ const ListAdmin = () => {
       renderCell: (params) => (
         <IconButton
           onClick={() => {
-            // history.push(`/edit-archive/${params?.row?._id}`);
+            navigate(`/user-management/admin/update/${params?.row?.id}`);
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >

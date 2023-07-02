@@ -1,0 +1,248 @@
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+import { Button, Form, Input } from "antd";
+import { Box, Grid } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import BreadcrumbLayout from "../../components/breadcrumbs";
+import useAxiosPrivate from "../../hook/use-axios-private";
+
+const UpdateAdmin = () => {
+  const params = useParams();
+  const requestPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+  const [form] = Form.useForm();
+  const [personData, setPersonData] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await requestPrivate.get(`/adminById/${params?.id}`);
+        setPersonData(response?.data[0]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [params?.id]);
+
+  const defaultValues = {
+    admin_fname: personData?.admin_fname,
+    admin_lname: personData?.admin_lname,
+    username: personData?.mem_username,
+  };
+
+  useEffect(() => {
+    form.setFieldsValue(defaultValues);
+  }, [personData]);
+
+  const onFinish = async (value) => {
+    const data = { mem_id: params?.id, ...value };
+    console.log(data);
+    try {
+      const response = await requestPrivate.put("/admin", data);
+      if (response) {
+        alert(`แก้ไขข้อมูลสมาชิกสำเร็จ`);
+        navigate(-1);
+      }
+    } catch (err) {
+      alert(`เกิดปัญหาในการแก้ไขข้อมูลสมาชิก : ${err}`);
+    }
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    // console.log("Failed:", errorInfo);
+    return;
+  };
+
+  const handleUsernameChange = async (username) => {
+    try {
+      const response = await requestPrivate.post(`/checkUsername`, {
+        username: username,
+      });
+      if (response.data.length > 0 && personData?.mem_username !== username) {
+        return true;
+      } else if (response.data.length === 0) {
+        return false;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const tailLayout = {
+    wrapperCol: {
+      offset: 4,
+      span: 20,
+    },
+  };
+
+  return (
+    <div>
+      <Helmet>
+        <title>Edit Admin - Forensic Science</title>
+      </Helmet>
+      <BreadcrumbLayout
+        pages={[
+          { title: "จัดการผู้ใช้" },
+          { title: "รายชื่อผู้ดูแลระบบ", path: `/user-management/admin/list` },
+          { title: "แก้ไขข้อมูลผู้ดูแลระบบ" },
+        ]}
+      />
+      <Box sx={{ width: "100%", height: "100%" }}>
+        <Grid sx={{ textAlign: "left" }}>
+          <h2>แก้ไขข้อมูลผู้ดูแลระบบ</h2>
+        </Grid>
+
+        <Form
+          form={form}
+          size="middle "
+          name="basic"
+          labelCol={{
+            span: 4,
+          }}
+          labelAlign="left"
+          wrapperCol={{
+            span: 20,
+          }}
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+          // fields={fields}
+          // onFieldsChange={(fieldValues, allFields) => {
+          //   if (fieldValues[0].name[0] === 'username')
+          //   validUsername(fieldValues[0].value);
+          // }}
+          // onValuesChange={(changedValues, allValues) => {
+          //   // if (changedValues?.username)
+          //   handleUsernameChange(changedValues?.username);
+          // }}
+        >
+          <Form.Item
+            label="ชื่อจริง"
+            name="admin_fname"
+            rules={[
+              {
+                required: true,
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณากรอกชื่อจริง!</span>
+                ),
+              },
+              {
+                validator: (_, value) => {
+                  if (value && value.length > 50) {
+                    return Promise.reject({
+                      message: (
+                        <span style={{ fontSize: "12px" }}>
+                          ไม่สามารถกรอกเกิน 50 ตัวอักษรได้
+                        </span>
+                      ),
+                    });
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+            style={{ textAlign: "start" }}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="นามสกุล"
+            name="admin_lname"
+            rules={[
+              {
+                required: true,
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณากรอกนามสกุล!</span>
+                ),
+              },
+              {
+                validator: (_, value) => {
+                  if (value && value.length > 50) {
+                    return Promise.reject({
+                      message: (
+                        <span style={{ fontSize: "12px" }}>
+                          ไม่สามารถกรอกเกิน 50 ตัวอักษรได้
+                        </span>
+                      ),
+                    });
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="ชื่อผู้ใช้"
+            name="username"
+            initialValue={""}
+            rules={[
+              {
+                required: true,
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณากรอกชื่อผู้ใช้!</span>
+                ),
+              },
+              {
+                validator: async (_, value) => {
+                  let result = await handleUsernameChange(value);
+                  if (!value || !result) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject({
+                    message: (
+                      <span style={{ fontSize: "12px" }}>
+                        ชื่อผู้ใช้ไม่พร้อมใช้งาน
+                      </span>
+                    ),
+                  });
+                },
+              },
+              {
+                validator: (_, value) => {
+                  if (value && value.length > 20) {
+                    return Promise.reject({
+                      message: (
+                        <span style={{ fontSize: "12px" }}>
+                          ไม่สามารถกรอกเกิน 20 ตัวอักษรได้
+                        </span>
+                      ),
+                    });
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item {...tailLayout}>
+            <Button type="primary" htmlType="submit">
+              ยืนยัน
+            </Button>
+            <Button onClick={() => navigate(-1)} style={{ marginLeft: 10 }}>
+              ยกเลิก
+            </Button>
+            <Button
+              onClick={() => form.setFieldsValue(defaultValues)}
+              style={{ marginLeft: 10 }}
+            >
+              คืนค่า
+            </Button>
+          </Form.Item>
+        </Form>
+      </Box>
+    </div>
+  );
+};
+
+export default UpdateAdmin;

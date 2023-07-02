@@ -16,6 +16,8 @@ import CreateSceneInvestigator from "./pages/admin/create-scene-investigators";
 import ListExpert from "./pages/admin/list-expert";
 import CreateExpert from "./pages/admin/create-expert";
 import HomeAdmin from "./pages/admin/home-admin";
+import UpdateAdmin from "./pages/admin/update-admin";
+import UpdateCommander from "./pages/admin/update-commander";
 
 const App = () => {
   const { auth } = useAuth();
@@ -40,6 +42,8 @@ const App = () => {
               <Route exact path="/user-management/director/create" element={<CreateDirector/>} />
               <Route exact path="/user-management/scene-investigator/create" element={<CreateSceneInvestigator/>} />
               <Route exact path="/user-management/expert/create" element={<CreateExpert/>} />
+              <Route exact path="/user-management/admin/update/:id" element={<UpdateAdmin/>} />
+              <Route exact path="/user-management/commander/update/:id" element={<UpdateCommander/>} />
               <Route exact path="/group-management/list" element={<ListGroup />} />
               <Route exact path="/group-management/create" element={<CreateGroup />} />
             </>

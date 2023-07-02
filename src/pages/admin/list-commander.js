@@ -67,7 +67,7 @@ const ListCommander = () => {
       renderCell: (params) => (
         <IconButton
           onClick={() => {
-            // history.push(`/edit-archive/${params?.row?._id}`);
+            navigate(`/user-management/commander/update/${params?.row?.id}`);
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >
