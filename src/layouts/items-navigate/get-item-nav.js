@@ -6,12 +6,9 @@ import {
   itemExpert,
 } from "./items-nav";
 
-export const getItemsNav = () => {
-  //add check role from api
-  const role = "0"
-
+export const getItemsNav = (role) => {
+  // console.log("role", role);
   let items = [];
-
   switch (role) {
     case "0": //admin
       items = itemAdmin;
@@ -34,5 +31,3 @@ export const getItemsNav = () => {
 
   return items;
 };
-
-

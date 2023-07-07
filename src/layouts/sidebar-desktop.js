@@ -9,10 +9,11 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import { Biotech, ExpandMore } from "@mui/icons-material";
-
-const items = getItemsNav();
+import { useAuth } from "../contexts/auth-context";
 
 const SidebarDesktop = () => {
+  const { auth } = useAuth();
+  const items = getItemsNav(auth?.user?.role);
   const location = useLocation();
   const storedExpanded = localStorage.getItem("expanded");
   const [expanded, setExpanded] = useState(
