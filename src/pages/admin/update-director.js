@@ -1,22 +1,22 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Button, Form, Input, Select } from "antd";
 import { Box, Grid } from "@mui/material";
-import { useNavigate,useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 
-const UpdateCommander = () => {
+const UpdateDirector = () => {
   const params = useParams();
   const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [personData, setPersonData] = useState({});
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await requestPrivate.get(`/commanderById/${params?.id}`);
+        const response = await requestPrivate.get(`/directorById/${params?.id}`);
         setPersonData(response?.data[0]);
       } catch (error) {
         console.error(error);
@@ -26,10 +26,10 @@ const UpdateCommander = () => {
   }, [params?.id]);
 
   const defaultValues = {
-    nametitle: personData?.com_nametitle,
-    rank: personData?.com_rank,
-    fname: personData?.com_fname,
-    lname: personData?.com_lname,
+    nametitle: personData?.director_nametitle,
+    rank: personData?.director_rank,
+    fname: personData?.director_fname,
+    lname: personData?.director_lname,
     username: personData?.mem_username,
   };
 
@@ -39,9 +39,8 @@ const UpdateCommander = () => {
 
   const onFinish = async (value) => {
     const data = { mem_id: params?.id, ...value };
-    // console.log(data);
     try {
-      const response = await requestPrivate.put("/commander", data);
+      const response = await requestPrivate.put("/director", data);
       if (response) {
         alert(`แก้ไขข้อมูลสมาชิกสำเร็จ`);
         navigate(-1);
@@ -70,7 +69,7 @@ const UpdateCommander = () => {
       console.log(err);
     }
   };
-
+  
   // Reset fields and set default values
   const handleResetFields = () => {
     form.setFieldsValue(defaultValues);
@@ -86,18 +85,18 @@ const UpdateCommander = () => {
   return (
     <div>
       <Helmet>
-        <title>Edit Commander - Forensic Science</title>
+        <title>Edit Director - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
           { title: "จัดการผู้ใช้" },
-          { title: "รายชื่อผู้การ", path: `/user-management/commander/list` },
-          { title: "แก้ไขข้อมูลผู้การ" },
+          { title: "รายชื่อผู้กำกับ", path: `/user-management/director/list` },
+          { title: "แก้ไขข้อมูลผู้กำกับ" },
         ]}
       />
       <Box sx={{ width: "100%", height: "100%" }}>
         <Grid sx={{ textAlign: "left" }}>
-          <h2>แก้ไขข้อมูลผู้การ</h2>
+          <h2>แก้ไขข้อมูลผู้กำกับ</h2>
         </Grid>
 
         <Form
@@ -273,4 +272,4 @@ const UpdateCommander = () => {
     </div>
   );
 };
-export default UpdateCommander;
+export default UpdateDirector;

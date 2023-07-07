@@ -73,7 +73,7 @@ const ListExpert = () => {
       renderCell: (params) => (
         <IconButton
           onClick={() => {
-            // history.push(`/edit-archive/${params?.row?._id}`);
+            navigate(`/user-management/expert/update/${params?.row?.id}`);
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >

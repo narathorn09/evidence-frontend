@@ -1,22 +1,23 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Button, Form, Input, Select } from "antd";
 import { Box, Grid } from "@mui/material";
-import { useNavigate,useParams } from "react-router-dom";
+import { useNavigate , useParams} from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 
-const UpdateCommander = () => {
+const UpdateSceneInvestigator = () => {
   const params = useParams();
   const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [personData, setPersonData] = useState({});
-
+  const [group, setGroup] = useState([]);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await requestPrivate.get(`/commanderById/${params?.id}`);
+        const response = await requestPrivate.get(`/sceneInvestigatorById/${params?.id}`);
         setPersonData(response?.data[0]);
       } catch (error) {
         console.error(error);
@@ -26,22 +27,36 @@ const UpdateCommander = () => {
   }, [params?.id]);
 
   const defaultValues = {
-    nametitle: personData?.com_nametitle,
-    rank: personData?.com_rank,
-    fname: personData?.com_fname,
-    lname: personData?.com_lname,
+    nametitle: personData?.inves_nametitle,
+    rank: personData?.inves_rank,
+    fname: personData?.inves_fname,
+    lname: personData?.inves_lname,
     username: personData?.mem_username,
+    groupid: personData?.group_id,
   };
 
   useEffect(() => {
     form.setFieldsValue(defaultValues);
   }, [personData]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await requestPrivate.get(`/group`);
+        setGroup(response.data);
+      } catch (err) {
+        alert(`เกิดข้อผิดพลาดในการดึงข้อมูลกลุ่มงาน : ${err}`);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const onFinish = async (value) => {
     const data = { mem_id: params?.id, ...value };
     // console.log(data);
     try {
-      const response = await requestPrivate.put("/commander", data);
+      const response = await requestPrivate.put("/sceneInvestigator", data);
       if (response) {
         alert(`แก้ไขข้อมูลสมาชิกสำเร็จ`);
         navigate(-1);
@@ -86,18 +101,21 @@ const UpdateCommander = () => {
   return (
     <div>
       <Helmet>
-        <title>Edit Commander - Forensic Science</title>
+        <title>Edit Scene Investigator - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
           { title: "จัดการผู้ใช้" },
-          { title: "รายชื่อผู้การ", path: `/user-management/commander/list` },
-          { title: "แก้ไขข้อมูลผู้การ" },
+          {
+            title: "รายชื่อพนักงานตรวจสถานที่เกิดเหตุ",
+            path: `/user-management/scene-investigator/list`,
+          },
+          { title: "แก้ไขข้อมูลพนักงานตรวจสถานที่เกิดเหตุ" },
         ]}
       />
       <Box sx={{ width: "100%", height: "100%" }}>
         <Grid sx={{ textAlign: "left" }}>
-          <h2>แก้ไขข้อมูลผู้การ</h2>
+          <h2>แก้ไขข้อมูลพนักงานตรวจสถานที่เกิดเหตุ</h2>
         </Grid>
 
         <Form
@@ -119,6 +137,31 @@ const UpdateCommander = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
+          <Form.Item
+            label="กลุ่มงาน"
+            name="groupid"
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: (
+            //       <span style={{ fontSize: "12px" }}>
+            //         กรุณาเลือกผู้กำกับ!
+            //       </span>
+            //     ),
+            //   },
+            // ]}
+            style={{ textAlign: "start" }}
+          >
+            <Select>
+              {group.map((group, index) => (
+                <Select.Option
+                  key={index}
+                  value={group.group_id}
+                >{`${group.group_name}`}</Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
           <Form.Item
             label="คำนำหน้า"
             name="nametitle"
@@ -147,12 +190,21 @@ const UpdateCommander = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your first name!",
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณาเลือกยศ!</span>
+                ),
               },
             ]}
             style={{ textAlign: "start" }}
           >
-            <Input disabled={true} />
+            <Select>
+              <Select.Option value="พ.ต.อ">พ.ต.อ.</Select.Option>
+              <Select.Option value="พ.ต.ท.">พ.ต.ท.</Select.Option>
+              <Select.Option value="พ.ต.ต.">พ.ต.ต.</Select.Option>
+              <Select.Option value="ร.ต.อ.">ร.ต.อ.</Select.Option>
+              <Select.Option value="ร.ต.ท.">ร.ต.ท.</Select.Option>
+              <Select.Option value="ร.ต.ต.">ร.ต.ต.</Select.Option>
+            </Select>
           </Form.Item>
 
           <Form.Item
@@ -273,4 +325,4 @@ const UpdateCommander = () => {
     </div>
   );
 };
-export default UpdateCommander;
+export default UpdateSceneInvestigator;

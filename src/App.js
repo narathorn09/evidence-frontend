@@ -18,6 +18,10 @@ import CreateExpert from "./pages/admin/create-expert";
 import HomeAdmin from "./pages/admin/home-admin";
 import UpdateAdmin from "./pages/admin/update-admin";
 import UpdateCommander from "./pages/admin/update-commander";
+import UpdateDirector from "./pages/admin/update-director";
+import UpdateSceneInvestigator from "./pages/admin/update-scene-investigators";
+import UpdateExpert from "./pages/admin/update-expert";
+import UpdateGroup from "./pages/admin/update-group";
 
 const App = () => {
   const { auth } = useAuth();
@@ -44,8 +48,12 @@ const App = () => {
               <Route exact path="/user-management/expert/create" element={<CreateExpert/>} />
               <Route exact path="/user-management/admin/update/:id" element={<UpdateAdmin/>} />
               <Route exact path="/user-management/commander/update/:id" element={<UpdateCommander/>} />
+              <Route exact path="/user-management/director/update/:id" element={<UpdateDirector/>} />
+              <Route exact path="/user-management/scene-investigator/update/:id" element={<UpdateSceneInvestigator/>} />
+              <Route exact path="/user-management/expert/update/:id" element={<UpdateExpert/>} />
               <Route exact path="/group-management/list" element={<ListGroup />} />
               <Route exact path="/group-management/create" element={<CreateGroup />} />
+              <Route exact path="/group-management/update/:id" element={<UpdateGroup />} />
             </>
           )}
           {role === "1" && ( //commander
