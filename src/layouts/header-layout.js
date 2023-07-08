@@ -40,10 +40,17 @@ const Header = ({ openNavMobile }) => {
       if (value === "profile") {
         navigate(`/profile/${me?.id}`);
       } else if (value === "logout") {
-        await requestPrivate.get("/logout");
-        setAuthToken(null); // Clear the access token in the authentication context
-        localStorage.removeItem("token"); // Remove the access token from local storage
-        navigate("/login");
+        const confirmed = window.confirm(`คุณต้องการออกจากระบบ ?`);
+        if (confirmed) {
+          try {
+            await requestPrivate.get("/logout");
+            setAuthToken(null); // Clear the access token in the authentication context
+            localStorage.removeItem("token"); // Remove the access token from local storage
+            navigate("/login");
+          } catch (err) {
+            alert(`${err?.message}`);
+          }
+        }
       }
     } catch (err) {
       navigate("/login");
