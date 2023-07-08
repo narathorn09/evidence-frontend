@@ -38,7 +38,7 @@ const Header = ({ openNavMobile }) => {
   const handleSelectChange = async (value) => {
     try {
       if (value === "profile") {
-        navigate("/profile");
+        navigate(`/profile/${me?.id}`);
       } else if (value === "logout") {
         await requestPrivate.get("/logout");
         setAuthToken(null); // Clear the access token in the authentication context

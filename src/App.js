@@ -22,6 +22,8 @@ import UpdateDirector from "./pages/admin/update-director";
 import UpdateSceneInvestigator from "./pages/admin/update-scene-investigators";
 import UpdateExpert from "./pages/admin/update-expert";
 import UpdateGroup from "./pages/admin/update-group";
+import Profile from "./pages/profile/profile";
+
 
 const App = () => {
   const { auth } = useAuth();
@@ -32,6 +34,7 @@ const App = () => {
         <Routes>
           <Route exact path="/login" element={<Login />} />
           //
+          <Route exact path="/profile/:id" element={<Profile />} />
           {role === "0" && ( //admin
             <>
              <Route exact path="/" element={<HomeAdmin/>} />
