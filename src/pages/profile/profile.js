@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Button, Form, Input, Typography } from "antd";
-import { Box, Grid, IconButton } from "@mui/material";
-import { Edit } from "@mui/icons-material";
+import { Box, Grid, IconButton, Card } from "@mui/material";
+import { Edit, AccountCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 
 const Profile = () => {
@@ -57,18 +56,18 @@ const Profile = () => {
   };
 
   const onFinish = async (value) => {
-    const data = {id: me?.id, role: me?.role, ...value}
+    const data = { id: me?.id, role: me?.role, ...value };
     console.log(data);
     try {
       const response = await requestPrivate.put("/profile", data);
       if (response) {
-        window.location.reload()
+        window.location.reload();
         alert(`แก้ไขข้อมูลส่วนตัวสำเร็จ`);
-        setIsEdit(false)
+        setIsEdit(false);
       }
     } catch (err) {
       alert(`เกิดปัญหาในการแก้ไขข้อมูลส่วน : ${err}`);
-      setIsEdit(false)
+      setIsEdit(false);
     }
   };
 
@@ -108,14 +107,30 @@ const Profile = () => {
         <Box
           sx={{
             borderRadius: "8px",
-            bgcolor: "var(--color--white)",
+            // bgcolor: "var(--color--white)",
             padding: 4,
-            boxShadow: "2px 2px 2px rgba(0,0,0,0.2)",
+            // boxShadow: "2px 2px 2px rgba(0,0,0,0.2)",
           }}
+          component={Card}
         >
           <Grid container direction="row">
-            <Grid item xs={11} sm={11} md={11} sx={{ textAlign: "left" }}>
-              <h2>{!isEdit ? "ข้อมูลส่วนตัว" : "แก้ไขข้อมูลส่วนตัว"}</h2>
+            <Grid container direction="row" item xs={11} sm={11} md={11}>
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={12}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "left",
+                }}
+              >
+                <AccountCircle sx={{fontSize: "40px", color: "var(--color--main)"}}/>
+              </Grid>
+              <Grid item xs={12} sm={12} md={12} sx={{ textAlign: "left" }}>
+                <h2>{!isEdit ? "ข้อมูลส่วนตัว" : "แก้ไขข้อมูลส่วนตัว"}</h2>
+              </Grid>
             </Grid>
             <Grid
               item
@@ -129,7 +144,10 @@ const Profile = () => {
               }}
             >
               {!isEdit && (
-                <IconButton onClick={() => setIsEdit(true)} sx={{ ":hover": { color: "var(--color--main-light9)" } }}>
+                <IconButton
+                  onClick={() => setIsEdit(true)}
+                  sx={{ ":hover": { color: "var(--color--main-light9)" } }}
+                >
                   <Edit />
                 </IconButton>
               )}
@@ -165,7 +183,11 @@ const Profile = () => {
             // }}
           >
             <Form.Item
-              label={<span style={{ fontWeight: isEdit ?  "normal" : "bold" }}>ชื่อจริง</span>}
+              label={
+                <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
+                  ชื่อจริง
+                </span>
+              }
               name="fname"
               rules={[
                 {
@@ -195,7 +217,11 @@ const Profile = () => {
             </Form.Item>
 
             <Form.Item
-              label={<span style={{ fontWeight: isEdit ?  "normal" : "bold" }}>นามสกุล</span>}
+              label={
+                <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
+                  นามสกุล
+                </span>
+              }
               name="lname"
               rules={[
                 {
@@ -224,7 +250,11 @@ const Profile = () => {
             </Form.Item>
 
             <Form.Item
-              label={<span style={{ fontWeight: isEdit ?  "normal" : "bold" }}>ชื่อผู้ใช้</span>}
+              label={
+                <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
+                  ชื่อผู้ใช้
+                </span>
+              }
               name="username"
               initialValue={""}
               rules={[
