@@ -140,7 +140,7 @@ const Profile = () => {
     try {
       const response = await requestPrivate.put("/password", data);
       if (response) {
-        if(response.data === false) return alert(`รหัสผ่านไม่ถูกต้อง !`);
+        if (response.data === false) return alert(`รหัสผ่านไม่ถูกต้อง !`);
         alert(`เปลี่ยนรหัสผ่านสำเร็จ !`);
         setIsModalOpen(false);
         formPass.resetFields();
@@ -347,7 +347,6 @@ const Profile = () => {
 
             {isEdit && (
               <>
-                {" "}
                 <Form.Item
                   label={
                     <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
@@ -449,11 +448,13 @@ const Profile = () => {
               >
                 {!isEdit ? (
                   <Typography>
-                    {group?.director_rank +
-                      " " +
-                      group?.director_fname +
-                      " " +
-                      group?.director_lname}
+                    {group?.director_rank
+                      ? group?.director_rank +
+                        " " +
+                        group?.director_fname +
+                        " " +
+                        group?.director_lname
+                      : "-"}
                   </Typography>
                 ) : (
                   <Input disabled={true} />
