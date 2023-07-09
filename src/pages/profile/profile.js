@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Button, Form, Input, Typography } from "antd";
+import { Button, Form, Input, Typography, Select } from "antd";
 import { Box, Grid, IconButton, Card } from "@mui/material";
 import { Edit, AccountCircle } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ const Profile = () => {
   const [form] = Form.useForm();
   const [me, setMe] = useState();
   const [isEdit, setIsEdit] = useState(false);
+  const [group, setGroup] = useState({});
 
   useEffect(() => {
     let isMounted = true;
@@ -40,11 +41,30 @@ const Profile = () => {
     fname: me?.fname,
     lname: me?.lname,
     username: me?.username,
+    groupid: me?.groupid,
+    groupName: group?.group_name,
+    groupNameDirector: group?.director_rank+" "+group?.director_fname+" "+group?.director_lname,
   };
 
   useEffect(() => {
-    form.setFieldsValue(defaultValues);
+    if (me?.groupid) {
+      const fetchData = async () => {
+        try {
+          const response = await requestPrivate.get(
+            `/groupById/${me?.groupid}`
+          );
+          setGroup(response.data[0]);
+        } catch (err) {
+          alert(`เกิดข้อผิดพลาดในการดึงข้อมูลกลุ่มงาน : ${err}`);
+        }
+      };
+      fetchData();
+    }
   }, [me]);
+
+  useEffect(() => {
+    form.setFieldsValue(defaultValues);
+  }, [me, group]);
 
   const handleResetFields = () => {
     form.setFieldsValue(defaultValues);
@@ -126,10 +146,39 @@ const Profile = () => {
                   justifyContent: "left",
                 }}
               >
-                <AccountCircle sx={{fontSize: "40px", color: "var(--color--main)"}}/>
+                <AccountCircle
+                  sx={{ fontSize: "40px", color: "var(--color--main)", mr: 2 }}
+                />
+                <h3 style={{ color: "var(--color--main)" }}>
+                  {me?.role === "0" && "ผู้ดูแลระบบ"}
+                  {me?.role === "1" && "ผู้การ"}
+                  {me?.role === "2" && "พนักงานตรวจสถานที่เกิดเหตุ"}
+                  {me?.role === "3" && "ผู้กำกับ"}
+                  {me?.role === "4" && "ผู้ชำนาญการ"}
+                </h3>
               </Grid>
-              <Grid item xs={12} sm={12} md={12} sx={{ textAlign: "left" }}>
-                <h2>{!isEdit ? "ข้อมูลส่วนตัว" : "แก้ไขข้อมูลส่วนตัว"}</h2>
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={12}
+                sx={{ textAlign: "left", mb: 2 }}
+              >
+                <Box
+                  sx={{
+                    backgroundColor: "var(--color--main-light9)",
+                    width: "fit-content",
+                    paddingLeft: "16px",
+                    paddingRight: "16px",
+                    borderRadius: "8px",
+                    paddingTop: "3px",
+                    paddingBottom: "3px",
+                  }}
+                >
+                  <body style={{ color: "var(--color--white)" }}>
+                    {!isEdit ? "ข้อมูลส่วนตัว" : "แก้ไขข้อมูลส่วนตัว"}
+                  </body>
+                </Box>
               </Grid>
             </Grid>
             <Grid
@@ -182,72 +231,182 @@ const Profile = () => {
             //   handleUsernameChange(changedValues?.username);
             // }}
           >
-            <Form.Item
-              label={
-                <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
-                  ชื่อจริง
-                </span>
-              }
-              name="fname"
-              rules={[
-                {
-                  required: isEdit,
-                  message: (
-                    <span style={{ fontSize: "12px" }}>กรุณากรอกชื่อจริง!</span>
-                  ),
-                },
-                {
-                  validator: (_, value) => {
-                    if (value && value.length > 50) {
-                      return Promise.reject({
-                        message: (
-                          <span style={{ fontSize: "12px" }}>
-                            ไม่สามารถกรอกเกิน 50 ตัวอักษรได้
-                          </span>
-                        ),
-                      });
-                    }
-                    return Promise.resolve();
+            {me?.nametitle && (
+              <Form.Item
+                label={
+                  <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
+                    คำนำหน้าชื่อ
+                  </span>
+                }
+                name="nametitle"
+                rules={[
+                  {
+                    required: isEdit,
+                    message: (
+                      <span style={{ fontSize: "12px" }}>
+                        กรุณาเลือกคำนำหน้าชื่อ!
+                      </span>
+                    ),
                   },
-                },
-              ]}
-              style={{ textAlign: "start" }}
-            >
-              {!isEdit ? <Typography>{me?.fname}</Typography> : <Input />}
-            </Form.Item>
+                ]}
+                style={{ textAlign: "start" }}
+              >
+                {!isEdit ? (
+                  <Typography>{me?.nametitle}</Typography>
+                ) : (
+                  <Select>
+                    <Select.Option value="นาย">นาย</Select.Option>
+                    <Select.Option value="นาง">นาง</Select.Option>
+                    <Select.Option value="นางสาว">นางสาว</Select.Option>
+                  </Select>
+                )}
+              </Form.Item>
+            )}
 
-            <Form.Item
-              label={
-                <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
-                  นามสกุล
-                </span>
-              }
-              name="lname"
-              rules={[
-                {
-                  required: isEdit,
-                  message: (
-                    <span style={{ fontSize: "12px" }}>กรุณากรอกนามสกุล!</span>
-                  ),
-                },
-                {
-                  validator: (_, value) => {
-                    if (value && value.length > 50) {
-                      return Promise.reject({
-                        message: (
-                          <span style={{ fontSize: "12px" }}>
-                            ไม่สามารถกรอกเกิน 50 ตัวอักษรได้
-                          </span>
-                        ),
-                      });
-                    }
-                    return Promise.resolve();
-                  },
-                },
-              ]}
-            >
-              {!isEdit ? <Typography>{me?.lname}</Typography> : <Input />}
-            </Form.Item>
+            {me?.rank && (
+              <Form.Item
+                label={
+                  <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
+                    ยศ
+                  </span>
+                }
+                name="rank"
+                style={{ textAlign: "start" }}
+              >
+                {!isEdit ? (
+                  <Typography>{me?.rank}</Typography>
+                ) : (
+                  <Input disabled={true} />
+                )}
+              </Form.Item>
+            )}
+
+            {!isEdit && (
+              <Form.Item
+                label={
+                  <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
+                    ชื่อ - นามสกุล
+                  </span>
+                }
+                style={{ textAlign: "start" }}
+              >
+                {!isEdit ? (
+                  <Typography>{me?.fname + " " + me?.lname}</Typography>
+                ) : (
+                  <Input />
+                )}
+              </Form.Item>
+            )}
+
+            {isEdit && (
+              <>
+                {" "}
+                <Form.Item
+                  label={
+                    <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
+                      ชื่อจริง
+                    </span>
+                  }
+                  name="fname"
+                  rules={[
+                    {
+                      required: isEdit,
+                      message: (
+                        <span style={{ fontSize: "12px" }}>
+                          กรุณากรอกชื่อจริง!
+                        </span>
+                      ),
+                    },
+                    {
+                      validator: (_, value) => {
+                        if (value && value.length > 50) {
+                          return Promise.reject({
+                            message: (
+                              <span style={{ fontSize: "12px" }}>
+                                ไม่สามารถกรอกเกิน 50 ตัวอักษรได้
+                              </span>
+                            ),
+                          });
+                        }
+                        return Promise.resolve();
+                      },
+                    },
+                  ]}
+                  style={{ textAlign: "start" }}
+                >
+                  {!isEdit ? <Typography>{me?.fname}</Typography> : <Input />}
+                </Form.Item>
+                <Form.Item
+                  label={
+                    <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
+                      นามสกุล
+                    </span>
+                  }
+                  name="lname"
+                  rules={[
+                    {
+                      required: isEdit,
+                      message: (
+                        <span style={{ fontSize: "12px" }}>
+                          กรุณากรอกนามสกุล!
+                        </span>
+                      ),
+                    },
+                    {
+                      validator: (_, value) => {
+                        if (value && value.length > 50) {
+                          return Promise.reject({
+                            message: (
+                              <span style={{ fontSize: "12px" }}>
+                                ไม่สามารถกรอกเกิน 50 ตัวอักษรได้
+                              </span>
+                            ),
+                          });
+                        }
+                        return Promise.resolve();
+                      },
+                    },
+                  ]}
+                >
+                  {!isEdit ? <Typography>{me?.lname}</Typography> : <Input />}
+                </Form.Item>
+              </>
+            )}
+            {me?.groupid && (
+              <Form.Item
+                label={
+                  <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
+                    กลุ่มงาน
+                  </span>
+                }
+                name="groupName"
+                style={{ textAlign: "start" }}
+              >
+                {!isEdit ? (
+                  <Typography>{group?.group_name}</Typography>
+                ) : (
+                  <Input disabled={true} />
+                )}
+              </Form.Item>
+            )}
+
+            {me?.groupid && (
+              <Form.Item
+                label={
+                  <span style={{ fontWeight: isEdit ? "normal" : "bold" }}>
+                    ผู้กำกับประจำกลุ่มงาน
+                  </span>
+                }
+                name="groupNameDirector"
+                style={{ textAlign: "start" }}
+              >
+                {!isEdit ? (
+                  <Typography>{group?.director_rank+" "+group?.director_fname+" "+group?.director_lname}</Typography>
+                ) : (
+                  <Input disabled={true} />
+                )}
+              </Form.Item>
+            )}
 
             <Form.Item
               label={
