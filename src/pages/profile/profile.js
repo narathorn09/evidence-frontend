@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Button, Form, Input, Typography, Select } from "antd";
+import { Button, Form, Input, Typography, Select, Modal, Tooltip } from "antd";
 import { Box, Grid, IconButton, Card } from "@mui/material";
-import { Edit, AccountCircle } from "@mui/icons-material";
+import { Edit, AccountCircle, Key } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hook/use-axios-private";
 
@@ -43,7 +43,12 @@ const Profile = () => {
     username: me?.username,
     groupid: me?.groupid,
     groupName: group?.group_name,
-    groupNameDirector: group?.director_rank+" "+group?.director_fname+" "+group?.director_lname,
+    groupNameDirector:
+      group?.director_rank +
+      " " +
+      group?.director_fname +
+      " " +
+      group?.director_lname,
   };
 
   useEffect(() => {
@@ -116,6 +121,43 @@ const Profile = () => {
       offset: 4,
       span: 20,
     },
+  };
+
+  const tailLayoutpass = {
+    wrapperCol: {
+      offset: 0,
+      span: 24,
+    },
+  };
+
+  const [formPass] = Form.useForm();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handlePassFinish = async (value) => {
+    const data = { id: me?.id, ...value };
+    try {
+      const response = await requestPrivate.put("/password", data);
+      if (response) {
+        if(response.data === false) return alert(`รหัสผ่านไม่ถูกต้อง !`);
+        alert(`เปลี่ยนรหัสผ่านสำเร็จ !`);
+        setIsModalOpen(false);
+        formPass.resetFields();
+      }
+    } catch (err) {
+      alert(`เกิดปัญหาในการเปลี่ยนรหัสผ่าน : ${err}`);
+    }
+  };
+
+  const handlePassFailed = (fail) => {
+    // console.log("fail", fail);
+    // setIsModalOpen(false);
+  };
+
+  const handlePassCancel = () => {
+    formPass.resetFields();
+    setIsModalOpen(false);
   };
 
   return (
@@ -193,13 +235,18 @@ const Profile = () => {
               }}
             >
               {!isEdit && (
-                <IconButton
-                  onClick={() => setIsEdit(true)}
-                  sx={{ ":hover": { color: "var(--color--main-light9)" } }}
-                >
-                  <Edit />
-                </IconButton>
+                <Tooltip title="แก้ไขข้อมูล">
+                  <Button
+                    style={{ marginRight: "16px" }}
+                    onClick={() => setIsEdit(true)}
+                    shape="circle"
+                    icon={<Edit />}
+                  />
+                </Tooltip>
               )}
+              <Tooltip title="เปลี่ยนรหัสผ่าน">
+                <Button onClick={showModal} shape="circle" icon={<Key />} />
+              </Tooltip>
             </Grid>
           </Grid>
 
@@ -401,7 +448,13 @@ const Profile = () => {
                 style={{ textAlign: "start" }}
               >
                 {!isEdit ? (
-                  <Typography>{group?.director_rank+" "+group?.director_fname+" "+group?.director_lname}</Typography>
+                  <Typography>
+                    {group?.director_rank +
+                      " " +
+                      group?.director_fname +
+                      " " +
+                      group?.director_lname}
+                  </Typography>
                 ) : (
                   <Input disabled={true} />
                 )}
@@ -475,6 +528,132 @@ const Profile = () => {
           </Form>
         </Box>
       </Box>
+
+      <Modal
+        title={
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "left",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              shape="circle"
+              icon={<Key />}
+              style={{ marginRight: "16px" }}
+            />
+            เปลี่ยนรหัสผ่าน
+          </Box>
+        }
+        open={isModalOpen}
+        // onOk={handlePassOk}
+        onCancel={handlePassCancel}
+        centered={true}
+        okText="ยืนยัน"
+        cancelText="ยกเลิก"
+        footer={null}
+      >
+        <Form
+          form={formPass}
+          size="middle "
+          name="pass"
+          labelCol={{
+            span: 8,
+          }}
+          labelAlign="left"
+          wrapperCol={{
+            span: 16,
+          }}
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onFinish={handlePassFinish}
+          onFinishFailed={handlePassFailed}
+          autoComplete="off"
+        >
+          <Form.Item
+            label="รหัสผ่านปัจจุบัน"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: (
+                  <span style={{ fontSize: "12px" }}>
+                    กรุณากรอกรหัสผ่านปัจจุบัน!
+                  </span>
+                ),
+              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            label="รหัสผ่านใหม่"
+            name="new_password"
+            rules={[
+              {
+                required: true,
+                message: (
+                  <span style={{ fontSize: "12px" }}>
+                    กรุณากรอกรหัสผ่านใหม่!
+                  </span>
+                ),
+              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item
+            label="ยืนยันรหัสผ่านใหม่"
+            name="confirm"
+            dependencies={["new_password"]}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: (
+                  <span style={{ fontSize: "12px" }}>กรุณายืนยันรหัสผ่าน!</span>
+                ),
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("new_password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject({
+                    message: (
+                      <span style={{ fontSize: "12px" }}>
+                        รหัสผ่านไม่ตรงกัน!
+                      </span>
+                    ),
+                  });
+                },
+              }),
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            {...tailLayoutpass}
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "0px",
+            }}
+          >
+            <Button onClick={handlePassCancel} style={{ marginRight: 10 }}>
+              ยกเลิก
+            </Button>
+            <Button type="primary" htmlType="submit">
+              ยืนยัน
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
