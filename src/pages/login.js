@@ -40,7 +40,7 @@ const Login = () => {
     if (role) {
       if (role === "0") navigate("/home"); //admin
       else if (role === "1") navigate("/"); //commander
-      else if (role === "2") navigate("/"); //Scene Investigator
+      else if (role === "2") navigate("/inves/manage-case"); //Scene Investigator
       else if (role === "3") navigate("/"); //Director
       else if (role === "4") navigate("/"); //Expert
       console.log("Auth", auth?.user);

@@ -66,7 +66,9 @@ const App = () => {
           )}
            {role === "2" && ( //Scene Investigator
             <>
-              <Route exact path="/" element={<>Scene Investigator</>} />
+              <Route exact path="/inves/manage-case" element={<>Scene Investigator</>} />
+              <Route exact path="/inves/manage-type-evidence" element={<>evidence</>} />
+              <Route exact path="/inves/manage-report" element={<>report</>} />
             </>
           )}
            {role === "3" && ( //Director

@@ -97,19 +97,22 @@ export const itemSceneInvestigator = [
     key: "G0",
     label: "จัดการคดี",
     icon: <Work sx={{ fontSize: "20px" }} />,
-    link: "/",
+    link: "/inves/manage-case",
+    linkP: "/inves/manage-case",
   },
   {
     key: "G1",
     label: "จัดการประเภทวัตถุพยาน",
     icon: <Description sx={{ fontSize: "20px" }} />,
-    link: "/inves/",
+    link: "/inves/manage-type-evidence",
+    linkP: "/inves/manage-type-evidence",
   },
   {
-    key: "G1",
+    key: "G2",
     label: "รายงานสรุปผล",
     icon: <Description sx={{ fontSize: "20px" }} />,
-    link: "/inves/",
+    link: "/inves/manage-report",
+    linkP: "/inves/manage-report",
   },
 ];
 
