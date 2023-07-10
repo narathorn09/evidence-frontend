@@ -37,7 +37,7 @@ const App = () => {
           <Route exact path="/profile/:id" element={<Profile />} />
           {role === "0" && ( //admin
             <>
-             <Route exact path="/" element={<HomeAdmin/>} />
+             <Route exact path="/home" element={<HomeAdmin/>} />
               <Route exact path="/user-management/admin/list" element={<ListAdmin />} />
               <Route exact path="/user-management/commander/list" element={<ListCommander />} />
               <Route exact path="/user-management/director/list" element={<ListDirector />} />
