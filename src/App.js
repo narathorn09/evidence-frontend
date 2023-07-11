@@ -23,7 +23,9 @@ import UpdateSceneInvestigator from "./pages/admin/update-scene-investigators";
 import UpdateExpert from "./pages/admin/update-expert";
 import UpdateGroup from "./pages/admin/update-group";
 import Profile from "./pages/profile/profile";
-
+import ListTypeEvidence from "./pages/sceneInvestigator/list-typeEvidence";
+import CreateTypeEvidence from "./pages/sceneInvestigator/create-typeEvidence";
+import UpdateTypeEvidence from "./pages/sceneInvestigator/update-typeEvidence";
 
 const App = () => {
   const { auth } = useAuth();
@@ -67,7 +69,9 @@ const App = () => {
            {role === "2" && ( //Scene Investigator
             <>
               <Route exact path="/inves/manage-case" element={<>Scene Investigator</>} />
-              <Route exact path="/inves/manage-type-evidence" element={<>evidence</>} />
+              <Route exact path="/inves/manage-type-evidence/list" element={<ListTypeEvidence />} />
+              <Route exact path="/inves/manage-type-evidence/create" element={<CreateTypeEvidence />} />
+              <Route exact path="/inves/manage-type-evidence/update/:id" element={<UpdateTypeEvidence />} />
               <Route exact path="/inves/manage-report" element={<>report</>} />
             </>
           )}
