@@ -30,31 +30,31 @@ const ListExpert = () => {
     {
       field: "username",
       headerName: "ชื่อผู้ใช้",
-      width: 150,
+      width: 100,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "nametitle",
       headerName: "คำนำหน้าชื่อ",
-      width: 150,
+      width: 100,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "rank",
       headerName: "ยศ",
-      width: 150,
+      width: 100,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "fname",
       headerName: "ชื่อจริง",
-      width: 200,
+      width: 180,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "lname",
       headerName: "นามสกุล",
-      width: 200,
+      width: 180,
       headerClassName: "super-app-theme--header",
     },
     {

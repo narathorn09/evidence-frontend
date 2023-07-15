@@ -1,12 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { useAuth } from "./contexts/auth-context";
 import ListAdmin from "./pages/admin/list-admin";
 import Layout from "./layouts/layout";
 import Login from "./pages/login";
 import CreateAdmin from "./pages/admin/create-admin";
 import CreateCommander from "./pages/admin/create-commander";
 import ListCommander from "./pages/admin/list-commander";
-import { useAuth } from "./contexts/auth-context";
 import ListDirector from "./pages/admin/list-director";
 import CreateDirector from "./pages/admin/create-director";
 import ListGroup from "./pages/admin/list-group";
@@ -26,6 +26,7 @@ import Profile from "./pages/profile/profile";
 import ListTypeEvidence from "./pages/sceneInvestigator/list-typeEvidence";
 import CreateTypeEvidence from "./pages/sceneInvestigator/create-typeEvidence";
 import UpdateTypeEvidence from "./pages/sceneInvestigator/update-typeEvidence";
+import CreateCase from "./pages/sceneInvestigator/create-case";
 
 const App = () => {
   const { auth } = useAuth();
@@ -69,6 +70,7 @@ const App = () => {
            {role === "2" && ( //Scene Investigator
             <>
               <Route exact path="/inves/manage-case" element={<>Scene Investigator</>} />
+              <Route exact path="/inves/manage-case/create" element={<CreateCase />} />
               <Route exact path="/inves/manage-type-evidence/list" element={<ListTypeEvidence />} />
               <Route exact path="/inves/manage-type-evidence/create" element={<CreateTypeEvidence />} />
               <Route exact path="/inves/manage-type-evidence/update/:id" element={<UpdateTypeEvidence />} />
