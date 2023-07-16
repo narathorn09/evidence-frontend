@@ -129,8 +129,11 @@ const SidebarDesktop = () => {
       </Grid>
 
       <Grid sx={{ pl: 2.7, pr: 3, mt: 2 }}>
-        {items.map((item, index) =>
-          item.childItems ? (
+        {items.map((item, index) => {
+          const pathNavParent = new RegExp(item.linkP, "i");
+          const resultParent = location?.pathname.match(pathNavParent);
+
+          return item.childItems ? (
             <Grid
               container
               key={`${item.key} + ${index}`}
@@ -290,15 +293,11 @@ const SidebarDesktop = () => {
                 height: "36px",
                 mt: "2px",
                 pl: "10px",
-                color:
-                  location?.pathname === item.link
-                    ? "var(--color--main)"
-                    : "#000000",
-                backgroundColor:
-                  location?.pathname === item.link
-                    ? "var(--color--main-light1)"
-                    : "",
-                fontWeight: location?.pathname === item.link ? "bold" : "0",
+                color: resultParent ? "var(--color--main)" : "#000000",
+                backgroundColor: resultParent
+                  ? "var(--color--main-light1)"
+                  : "",
+                fontWeight: resultParent ? "bold" : "0",
                 fontSize: ".875rem",
                 ":hover": {
                   color: "var(--color--main)",
@@ -328,18 +327,15 @@ const SidebarDesktop = () => {
                   textAlign: "left",
                   fontWeight: "bold",
                   pl: "6px",
-                  color:
-                    location?.pathname === item.link
-                      ? "var(--color--main)"
-                      : "#000000",
+                  color: resultParent ? "var(--color--main)" : "#000000",
                 }}
                 className="text-hover"
               >
                 {item.label}
               </Grid>
             </Grid>
-          )
-        )}
+          );
+        })}
       </Grid>
     </Box>
   );

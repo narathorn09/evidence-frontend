@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Button, Form, Input } from "antd";
 import { Helmet } from "react-helmet";
 import { Box } from "@mui/material";
@@ -9,8 +9,9 @@ import { useAuth } from "../contexts/auth-context";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setAuthToken } = useAuth();
+  const { auth, setAuthToken } = useAuth();
   const [loadings, setLoadings] = useState(false);
+  const [login, setLogin] = useState(false);
 
   const onFinish = useCallback(
     async (values) => {
@@ -23,7 +24,7 @@ const Login = () => {
         if (response.status === 200) {
           const { accessToken } = response.data;
           await setAuthToken(accessToken);
-          navigate("/");
+          setLogin(true);
           setLoadings(false);
         }
       } catch (err) {
@@ -31,8 +32,20 @@ const Login = () => {
         alert("Invalid username / password");
       }
     },
-    [navigate, setAuthToken]
+    [setAuthToken]
   );
+
+  useEffect(() => {
+    const role = auth?.user?.role;
+    if (role) {
+      if (role === "0") navigate("/home"); //admin
+      else if (role === "1") navigate("/"); //commander
+      else if (role === "2") navigate("/inves/manage-case"); //Scene Investigator
+      else if (role === "3") navigate("/"); //Director
+      else if (role === "4") navigate("/"); //Expert
+      console.log("Auth", auth?.user);
+    }
+  }, [login]);
 
   // const onFinishFailed = (errorInfo) => {
   //   console.log("Failed:", errorInfo);
@@ -142,9 +155,10 @@ const Login = () => {
                 {
                   required: true,
                   message: (
-                    <span style={{ fontSize: "12px" }}>กรุณากรอก username!</span>
+                    <span style={{ fontSize: "12px" }}>
+                      กรุณากรอก username!
+                    </span>
                   ),
-                  
                 },
               ]}
             >
@@ -158,7 +172,9 @@ const Login = () => {
                 {
                   required: true,
                   message: (
-                    <span style={{ fontSize: "12px" }}>กรุณากรอก password!</span>
+                    <span style={{ fontSize: "12px" }}>
+                      กรุณากรอก password!
+                    </span>
                   ),
                 },
               ]}

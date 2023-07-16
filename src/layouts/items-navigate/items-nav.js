@@ -3,14 +3,21 @@ import Icon, {
   VideoCameraOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { PeopleAlt, Workspaces,Home } from "@mui/icons-material";
+import {
+  PeopleAlt,
+  Workspaces,
+  Home,
+  Description,
+  Work,
+} from "@mui/icons-material";
 
 export const itemAdmin = [
   {
     key: "G0",
     label: "หน้าแรก",
     icon: <Home sx={{ fontSize: "20px" }} />,
-    link: "/",
+    link: "/home",
+    linkP: "/home",
   },
   {
     key: "G1",
@@ -51,8 +58,8 @@ export const itemAdmin = [
   },
   {
     key: "G2",
-    icon: <Workspaces sx={{ fontSize: "20px" }} />,
     label: "จัดการกลุ่มงาน",
+    icon: <Workspaces sx={{ fontSize: "20px" }} />,
     childItems: [
       {
         key: "G2-child1",
@@ -87,10 +94,25 @@ export const itemCommander = [
 
 export const itemSceneInvestigator = [
   {
-    key: "1",
-    icon: <UserOutlined />,
-    label: "teest",
-    link: "/",
+    key: "G0",
+    label: "จัดการคดี",
+    icon: <Work sx={{ fontSize: "20px" }} />,
+    link: "/inves/manage-case",
+    linkP: "/inves/manage-case",
+  },
+  {
+    key: "G1",
+    label: "จัดการประเภทวัตถุพยาน",
+    icon: <Description sx={{ fontSize: "20px" }} />,
+    link: "/inves/manage-type-evidence/list",
+    linkP: "/inves/manage-type-evidence",
+  },
+  {
+    key: "G2",
+    label: "รายงานสรุปผล",
+    icon: <Description sx={{ fontSize: "20px" }} />,
+    link: "/inves/manage-report",
+    linkP: "/inves/manage-report",
   },
 ];
 

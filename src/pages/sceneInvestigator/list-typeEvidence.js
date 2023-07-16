@@ -7,12 +7,12 @@ import {
   GridToolbarExportContainer,
   GridCsvExportMenuItem,
 } from "@mui/x-data-grid";
-import { DeleteForever, PersonAddAlt1, Edit } from "@mui/icons-material";
+import { DeleteForever, AddCircle, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 
-const ListExpert = () => {
+const ListTypeEvidence = () => {
   const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
@@ -28,52 +28,22 @@ const ListExpert = () => {
       headerClassName: "super-app-theme--header",
     },
     {
-      field: "username",
-      headerName: "ชื่อผู้ใช้",
-      width: 100,
-      headerClassName: "super-app-theme--header",
-    },
-    {
-      field: "nametitle",
-      headerName: "คำนำหน้าชื่อ",
-      width: 100,
-      headerClassName: "super-app-theme--header",
-    },
-    {
-      field: "rank",
-      headerName: "ยศ",
-      width: 100,
-      headerClassName: "super-app-theme--header",
-    },
-    {
-      field: "fname",
-      headerName: "ชื่อจริง",
-      width: 180,
-      headerClassName: "super-app-theme--header",
-    },
-    {
-      field: "lname",
-      headerName: "นามสกุล",
-      width: 180,
-      headerClassName: "super-app-theme--header",
-    },
-    {
-      field: "group",
-      headerName: "กลุ่มงาน",
-      width: 200,
+      field: "type_e_name",
+      headerName: "ประเภทของวัตถุพยาน",
+      width: 400,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "Edit",
       headerName: "แก้ไข",
-      width: 100,
+      width: 150,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
       renderCell: (params) => (
         <IconButton
           onClick={() => {
-            navigate(`/user-management/expert/update/${params?.row?.id}`);
+            navigate(`/inves/manage-type-evidence/update/${params?.row?.id}`);
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >
@@ -85,13 +55,13 @@ const ListExpert = () => {
       field: "Delete",
       headerName: "ลบ",
       headerClassName: "super-app-theme--header",
-      width: 100,
+      width: 150,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => (
         <IconButton
           onClick={() => {
-            RemoveMember(params?.row?.id, params?.row?.username);
+            RemoveTypeEvidence(params?.row?.type_e_id, params?.row?.type_e_name);
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >
@@ -103,31 +73,31 @@ const ListExpert = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await requestPrivate.get(`/expert`).then((response) => {
+      await requestPrivate.get(`/typeEvidence`).then((response) => {
         setItems(response.data);
       });
     };
     fetchData();
   }, [refetch]);
 
-  const RemoveMember = async (memId, username) => {
-    const confirmed = window.confirm(`คุณต้องการลบชื่อผู้ใช้ ${username}?`);
+  const RemoveTypeEvidence = async (typeId, typeName) => {
+    const confirmed = window.confirm(`คุณต้องการลบ ${typeName}?`);
     if (confirmed) {
       try {
-        await requestPrivate.delete(`/memberById/${memId}`).then(() => {
+        await requestPrivate.delete(`/typeEvidenceById/${typeId}`).then(() => {
           setRefetch(!refetch);
-          alert(`ลบชื่อผู้ใช้ ${username} สำเร็จ`);
+          alert(`ลบ ${typeName} สำเร็จ`);
         });
       } catch (err) {
-        alert(`${err?.data?.message}`);
+        alert(`${err?.message}`);
       }
     }
   };
 
   const csvOptions = {
-    fileName: "รายชื่อผู้ชำนาญการ",
+    fileName: "รายการประเภทของวัตถุพยาน",
     utf8WithBom: true,
-    fields: ["index", "username", "nametitle", "rank", "fname", "lname"],
+    fields: ["index", "type_e_name"],
   };
 
   function CustomExportButton(props) {
@@ -160,15 +130,12 @@ const ListExpert = () => {
   }
 
   return (
-    <>
+    <div>
       <Helmet>
-        <title>Lists Expert - Forensic Science</title>
+        <title>Lists Type Evidence - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
-        pages={[
-          { title: "จัดการผู้ใช้" },
-          { title: "รายชื่อผู้ชำนาญ" },
-        ]}
+        pages={[{ title: "จัดการประเภทของวัตถุพยาน" }, { title: "รายการประเภทของวัตถุพยาน" }]}
       />
       <Grid
         sx={{
@@ -181,30 +148,20 @@ const ListExpert = () => {
         }}
       >
         <Grid sx={{ textAlign: "left" }}>
-          <h2>รายชื่อผู้ชำนาญการ</h2>
+          <h2>รายการประเภทของวัตถุพยาน</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          <IconButton
-            onClick={() =>
-              navigate("/user-management/expert/create")
-            }
-          >
-            <PersonAddAlt1 />
+          <IconButton onClick={() => navigate("/inves/manage-type-evidence/create")}>
+            <AddCircle />
           </IconButton>
         </Grid>
         <DataGrid
-          rows={
+          rows={ 
             items
               ? items?.map((e, index) => ({
                   ...e,
-                  id: e.mem_id,
+                  id: e.type_e_id,
                   index: index + 1,
-                  username: e.mem_username,
-                  nametitle: e.expert_nametitle,
-                  rank: e.expert_rank,
-                  fname: e.expert_fname,
-                  lname: e.expert_lname,
-                  group: e.group_name || "-",
                 }))
               : []
           }
@@ -215,8 +172,8 @@ const ListExpert = () => {
           sx={{ borderRadius: "8px", height: "400px" }}
         />
       </Grid>
-    </>
+    </div>
   );
 };
 
-export default ListExpert;
+export default ListTypeEvidence;
