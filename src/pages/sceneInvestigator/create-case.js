@@ -13,6 +13,7 @@ import {
   ConfigProvider,
   Modal,
   Upload,
+  Tooltip,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Box, Grid } from "@mui/material";
@@ -23,7 +24,9 @@ import dayjs from "dayjs";
 import "dayjs/locale/th"; // Import Thai locale from dayjs
 import locale from "antd/es/locale/th_TH";
 import { useAuth } from "../../contexts/auth-context";
+import { Delete } from "@mui/icons-material";
 const { TextArea } = Input;
+
 dayjs.locale("th");
 let indexSelector = 0;
 
@@ -42,13 +45,7 @@ const CreateCase = () => {
   const [typeEvidence, setTypeEvidence] = useState([]);
   const [invesId, setInvesId] = useState();
   const [form] = Form.useForm();
-  const [evidence, setEvidence] = useState([
-    {
-      type_e_id: null,
-      evidence_amount: null,
-      evidence_factor: [],
-    },
-  ]);
+  const [evidence, setEvidence] = useState([]);
   const [check, setCheck] = useState(false);
 
   useEffect(() => {
@@ -146,7 +143,7 @@ const CreateCase = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
-  
+
   const handleCancel = () => setPreviewOpen(false);
 
   const handlePreview = useCallback(async (file) => {
@@ -161,17 +158,13 @@ const CreateCase = () => {
     );
   }, []);
 
-  const handleChange = useCallback(
+  const handleChangePhoto = useCallback(
     async (e, i, index) => {
-      console.log("file", e);
-      console.log("index", index);
-      console.log("i", i);
-
       setEvidence((prevEvidence) => {
         const newEvidence = [...prevEvidence];
         const updatedEvidence = { ...newEvidence[index] };
         updatedEvidence.evidence_factor.splice(i, 1, {
-          ef_photo: e.file,
+          ef_photo: e.file || null,
           ef_detail: updatedEvidence.evidence_factor[i]?.ef_detail || "",
         });
         newEvidence[index] = updatedEvidence;
@@ -183,31 +176,52 @@ const CreateCase = () => {
     [evidence]
   );
 
-  const handleDeletePhoto = async (i, index) => {
+  const handleDeletePhoto = (i, index) => {
     setEvidence((prevEvidence) => {
       const newEvidence = [...prevEvidence];
       const updatedEvidence = { ...newEvidence[index] };
-  
-      // console.log("updatedEvidence",updatedEvidence.evidence_factor);
-      updatedEvidence.evidence_factor.splice(i, 1, {
-        
-        ef_detail: updatedEvidence.evidence_factor[i]?.ef_detail || "",
-      });
-  
-      // updatedEvidence.evidence_factor = [...updatedEvidence.evidence_factor];
-  
+
+      const updatedEvidenceFactor = { ...updatedEvidence.evidence_factor[i] };
+
+      delete updatedEvidenceFactor.ef_photo;
+
+      updatedEvidence.evidence_factor[i] = updatedEvidenceFactor;
       newEvidence[index] = updatedEvidence;
+
       return newEvidence;
     });
-  
+
     setCheck((prevCheck) => !prevCheck);
   };
 
-  // const handleChange = useCallback(({ fileList: newFileList }) => {
-  //   setFileList((prevFileList) => [...prevFileList, ...newFileList]);
-  // }, []);
+  const handleChangeDetail = (e, i, index) => {
+    const text = e.target.value;
+    setEvidence((prevEvidence) => {
+      const newEvidence = [...prevEvidence];
+      const updatedEvidence = { ...newEvidence[index] };
+      updatedEvidence.evidence_factor.splice(i, 1, {
+        ef_photo: updatedEvidence.evidence_factor[i]?.ef_photo || null,
+        ef_detail: text,
+      });
+      newEvidence[index] = updatedEvidence;
+      return newEvidence;
+    });
 
-  // console.log("fileList", fileList);
+    setCheck((prevCheck) => !prevCheck);
+  };
+
+  const handleDeleteEvidence = (index) => {
+    console.log("index", index);
+    setEvidence((prevEvidence) => {
+      const newEvidence = [...prevEvidence];
+      newEvidence?.splice(index, 1);
+
+      return newEvidence;
+    });
+
+    setCheck((prevCheck) => !prevCheck);
+  };
+
   useEffect(() => {
     console.log("evidence", evidence);
   }, [check]);
@@ -511,11 +525,21 @@ const CreateCase = () => {
           </Form.Item>
 
           {evidence.map((item, index) => {
-            const isLastIndex = index === evidence.length - 1;
+            let isLastIndex = index === evidence?.length - 1;
+            if (evidence.length === 0) isLastIndex = true;
             return (
               <Box key={index}>
                 <Divider orientation="left" orientationMargin="0">
-                  วัตถุพยานที่ {index + 1}
+                  <Box sx={{ display: "flex", align: "center" }}>
+                    <Box sx={{ mr: 2 }}> วัตถุพยานที่ {index + 1}</Box>
+                    <Tooltip title="ลบ">
+                      <Button
+                        shape="circle"
+                        icon={<Delete />}
+                        onClick={() => handleDeleteEvidence(index)}
+                      />
+                    </Tooltip>
+                  </Box>
                 </Divider>
                 <Form.Item
                   label="ประเภทของวัตถุพยาน"
@@ -605,70 +629,59 @@ const CreateCase = () => {
                       return (
                         <div key={i}>
                           <Upload
-                            // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                             listType="picture-card"
-                            // fileList={fileList}
+                            showUploadList={true}
+                            maxCount={1}
                             onPreview={handlePreview}
                             beforeUpload={() => false}
+                            isImageUrl={()=> true}
                             onChange={(file, fileList) => {
-                              console.log("file", file);
-                              console.log("fileList", fileList);
-                              handleChange(file, i, index);
+                              handleChangePhoto(file, i, index);
                             }}
                             onRemove={() => handleDeletePhoto(i, index)}
                           >
-                            {evidence[index]?.evidence_factor[index]?.length >=
-                            1
-                              ? null
-                              : uploadButton}
+                            {uploadButton}
                           </Upload>
                           <TextArea
                             value={
                               evidence[index]?.evidence_factor[i]?.ef_detail
                             }
+                            onChange={(e) => {
+                              handleChangeDetail(e, i, index);
+                            }}
                           />
                         </div>
                       );
                     }
-                  )}
-
-                  {isLastIndex && (
-                    <Form.Item>
-                      <Button
-                        type="primary"
-                        onClick={() => {
-                          let res = evidence.slice();
-                          res = {
-                            type_e_id: null,
-                            evidence_amount: null,
-                            evidence_factor: [],
-                          };
-                          setEvidence([...evidence, res]);
-                        }}
-                      >
-                        เพิ่มวัตถุพยาน
-                      </Button>
-                    </Form.Item>
                   )}
                 </Form.Item>
               </Box>
             );
           })}
 
-          <Modal
-            open={previewOpen}
-            title={previewTitle}
-            footer={null}
-            onCancel={handleCancel}
+          <Form.Item
+            labelCol={{
+              span: 4,
+            }}
+            wrapperCol={{
+              span: 20,
+            }}
           >
-            <img
-              alt="example"
-              style={{
-                width: "100%",
+            <Button
+              type="primary"
+              onClick={() => {
+                let res = evidence.slice();
+                res = {
+                  type_e_id: null,
+                  evidence_amount: null,
+                  evidence_factor: [],
+                };
+                setEvidence([...evidence, res]);
               }}
-              src={previewImage}
-            />
-          </Modal>
+            >
+              เพิ่มวัตถุพยาน
+            </Button>
+          </Form.Item>
 
           <Form.Item {...tailLayout}>
             <Button type="primary" htmlType="submit">
@@ -686,6 +699,20 @@ const CreateCase = () => {
           </Form.Item>
         </Form>
       </Box>
+      <Modal
+        open={previewOpen}
+        title={previewTitle}
+        footer={null}
+        onCancel={handleCancel}
+      >
+        <img
+          alt="example"
+          style={{
+            width: "100%",
+          }}
+          src={previewImage}
+        />
+      </Modal>
     </div>
   );
 };
