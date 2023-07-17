@@ -14,8 +14,9 @@ import {
   Modal,
   Upload,
   Tooltip,
+  Image,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, DeleteOutlined, DeleteFilled } from "@ant-design/icons";
 import { Box, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
@@ -24,7 +25,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/th"; // Import Thai locale from dayjs
 import locale from "antd/es/locale/th_TH";
 import { useAuth } from "../../contexts/auth-context";
-import { Delete } from "@mui/icons-material";
+import { Delete, ModeEditOutlineOutlined } from "@mui/icons-material";
+
 const { TextArea } = Input;
 
 dayjs.locale("th");
@@ -181,9 +183,9 @@ const CreateCase = () => {
       const newEvidence = [...prevEvidence];
       const updatedEvidence = { ...newEvidence[index] };
 
-      const updatedEvidenceFactor = { ...updatedEvidence.evidence_factor[i] };
+      let updatedEvidenceFactor = { ...updatedEvidence.evidence_factor[i] };
 
-      delete updatedEvidenceFactor.ef_photo;
+      updatedEvidenceFactor.ef_photo = null;
 
       updatedEvidence.evidence_factor[i] = updatedEvidenceFactor;
       newEvidence[index] = updatedEvidence;
@@ -225,6 +227,28 @@ const CreateCase = () => {
   useEffect(() => {
     console.log("evidence", evidence);
   }, [check]);
+
+  const handleFileChange = (e, i, index) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      setEvidence((prevEvidence) => {
+        const newEvidence = [...prevEvidence];
+        const updatedEvidence = { ...newEvidence[index] };
+        updatedEvidence.evidence_factor.splice(i, 1, {
+          ef_photo: reader.result || null,
+          ef_detail: updatedEvidence.evidence_factor[i]?.ef_detail || "",
+        });
+        newEvidence[index] = updatedEvidence;
+        return newEvidence;
+      });
+    };
+    setCheck((prevCheck) => !prevCheck);
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
 
   const uploadButton = (
     <div>
@@ -570,10 +594,12 @@ const CreateCase = () => {
                     <Select
                       value={evidence[index]?.type_e_id}
                       onChange={(i, obj) => {
+                        console.log("obj", obj);
                         let res = evidence.slice();
                         let re = {
                           ...evidence[index],
                           type_e_id: obj.value,
+                          type_e_name: obj.children,
                         };
                         res[index] = re;
                         setEvidence(res);
@@ -626,30 +652,164 @@ const CreateCase = () => {
                   {Array.from(
                     { length: evidence[index]?.evidence_amount },
                     (item, i) => {
+                     
                       return (
                         <div key={i}>
-                          <Upload
+                          <Divider orientation="left" orientationMargin="0">
+                            <Box sx={{ display: "flex", align: "center" }}>
+                              <Box sx={{ mr: 2 }}>
+                                {evidence[index]?.type_e_name} {i + 1}
+                              </Box>
+                              <Tooltip title="ลบ">
+                                <Button
+                                  shape="circle"
+                                  icon={<Delete />}
+                                  // onClick={() => handleDeleteEvidence(index)}
+                                />
+                              </Tooltip>
+                            </Box>
+                          </Divider>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "row",
+                              mb: "32px",
+                            }}
+                          >
+                            <label
+                              htmlFor={`file-input-${i}-${index}`}
+                              style={{
+                                display: evidence[index]?.evidence_factor[i]
+                                  ?.ef_photo
+                                  ? "none"
+                                  : "flex",
+                                position: "relative",
+                              }}
+                            >
+                              <input
+                                id={`file-input-${i}-${index}`}
+                                type="file"
+                                accept="image/jpeg, image/png"
+                                onChange={(e) => handleFileChange(e, i, index)}
+                                style={{ display: "none" }}
+                              />
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  width: "100px",
+                                  height: "100px",
+
+                                  border: "2px dotted rgba(0, 0, 0, 0.4)",
+                                  // objectFit: "contain",
+                                  // margin: "0",
+                                  // padding: "8px",
+                                  borderRadius: "8px",
+                                  ":hover": {
+                                    cursor: "pointer",
+                                    backgroundColor:
+                                      "var(--color--main-light1)",
+                                  },
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    wordWrap: "all",
+                                    textAlign: "center",
+                                    opacity: 0.4,
+                                  }}
+                                >
+                                  คลิกเพื่อเลือกรูปภาพ
+                                </Box>
+                              </Box>
+                            </label>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                marginRight: "8px",
+                              }}
+                            >
+                              {evidence[index]?.evidence_factor[i]
+                                ?.ef_photo && (
+                                <>
+                                  <Box
+                                    sx={{
+                                      width: "100px",
+                                      height: "100px",
+                                    }}
+                                  >
+                                    <Image
+                                      width={"100%"}
+                                      height={"100%"}
+                                      style={{
+                                        border: "1px solid rgba(0, 0, 0, 0.1)",
+                                        objectFit: "contain",
+                                        margin: "0",
+                                        padding: "8px",
+                                        borderRadius: "8px",
+                                      }}
+                                      src={
+                                        evidence[index]?.evidence_factor[i]
+                                          ?.ef_photo
+                                      }
+                                    />
+                                  </Box>
+                                  {/* <Box
+                                    sx={{
+                                      display: "flex",
+                                      flexDirection: "row",
+                                      justifyContent: "space-between",
+                                      // border: "1px solid rgba(0, 0, 0, 0.1)",
+                                      objectFit: "contain",
+                                      margin: "0",
+                                      padding: "8px",
+                                      // borderRadius: "8px",
+                                    }}
+                                  > */}
+
+                                  <Button
+                                    // shape="circle"
+                                    // icon={<DeleteOutlined />}
+                                    onClick={() => {
+                                      handleDeletePhoto(i, index);
+                                    }}
+                                    style={{ marginTop: "8px" }}
+                                  >
+                                    ลบรูปภาพ
+                                  </Button>
+
+                                  {/* </Box> */}
+                                </>
+                              )}
+                            </Box>
+
+                            <TextArea
+                              placeholder="รายละเอียดของวัตถุพยาน"
+                              value={
+                                evidence[index]?.evidence_factor[i]?.ef_detail
+                              }
+                              onChange={(e) => {
+                                handleChangeDetail(e, i, index);
+                              }}
+                            />
+                          </Box>
+
+                          {/* <Upload
                             listType="picture-card"
                             showUploadList={true}
                             maxCount={1}
                             onPreview={handlePreview}
                             beforeUpload={() => false}
-                            isImageUrl={()=> true}
+                            isImageUrl={() => true}
                             onChange={(file, fileList) => {
                               handleChangePhoto(file, i, index);
                             }}
                             onRemove={() => handleDeletePhoto(i, index)}
                           >
                             {uploadButton}
-                          </Upload>
-                          <TextArea
-                            value={
-                              evidence[index]?.evidence_factor[i]?.ef_detail
-                            }
-                            onChange={(e) => {
-                              handleChangeDetail(e, i, index);
-                            }}
-                          />
+                          </Upload> */}
                         </div>
                       );
                     }
