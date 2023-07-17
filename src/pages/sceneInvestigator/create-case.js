@@ -25,8 +25,10 @@ import dayjs from "dayjs";
 import "dayjs/locale/th"; // Import Thai locale from dayjs
 import locale from "antd/es/locale/th_TH";
 import { useAuth } from "../../contexts/auth-context";
-import { Delete, ModeEditOutlineOutlined } from "@mui/icons-material";
-
+import { Delete, ExpandMore } from "@mui/icons-material";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
 const { TextArea } = Input;
 
 dayjs.locale("th");
@@ -556,6 +558,7 @@ const CreateCase = () => {
                 <Divider orientation="left" orientationMargin="0">
                   <Box sx={{ display: "flex", align: "center" }}>
                     <Box sx={{ mr: 2 }}> วัตถุพยานที่ {index + 1}</Box>
+
                     <Tooltip title="ลบ">
                       <Button
                         shape="circle"
@@ -563,8 +566,16 @@ const CreateCase = () => {
                         onClick={() => handleDeleteEvidence(index)}
                       />
                     </Tooltip>
+                    <Tooltip title="ดูเพิ่มเติม">
+                      <Button
+                        shape="circle"
+                        icon={<ExpandMore />}
+                        // onClick={() => handleDeleteEvidence(index)}
+                      />
+                    </Tooltip>
                   </Box>
                 </Divider>
+
                 <Form.Item
                   label="ประเภทของวัตถุพยาน"
                   style={{
@@ -652,7 +663,6 @@ const CreateCase = () => {
                   {Array.from(
                     { length: evidence[index]?.evidence_amount },
                     (item, i) => {
-                     
                       return (
                         <div key={i}>
                           <Divider orientation="left" orientationMargin="0">
