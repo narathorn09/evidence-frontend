@@ -510,7 +510,7 @@ const Profile = () => {
                 },
               ]}
             >
-              {!isEdit ? <Typography>{me?.username}</Typography> : <Input />}
+              {!isEdit ? <Typography>{me?.username}</Typography> : <Input disabled={true}/>}
             </Form.Item>
 
             {isEdit && (
