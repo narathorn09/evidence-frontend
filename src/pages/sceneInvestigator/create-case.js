@@ -11,36 +11,23 @@ import {
   Divider,
   Space,
   ConfigProvider,
-  Modal,
-  Upload,
   Tooltip,
   Image,
 } from "antd";
 import { PlusOutlined, DeleteOutlined, DeleteFilled } from "@ant-design/icons";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/auth-context";
+import { Delete, ExpandMore, ExpandLess } from "@mui/icons-material";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 import dayjs from "dayjs";
-import "dayjs/locale/th"; // Import Thai locale from dayjs
+import "dayjs/locale/th";
 import locale from "antd/es/locale/th_TH";
-import { useAuth } from "../../contexts/auth-context";
-import { Delete, ExpandMore } from "@mui/icons-material";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-const { TextArea } = Input;
 
+const { TextArea } = Input;
 dayjs.locale("th");
 let indexSelector = 0;
-
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
 
 const CreateCase = () => {
   const { auth } = useAuth();
@@ -49,8 +36,9 @@ const CreateCase = () => {
   const [typeEvidence, setTypeEvidence] = useState([]);
   const [invesId, setInvesId] = useState();
   const [form] = Form.useForm();
+
   const [evidence, setEvidence] = useState([]);
-  const [check, setCheck] = useState(false);
+  const [isReload, setIsReload] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,7 +51,7 @@ const CreateCase = () => {
     };
 
     fetchData();
-  }, []);
+  }, [isReload]);
 
   useEffect(() => {
     const data = { id: auth?.user?.id, role: auth?.user?.role };
@@ -100,26 +88,29 @@ const CreateCase = () => {
       " " +
       dateAccidentString?.split(" ")[3];
 
-    const data = {
-      ...value,
-      inves_id: invesId,
-      case_save_date: case_save_date,
-      case_save_time: case_save_time,
-      case_accident_date: case_accident_date,
-      case_accident_time: case_accident_time,
-      evidence_list: evidence,
-    };
-    console.log(data);
+    try {
+      const responseURLs = await requestPrivate.post("/uploads", {
+        evidence_list: evidence,
+      });
 
-    // try {
-    //   const response = await requestPrivate.post("/typeEvidence", value);
-    //   if (response) {
-    //     alert(`เพิ่มประเภทของวัตถุพยานสำเร็จ`);
-    //     navigate(-1);
-    //   }
-    // } catch (err) {
-    //   alert(`เกิดปัญหาในการเพิ่มประเภทของวัตถุพยาน : ${err}`);
-    // }
+      if (responseURLs.data.result.length > 0) {
+        const data = {
+          ...value,
+          inves_id: invesId,
+          case_save_date: case_save_date,
+          case_save_time: case_save_time,
+          case_accident_date: case_accident_date,
+          case_accident_time: case_accident_time,
+          evidence_list: [...responseURLs.data.result],
+        };
+
+        console.log("data", data);
+      } else {
+        alert("No evidence URLs were returned.");
+      }
+    } catch (err) {
+      alert(`เกิดปัญหาในการเพิ่มคดี : ${err}`);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -144,91 +135,25 @@ const CreateCase = () => {
     }, 0);
   };
 
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [previewTitle, setPreviewTitle] = useState("");
-
-  const handleCancel = () => setPreviewOpen(false);
-
-  const handlePreview = useCallback(async (file) => {
-    console.log("file", file);
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-    setPreviewTitle(
-      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
-    );
-  }, []);
-
-  const handleChangePhoto = useCallback(
-    async (e, i, index) => {
-      setEvidence((prevEvidence) => {
-        const newEvidence = [...prevEvidence];
-        const updatedEvidence = { ...newEvidence[index] };
-        updatedEvidence.evidence_factor.splice(i, 1, {
-          ef_photo: e.file || null,
-          ef_detail: updatedEvidence.evidence_factor[i]?.ef_detail || "",
-        });
-        newEvidence[index] = updatedEvidence;
-        return newEvidence;
-      });
-
-      setCheck((prevCheck) => !prevCheck);
-    },
-    [evidence]
-  );
-
-  const handleDeletePhoto = (i, index) => {
-    setEvidence((prevEvidence) => {
-      const newEvidence = [...prevEvidence];
-      const updatedEvidence = { ...newEvidence[index] };
-
-      let updatedEvidenceFactor = { ...updatedEvidence.evidence_factor[i] };
-
-      updatedEvidenceFactor.ef_photo = null;
-
-      updatedEvidence.evidence_factor[i] = updatedEvidenceFactor;
-      newEvidence[index] = updatedEvidence;
-
-      return newEvidence;
-    });
-
-    setCheck((prevCheck) => !prevCheck);
-  };
-
-  const handleChangeDetail = (e, i, index) => {
-    const text = e.target.value;
-    setEvidence((prevEvidence) => {
-      const newEvidence = [...prevEvidence];
-      const updatedEvidence = { ...newEvidence[index] };
-      updatedEvidence.evidence_factor.splice(i, 1, {
-        ef_photo: updatedEvidence.evidence_factor[i]?.ef_photo || null,
-        ef_detail: text,
-      });
-      newEvidence[index] = updatedEvidence;
-      return newEvidence;
-    });
-
-    setCheck((prevCheck) => !prevCheck);
-  };
-
   const handleDeleteEvidence = (index) => {
-    console.log("index", index);
     setEvidence((prevEvidence) => {
       const newEvidence = [...prevEvidence];
       newEvidence?.splice(index, 1);
-
       return newEvidence;
     });
-
-    setCheck((prevCheck) => !prevCheck);
   };
 
-  useEffect(() => {
-    console.log("evidence", evidence);
-  }, [check]);
+  const handleDeleteEvidenceFactor = (i, index) => {
+    setEvidence((prevEvidence) => {
+      const newEvidence = [...prevEvidence];
+      newEvidence[index].evidence_factor.splice(i, 1);
+      newEvidence[index] = {
+        ...newEvidence[index],
+        evidence_amount: newEvidence[index].evidence_amount - 1,
+      };
+      return newEvidence;
+    });
+  };
 
   const handleFileChange = (e, i, index) => {
     const file = e.target.files[0];
@@ -246,24 +171,42 @@ const CreateCase = () => {
         return newEvidence;
       });
     };
-    setCheck((prevCheck) => !prevCheck);
+
     if (file) {
       reader.readAsDataURL(file);
     }
   };
 
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </div>
-  );
+  const handleDeletePhoto = (i, index) => {
+    setEvidence((prevEvidence) => {
+      const newEvidence = [...prevEvidence];
+      const updatedEvidence = { ...newEvidence[index] };
+      let updatedEvidenceFactor = { ...updatedEvidence.evidence_factor[i] };
+      updatedEvidenceFactor.ef_photo = null;
+      updatedEvidence.evidence_factor[i] = updatedEvidenceFactor;
+      newEvidence[index] = updatedEvidence;
+      return newEvidence;
+    });
+  };
+
+  const handleChangeDetail = (e, i, index) => {
+    const text = e.target.value;
+    setEvidence((prevEvidence) => {
+      const newEvidence = [...prevEvidence];
+      const updatedEvidence = { ...newEvidence[index] };
+      updatedEvidence.evidence_factor.splice(i, 1, {
+        ef_photo: updatedEvidence.evidence_factor[i]?.ef_photo || null,
+        ef_detail: text,
+      });
+      newEvidence[index] = updatedEvidence;
+      return newEvidence;
+    });
+  };
+
+  const handleTypeEvidenceSelected = (valueId, valueSelected) => {
+    if (valueId === valueSelected) return false;
+    return evidence.some((selected) => selected.type_e_id === valueSelected);
+  };
 
   const tailLayout = {
     wrapperCol: {
@@ -551,35 +494,78 @@ const CreateCase = () => {
           </Form.Item>
 
           {evidence.map((item, index) => {
+            const typeEvidenceValue =
+              evidence[index].type_e_id !== undefined &&
+              evidence[index].type_e_id !== ""
+                ? evidence[index].type_e_id
+                : item.type_e_id;
             let isLastIndex = index === evidence?.length - 1;
             if (evidence.length === 0) isLastIndex = true;
             return (
               <Box key={index}>
                 <Divider orientation="left" orientationMargin="0">
-                  <Box sx={{ display: "flex", align: "center" }}>
-                    <Box sx={{ mr: 2 }}> วัตถุพยานที่ {index + 1}</Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Chip
+                      sx={{ mr: "10px" }}
+                      label={`วัตถุพยานประเภทที่ ${index + 1} ${
+                        evidence[index]?.type_e_name
+                          ? evidence[index]?.type_e_name
+                          : ""
+                      }`}
+                    />
 
-                    <Tooltip title="ลบ">
+                    <Tooltip title="ลบ" style={{ marginLeft: "10px" }}>
                       <Button
                         shape="circle"
                         icon={<Delete />}
                         onClick={() => handleDeleteEvidence(index)}
                       />
                     </Tooltip>
-                    <Tooltip title="ดูเพิ่มเติม">
-                      <Button
-                        shape="circle"
-                        icon={<ExpandMore />}
-                        // onClick={() => handleDeleteEvidence(index)}
-                      />
-                    </Tooltip>
+
+                    <Button
+                      shape="circle"
+                      icon={
+                        evidence[index].expanded ? (
+                          <ExpandMore />
+                        ) : (
+                          <ExpandLess />
+                        )
+                      }
+                      style={{
+                        marginLeft: "8px",
+                        transition: "transform 0.3s ease",
+                        transform: evidence[index].expanded
+                          ? "rotate(180deg)"
+                          : "rotate(-180deg)",
+                      }}
+                      onClick={() => {
+                        let res = evidence.slice();
+                        let rs = {
+                          ...evidence[index],
+                          expanded: !res[index]?.expanded,
+                        };
+                        res[index] = rs;
+                        setEvidence(res);
+                      }}
+                    />
                   </Box>
                 </Divider>
 
                 <Form.Item
                   label="ประเภทของวัตถุพยาน"
                   style={{
+                    overflow: "hidden",
+
+                    maxHeight: evidence[index].expanded ? "0" : "100%", // Adjust the height value as needed
                     marginBottom: 0,
+                    // display: evidence[index].expanded ? "none" : "flex",
+                    transition: "max-height 0.3s ease",
                   }}
                   required={true}
                 >
@@ -604,8 +590,8 @@ const CreateCase = () => {
                   >
                     <Select
                       value={evidence[index]?.type_e_id}
+                      onClick={() => setIsReload((row) => !row)}
                       onChange={(i, obj) => {
-                        console.log("obj", obj);
                         let res = evidence.slice();
                         let re = {
                           ...evidence[index],
@@ -619,6 +605,10 @@ const CreateCase = () => {
                       {typeEvidence.map((item, index) => (
                         <Select.Option
                           key={index}
+                          disabled={handleTypeEvidenceSelected(
+                            typeEvidenceValue,
+                            item.type_e_id
+                          )}
                           value={item.type_e_id}
                         >{`${item.type_e_name}`}</Select.Option>
                       ))}
@@ -648,15 +638,28 @@ const CreateCase = () => {
                     <InputNumber
                       value={evidence[index]?.evidence_amount}
                       // defaultValue={1}
+                      controls={true}
                       min={1}
-                      onChange={(value) => {
-                        let res = evidence.slice();
+                      onStep={(value, info) => {
+                        let evs = evidence.slice();
+
+                        if (info.type === "up") {
+                          let evs = evidence.slice();
+                          evs[index].evidence_factor = [
+                            ...evs[index].evidence_factor,
+                            { ef_photo: null, ef_detail: "" },
+                          ];
+                        } else if (info.type === "down") {
+                          let evs = evidence.slice();
+                          evs[index].evidence_factor.splice(-1, 1);
+                        }
                         let re = {
-                          ...evidence[index],
+                          ...evs[index],
                           evidence_amount: value,
                         };
-                        res[index] = re;
-                        setEvidence(res);
+                        evs[index] = re;
+
+                        setEvidence(evs);
                       }}
                     />
                   </Form.Item>
@@ -667,14 +670,20 @@ const CreateCase = () => {
                         <div key={i}>
                           <Divider orientation="left" orientationMargin="0">
                             <Box sx={{ display: "flex", align: "center" }}>
-                              <Box sx={{ mr: 2 }}>
-                                {evidence[index]?.type_e_name} {i + 1}
-                              </Box>
+                              <Chip
+                                sx={{ mr: "10px" }}
+                                label={`${evidence[index]?.type_e_name} ${
+                                  i + 1
+                                }`}
+                              />
+
                               <Tooltip title="ลบ">
                                 <Button
                                   shape="circle"
                                   icon={<Delete />}
-                                  // onClick={() => handleDeleteEvidence(index)}
+                                  onClick={() =>
+                                    handleDeleteEvidenceFactor(i, index)
+                                  }
                                 />
                               </Tooltip>
                             </Box>
@@ -766,22 +775,8 @@ const CreateCase = () => {
                                       }
                                     />
                                   </Box>
-                                  {/* <Box
-                                    sx={{
-                                      display: "flex",
-                                      flexDirection: "row",
-                                      justifyContent: "space-between",
-                                      // border: "1px solid rgba(0, 0, 0, 0.1)",
-                                      objectFit: "contain",
-                                      margin: "0",
-                                      padding: "8px",
-                                      // borderRadius: "8px",
-                                    }}
-                                  > */}
 
                                   <Button
-                                    // shape="circle"
-                                    // icon={<DeleteOutlined />}
                                     onClick={() => {
                                       handleDeletePhoto(i, index);
                                     }}
@@ -789,8 +784,6 @@ const CreateCase = () => {
                                   >
                                     ลบรูปภาพ
                                   </Button>
-
-                                  {/* </Box> */}
                                 </>
                               )}
                             </Box>
@@ -805,21 +798,6 @@ const CreateCase = () => {
                               }}
                             />
                           </Box>
-
-                          {/* <Upload
-                            listType="picture-card"
-                            showUploadList={true}
-                            maxCount={1}
-                            onPreview={handlePreview}
-                            beforeUpload={() => false}
-                            isImageUrl={() => true}
-                            onChange={(file, fileList) => {
-                              handleChangePhoto(file, i, index);
-                            }}
-                            onRemove={() => handleDeletePhoto(i, index)}
-                          >
-                            {uploadButton}
-                          </Upload> */}
                         </div>
                       );
                     }
@@ -845,6 +823,7 @@ const CreateCase = () => {
                   type_e_id: null,
                   evidence_amount: null,
                   evidence_factor: [],
+                  expanded: false,
                 };
                 setEvidence([...evidence, res]);
               }}
@@ -869,20 +848,6 @@ const CreateCase = () => {
           </Form.Item>
         </Form>
       </Box>
-      <Modal
-        open={previewOpen}
-        title={previewTitle}
-        footer={null}
-        onCancel={handleCancel}
-      >
-        <img
-          alt="example"
-          style={{
-            width: "100%",
-          }}
-          src={previewImage}
-        />
-      </Modal>
     </div>
   );
 };
