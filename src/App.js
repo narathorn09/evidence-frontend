@@ -40,7 +40,7 @@ const App = () => {
           <Route exact path="/profile/:id" element={<Profile />} />
           {role === "0" && ( //admin
             <>
-             <Route exact path="/home" element={<HomeAdmin/>} />
+              <Route exact path="/home" element={<HomeAdmin/>} />
               <Route exact path="/user-management/admin/list" element={<ListAdmin />} />
               <Route exact path="/user-management/commander/list" element={<ListCommander />} />
               <Route exact path="/user-management/director/list" element={<ListDirector />} />
@@ -69,6 +69,7 @@ const App = () => {
           )}
            {role === "2" && ( //Scene Investigator
             <>
+              <Route exact path="/home" element={<>Home Scene Investigator</>} />
               <Route exact path="/inves/manage-case" element={<>Scene Investigator</>} />
               <Route exact path="/inves/manage-case/create" element={<CreateCase />} />
               <Route exact path="/inves/manage-type-evidence/list" element={<ListTypeEvidence />} />
