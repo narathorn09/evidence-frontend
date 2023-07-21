@@ -128,7 +128,8 @@ const CreateCase = () => {
 
   const addItem = (e) => {
     e.preventDefault();
-    setItems([...items, name || `New item ${indexSelector++}`]);
+    if(!name) return;
+    setItems([...items, name]);
     setName("");
     setTimeout(() => {
       inputRef.current?.focus();
@@ -311,7 +312,7 @@ const CreateCase = () => {
               style={{
                 width: 300,
               }}
-              placeholder="custom dropdown render"
+              placeholder="เลือกประเภทของคดี"
               dropdownRender={(menu) => (
                 <>
                   {menu}
@@ -326,7 +327,7 @@ const CreateCase = () => {
                     }}
                   >
                     <Input
-                      placeholder="Please enter item"
+                      placeholder="อื่นๆ"
                       ref={inputRef}
                       value={name}
                       onChange={onNameChange}
@@ -336,7 +337,7 @@ const CreateCase = () => {
                       icon={<PlusOutlined />}
                       onClick={addItem}
                     >
-                      Add item
+                      เพิ่มประเภทคดี
                     </Button>
                   </Space>
                 </>
