@@ -118,7 +118,7 @@ const CreateCase = () => {
     return;
   };
 
-  const [items, setItems] = useState(["jack", "lucy"]);
+  const [items, setItems] = useState(["ยาเสพติด", "ลักทรัพย์"]);
   const [name, setName] = useState("");
   const inputRef = useRef(null);
 
@@ -128,7 +128,7 @@ const CreateCase = () => {
 
   const addItem = (e) => {
     e.preventDefault();
-    if(!name) return;
+    if (!name) return;
     setItems([...items, name]);
     setName("");
     setTimeout(() => {
@@ -305,6 +305,7 @@ const CreateCase = () => {
                   </span>
                 ),
               },
+              
             ]}
             style={{ textAlign: "start" }}
           >
@@ -330,6 +331,8 @@ const CreateCase = () => {
                       placeholder="อื่นๆ"
                       ref={inputRef}
                       value={name}
+                      maxLength={50}
+                      // showCount={true}
                       onChange={onNameChange}
                     />
                     <Button
@@ -379,9 +382,9 @@ const CreateCase = () => {
                 display: "inline-block",
               }}
             >
-              {/* <ConfigProvider locale={locale}> */}
-              <DatePicker />
-              {/* </ConfigProvider> */}
+              <ConfigProvider locale={locale}>
+                <DatePicker />
+              </ConfigProvider>
             </Form.Item>
 
             <Form.Item
@@ -409,7 +412,9 @@ const CreateCase = () => {
                 margin: "0 8px",
               }}
             >
-              <TimePicker />
+              <ConfigProvider locale={locale}>
+                <TimePicker />
+              </ConfigProvider>
             </Form.Item>
           </Form.Item>
 
@@ -437,7 +442,9 @@ const CreateCase = () => {
                 display: "inline-block",
               }}
             >
-              <DatePicker />
+              <ConfigProvider locale={locale}>
+                <DatePicker />
+              </ConfigProvider>
             </Form.Item>
 
             <Form.Item
@@ -459,7 +466,9 @@ const CreateCase = () => {
                 margin: "0 8px",
               }}
             >
-              <TimePicker />
+              <ConfigProvider locale={locale}>
+                <TimePicker />
+              </ConfigProvider>
             </Form.Item>
           </Form.Item>
           <Form.Item
@@ -673,7 +682,7 @@ const CreateCase = () => {
                             <Box sx={{ display: "flex", align: "center" }}>
                               <Chip
                                 sx={{ mr: "10px" }}
-                                label={`${evidence[index]?.type_e_name} ${
+                                label={`${evidence[index]?.type_e_name || "วัตถุที่"} ${
                                   i + 1
                                 }`}
                               />
