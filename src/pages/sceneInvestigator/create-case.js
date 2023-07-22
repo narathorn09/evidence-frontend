@@ -36,7 +36,6 @@ const CreateCase = () => {
   const [typeEvidence, setTypeEvidence] = useState([]);
   const [invesId, setInvesId] = useState();
   const [form] = Form.useForm();
-
   const [evidence, setEvidence] = useState([]);
   const [isReload, setIsReload] = useState(false);
 
@@ -68,45 +67,55 @@ const CreateCase = () => {
   }, [auth?.user]);
 
   const onFinish = async (value) => {
-    const case_save_time = value?.case_save_time?.$d.toString()?.split(" ")[4];
-    const dateSaveString = value?.case_save_date?.toString();
-    const case_save_date =
-      dateSaveString?.split(" ")[1] +
-      " " +
-      dateSaveString?.split(" ")[2] +
-      " " +
-      dateSaveString?.split(" ")[3];
+    // const case_save_time = value?.case_save_time?.$d.toString()?.split(" ")[4];
+    // const dateSaveString = value?.case_save_date?.toString();
+    // const case_save_date =
+    //   dateSaveString?.split(" ")[1] +
+    //   " " +
+    //   dateSaveString?.split(" ")[2] +
+    //   " " +
+    //   dateSaveString?.split(" ")[3];
 
-    const case_accident_time = value?.case_accident_time?.$d
-      .toString()
-      ?.split(" ")[4];
-    const dateAccidentString = value?.case_accident_date?.toString();
-    const case_accident_date =
-      dateAccidentString?.split(" ")[1] +
-      " " +
-      dateAccidentString?.split(" ")[2] +
-      " " +
-      dateAccidentString?.split(" ")[3];
+    // const case_accident_time = value?.case_accident_time?.$d
+    //   .toString()
+    //   ?.split(" ")[4];
+    // const dateAccidentString = value?.case_accident_date?.toString();
+    // const case_accident_date =
+    //   dateAccidentString?.split(" ")[1] +
+    //   " " +
+    //   dateAccidentString?.split(" ")[2] +
+    //   " " +
+    //   dateAccidentString?.split(" ")[3];
 
     try {
       const responseURLs = await requestPrivate.post("/uploads", {
         evidence_list: evidence,
       });
 
-      if (responseURLs.data.result.length > 0) {
+      if (evidence.length > 0) {
+        if (responseURLs.data.result.length > 0) {
+          const data = {
+            ...value,
+            inves_id: invesId,
+            // case_save_date: case_save_date,
+            // case_save_time: case_save_time,
+            // case_accident_date: case_accident_date,
+            // case_accident_time: case_accident_time,
+            evidence_list: [...responseURLs.data.result],
+          };
+
+          console.log("data", data);
+        } else {
+          alert("No evidence URLs were returned.");
+        }
+      } else {
         const data = {
           ...value,
           inves_id: invesId,
-          case_save_date: case_save_date,
-          case_save_time: case_save_time,
-          case_accident_date: case_accident_date,
-          case_accident_time: case_accident_time,
-          evidence_list: [...responseURLs.data.result],
+          evidence_list: [],
         };
 
         console.log("data", data);
-      } else {
-        alert("No evidence URLs were returned.");
       }
     } catch (err) {
       alert(`เกิดปัญหาในการเพิ่มคดี : ${err}`);
@@ -209,6 +218,11 @@ const CreateCase = () => {
     return evidence.some((selected) => selected.type_e_id === valueSelected);
   };
 
+  const handleDateChange = (dateDayJs, dateString, name) => {
+    form.setFieldValue(`${name}`, dateString);
+    // console.log(`${name}`, form.getFieldValue(`${name}`));
+  };
+
   const tailLayout = {
     wrapperCol: {
       offset: 4,
@@ -305,7 +319,6 @@ const CreateCase = () => {
                   </span>
                 ),
               },
-              
             ]}
             style={{ textAlign: "start" }}
           >
@@ -383,7 +396,11 @@ const CreateCase = () => {
               }}
             >
               <ConfigProvider locale={locale}>
-                <DatePicker />
+                <DatePicker
+                  onChange={(date, dateString) =>
+                    handleDateChange(date, dateString, "case_save_date")
+                  }
+                />
               </ConfigProvider>
             </Form.Item>
 
@@ -413,7 +430,11 @@ const CreateCase = () => {
               }}
             >
               <ConfigProvider locale={locale}>
-                <TimePicker />
+                <TimePicker
+                  onChange={(date, dateString) =>
+                    handleDateChange(date, dateString, "case_save_time")
+                  }
+                />
               </ConfigProvider>
             </Form.Item>
           </Form.Item>
@@ -443,7 +464,11 @@ const CreateCase = () => {
               }}
             >
               <ConfigProvider locale={locale}>
-                <DatePicker />
+                <DatePicker
+                  onChange={(date, dateString) =>
+                    handleDateChange(date, dateString, "case_accident_date")
+                  }
+                />
               </ConfigProvider>
             </Form.Item>
 
@@ -467,7 +492,11 @@ const CreateCase = () => {
               }}
             >
               <ConfigProvider locale={locale}>
-                <TimePicker />
+                <TimePicker
+                  onChange={(date, dateString) =>
+                    handleDateChange(date, dateString, "case_accident_time")
+                  }
+                />
               </ConfigProvider>
             </Form.Item>
           </Form.Item>
@@ -682,9 +711,9 @@ const CreateCase = () => {
                             <Box sx={{ display: "flex", align: "center" }}>
                               <Chip
                                 sx={{ mr: "10px" }}
-                                label={`${evidence[index]?.type_e_name || "วัตถุที่"} ${
-                                  i + 1
-                                }`}
+                                label={`${
+                                  evidence[index]?.type_e_name || "วัตถุที่"
+                                } ${i + 1}`}
                               />
 
                               <Tooltip title="ลบ">
