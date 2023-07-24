@@ -14,6 +14,11 @@ const UpdateGroup = () => {
   const [groupData, setGroupData] = useState({});
   const [director, setDirector] = useState([]);
   
+  const gruopStatus = [
+    {value: '0', text: "เปิด"},
+    {value: '1', text: "ปิด"}
+  ]
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,7 +33,8 @@ const UpdateGroup = () => {
 
   const defaultValues = {
     group_name: groupData?.group_name,
-    director_id: groupData?.director_id
+    director_id: groupData?.director_id,
+    group_status: groupData?.group_status,
   };
 
   useEffect(() => {
@@ -176,6 +182,31 @@ const UpdateGroup = () => {
                   key={index}
                   value={director.director_id}
                 >{`${director.director_rank} ${director.director_fname} ${director.director_lname}`}</Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="สถานะของกลุ่มงาน"
+            name="group_status"
+            rules={[
+              {
+                required: true,
+                message: (
+                  <span style={{ fontSize: "12px" }}>
+                    กรุณาเลือกสถานะกลุ่มงาน!
+                  </span>
+                ),
+              },
+            ]}
+            style={{ textAlign: "start" }}
+          >
+            <Select>
+              {gruopStatus.map((item, index) => (
+                <Select.Option
+                  key={index}
+                  value={item.value}
+                >{`${item.text}`}</Select.Option>
               ))}
             </Select>
           </Form.Item>

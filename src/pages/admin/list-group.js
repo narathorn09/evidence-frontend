@@ -36,7 +36,7 @@ const ListGroup = () => {
     {
       field: "director",
       headerName: "ผู้กำกับ",
-      width: 360,
+      width: 300,
       headerClassName: "super-app-theme--header",
       valueGetter: (params) =>
         params.row?.director_rank
@@ -46,9 +46,38 @@ const ListGroup = () => {
           : "-",
     },
     {
+      field: "group_status",
+      headerName: "สถานะของกลุ่มงาน",
+      width: 150,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "super-app-theme--header",
+      renderCell: (params) => {
+        let status = ""; // Default value is an empty string
+        
+        if (params.row?.group_status === "0") {
+          status = "เปิด"; // "เปิด" for group_status = "0"
+        } else if (params.row?.group_status === "1") {
+          status = "ปิด"; // "ปิด" for group_status = "1"
+        } else {
+          status = "-"; // Default value for other cases
+        }
+        return (
+          <div
+            style={{
+              color: params.row?.group_status === "0" ? "green" : "red",
+            }}
+          >
+            {status}
+          </div>
+        );
+      },
+    },
+
+    {
       field: "Edit",
       headerName: "แก้ไข",
-      width: 150,
+      width: 100,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
@@ -67,7 +96,7 @@ const ListGroup = () => {
       field: "Delete",
       headerName: "ลบ",
       headerClassName: "super-app-theme--header",
-      width: 150,
+      width: 100,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => (
@@ -168,7 +197,7 @@ const ListGroup = () => {
           </IconButton>
         </Grid>
         <DataGrid
-          rows={ 
+          rows={
             items
               ? items?.map((e, index) => ({
                   ...e,

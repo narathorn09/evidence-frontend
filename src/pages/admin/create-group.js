@@ -12,6 +12,12 @@ const CreateGroup = () => {
   const [form] = Form.useForm();
   const [director, setDirector] = useState([]);
 
+    
+  const gruopStatus = [
+    {value: '0', text: "เปิด"},
+    {value: '1', text: "ปิด"}
+  ]
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -147,6 +153,31 @@ const CreateGroup = () => {
                   key={index}
                   value={director.director_id}
                 >{`${director.director_rank} ${director.director_fname} ${director.director_lname}`}</Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="สถานะของกลุ่มงาน"
+            name="group_status"
+            rules={[
+              {
+                required: true,
+                message: (
+                  <span style={{ fontSize: "12px" }}>
+                    กรุณาเลือกสถานะกลุ่มงาน!
+                  </span>
+                ),
+              },
+            ]}
+            style={{ textAlign: "start" }}
+          >
+            <Select>
+              {gruopStatus.map((item, index) => (
+                <Select.Option
+                  key={index}
+                  value={item.value}
+                >{`${item.text}`}</Select.Option>
               ))}
             </Select>
           </Form.Item>

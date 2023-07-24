@@ -156,6 +156,7 @@ const UpdateSceneInvestigator = () => {
               {group.map((group, index) => (
                 <Select.Option
                   key={index}
+                  disabled={group.group_status === "1"}
                   value={group.group_id}
                 >{`${group.group_name}`}</Select.Option>
               ))}
