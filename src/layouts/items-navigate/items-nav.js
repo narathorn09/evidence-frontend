@@ -104,7 +104,7 @@ export const itemSceneInvestigator = [
     key: "G1",
     label: "จัดการคดี",
     icon: <Work sx={{ fontSize: "20px" }} />,
-    link: "/inves/manage-case",
+    link: "/inves/manage-case/list",
     linkP: "/inves/manage-case",
   },
   {
