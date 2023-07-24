@@ -38,6 +38,20 @@ const CreateCase = () => {
   const [form] = Form.useForm();
   const [evidence, setEvidence] = useState([]);
   const [isReload, setIsReload] = useState(false);
+  const [group, setGroup] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await requestPrivate.get(`/group`);
+        setGroup(response.data);
+      } catch (err) {
+        alert(`เกิดข้อผิดพลาดในการดึงข้อมูลกลุ่มงาน : ${err}`);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,11 +102,11 @@ const CreateCase = () => {
     //   dateAccidentString?.split(" ")[3];
 
     try {
-      const responseURLs = await requestPrivate.post("/uploads", {
-        evidence_list: evidence,
-      });
-
       if (evidence.length > 0) {
+        const responseURLs = await requestPrivate.post("/uploads", {
+          evidence_list: evidence,
+        });
+
         if (responseURLs.data.result.length > 0) {
           const data = {
             ...value,
@@ -105,6 +119,12 @@ const CreateCase = () => {
           };
 
           console.log("data", data);
+          const responseCase = await requestPrivate.post("/case", data);
+          if (responseCase.status === 200) {
+            alert("เพิ่มคดีสำเร็จ");
+            // window.location.reload()
+            // navigate(-1)
+          }
         } else {
           alert("No evidence URLs were returned.");
         }
@@ -176,6 +196,7 @@ const CreateCase = () => {
         updatedEvidence.evidence_factor.splice(i, 1, {
           ef_photo: reader.result || null,
           ef_detail: updatedEvidence.evidence_factor[i]?.ef_detail || "",
+          assignGroupId: updatedEvidence.evidence_factor[i]?.assignGroupId || null,
         });
         newEvidence[index] = updatedEvidence;
         return newEvidence;
@@ -207,6 +228,7 @@ const CreateCase = () => {
       updatedEvidence.evidence_factor.splice(i, 1, {
         ef_photo: updatedEvidence.evidence_factor[i]?.ef_photo || null,
         ef_detail: text,
+        assignGroupId: updatedEvidence.evidence_factor[i]?.assignGroupId || null,
       });
       newEvidence[index] = updatedEvidence;
       return newEvidence;
@@ -238,7 +260,7 @@ const CreateCase = () => {
       <BreadcrumbLayout
         pages={[
           { title: "จัดการคดี" },
-          { title: "รายการคดี" },
+          { title: "รายการคดี", path: "/inves/manage-case/list" },
           { title: "เพิ่มคดี" },
         ]}
       />
@@ -514,11 +536,11 @@ const CreateCase = () => {
               },
               {
                 validator: (_, value) => {
-                  if (value && value.length > 150) {
+                  if (value && value.length > 255) {
                     return Promise.reject({
                       message: (
                         <span style={{ fontSize: "12px" }}>
-                          ไม่สามารถกรอกเกิน 150 ตัวอักษรได้
+                          ไม่สามารถกรอกเกิน 255 ตัวอักษรได้
                         </span>
                       ),
                     });
@@ -686,7 +708,7 @@ const CreateCase = () => {
                           let evs = evidence.slice();
                           evs[index].evidence_factor = [
                             ...evs[index].evidence_factor,
-                            { ef_photo: null, ef_detail: "" },
+                            { ef_photo: null, ef_detail: "", assignGroupId: null},
                           ];
                         } else if (info.type === "down") {
                           let evs = evidence.slice();
@@ -826,16 +848,48 @@ const CreateCase = () => {
                                 </>
                               )}
                             </Box>
-
-                            <TextArea
-                              placeholder="รายละเอียดของวัตถุพยาน"
-                              value={
-                                evidence[index]?.evidence_factor[i]?.ef_detail
-                              }
-                              onChange={(e) => {
-                                handleChangeDetail(e, i, index);
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                width: "100%",
                               }}
-                            />
+                            >
+                              <TextArea
+                                placeholder="รายละเอียดของวัตถุพยาน"
+                                value={
+                                  evidence[index]?.evidence_factor[i]?.ef_detail
+                                }
+                                onChange={(e) => {
+                                  handleChangeDetail(e, i, index);
+                                }}
+                              />
+                              <Select
+                                placeholder="เลือกกลุ่มงานที่จะมอบงานตรวจ"
+                                allowClear={true}
+                                value={evidence[index]?.evidence_factor[i]?.assignGroupId}
+                                onChange={(value, obj) => {
+                                  console.log("obj", obj);
+                                  const res = [...evidence]; // Clone the evidence array
+                                  const re = {
+                                    ...evidence[index]?.evidence_factor[i],
+                                    assignGroupId: obj?.value || null,
+                                  };
+                                  console.log("re", re);
+                                  res[index].evidence_factor[i] = re; // Update the specific evidence_factor
+                                  setEvidence(res);
+                                }}
+                                style={{ marginTop: "10px" }}
+                              >
+                                {group.map((group, index) => (
+                                  <Select.Option
+                                    key={index}
+                                    disabled={group.group_status === "1"}
+                                    value={group.group_id}
+                                  >{`${group.group_name}`}</Select.Option>
+                                ))}
+                              </Select>
+                            </Box>
                           </Box>
                         </div>
                       );
