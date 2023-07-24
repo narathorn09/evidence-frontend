@@ -27,6 +27,7 @@ import ListTypeEvidence from "./pages/sceneInvestigator/list-typeEvidence";
 import CreateTypeEvidence from "./pages/sceneInvestigator/create-typeEvidence";
 import UpdateTypeEvidence from "./pages/sceneInvestigator/update-typeEvidence";
 import CreateCase from "./pages/sceneInvestigator/create-case";
+import ListCase from "./pages/sceneInvestigator/list-case";
 
 const App = () => {
   const { auth } = useAuth();
@@ -71,6 +72,7 @@ const App = () => {
             <>
               <Route exact path="/home" element={<>Home Scene Investigator</>} />
               <Route exact path="/inves/manage-case" element={<>Scene Investigator</>} />
+              <Route exact path="/inves/manage-case/list" element={<ListCase />} />
               <Route exact path="/inves/manage-case/create" element={<CreateCase />} />
               <Route exact path="/inves/manage-type-evidence/list" element={<ListTypeEvidence />} />
               <Route exact path="/inves/manage-type-evidence/create" element={<CreateTypeEvidence />} />
