@@ -7,11 +7,17 @@ import {
   GridToolbarExportContainer,
   GridCsvExportMenuItem,
 } from "@mui/x-data-grid";
-import { DeleteForever, AddCircle, Edit, Visibility } from "@mui/icons-material";
+import {
+  DeleteForever,
+  AddCircle,
+  Edit,
+  Visibility,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import dayjs from "dayjs";
 
 const ListCase = () => {
   const { auth } = useAuth();
@@ -45,26 +51,34 @@ const ListCase = () => {
     {
       field: "case_save_date",
       headerName: "วันที่ลงบันทึกคดี",
-      width: 200,
+      width: 150,
       headerClassName: "super-app-theme--header",
+      renderCell: (params) =>
+        dayjs(params?.row?.case_save_date).format("DD MMM YYYY"),
     },
     {
       field: "case_save_time",
       headerName: "เวลาที่ลงบันทึกคดี",
-      width: 200,
+      width: 150,
       headerClassName: "super-app-theme--header",
+      renderCell: (params) =>
+       `${params?.row?.case_save_time} น.`
     },
     {
       field: "case_accident_date",
       headerName: "วันที่เกิดเหตุ",
-      width: 200,
+      width: 150,
       headerClassName: "super-app-theme--header",
+      renderCell: (params) =>
+        dayjs(params?.row?.case_accident_date).format("DD MMM YYYY"),
     },
     {
       field: "case_accident_time",
       headerName: "เวลาที่เกิดเหตุ",
-      width: 200,
+      width: 150,
       headerClassName: "super-app-theme--header",
+      renderCell: (params) =>
+       `${params?.row?.case_accident_time} น.`
     },
     {
       field: "case_location",
@@ -88,7 +102,7 @@ const ListCase = () => {
       renderCell: (params) => (
         <IconButton
           onClick={() => {
-            // navigate(`/inves/manage-type-evidence/update/${params?.row?.id}`);
+            navigate(`/inves/manage-case/casebyid/${params?.row?.id}`);
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >
@@ -106,7 +120,7 @@ const ListCase = () => {
       renderCell: (params) => (
         <IconButton
           onClick={() => {
-            // navigate(`/inves/manage-type-evidence/update/${params?.row?.id}`);
+            navigate(`/inves/manage-case/update/${params?.row?.id}`);
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >
@@ -142,8 +156,7 @@ const ListCase = () => {
     const fetchData = async () => {
       try {
         const response = await requestPrivate.post(`/id`, data);
-        setInvesId(()=>response?.data[0]?.inves_id);
-        console.log("invesId", invesId)
+        setInvesId(() => response?.data[0]?.inves_id);
       } catch (err) {
         alert(`เกิดข้อผิดพลาดในการดึงไอดี : ${err}`);
       }
@@ -153,7 +166,6 @@ const ListCase = () => {
   }, [auth?.user]);
 
   useEffect(() => {
-    console.log("invesId", invesId)
     const fetchData = async () => {
       await requestPrivate.get(`/caseByInvesId/${invesId}`).then((response) => {
         setItems(response.data);
@@ -233,9 +245,7 @@ const ListCase = () => {
           <h2>รายการคดี</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          <IconButton
-            onClick={() => navigate("/inves/manage-case/create")}
-          >
+          <IconButton onClick={() => navigate("/inves/manage-case/create")}>
             <AddCircle />
           </IconButton>
         </Grid>
