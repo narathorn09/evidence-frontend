@@ -28,6 +28,8 @@ import CreateTypeEvidence from "./pages/sceneInvestigator/create-typeEvidence";
 import UpdateTypeEvidence from "./pages/sceneInvestigator/update-typeEvidence";
 import CreateCase from "./pages/sceneInvestigator/create-case";
 import ListCase from "./pages/sceneInvestigator/list-case";
+import GetCaseById from "./pages/sceneInvestigator/getbyid-case";
+import UpdateCase from "./pages/sceneInvestigator/update-case";
 
 const App = () => {
   const { auth } = useAuth();
@@ -74,6 +76,8 @@ const App = () => {
               <Route exact path="/inves/manage-case" element={<>Scene Investigator</>} />
               <Route exact path="/inves/manage-case/list" element={<ListCase />} />
               <Route exact path="/inves/manage-case/create" element={<CreateCase />} />
+              <Route exact path="/inves/manage-case/casebyid/:caseId" element={<GetCaseById />} />
+              <Route exact path="/inves/manage-case/update/:caseId" element={<UpdateCase />} />
               <Route exact path="/inves/manage-type-evidence/list" element={<ListTypeEvidence />} />
               <Route exact path="/inves/manage-type-evidence/create" element={<CreateTypeEvidence />} />
               <Route exact path="/inves/manage-type-evidence/update/:id" element={<UpdateTypeEvidence />} />
