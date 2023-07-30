@@ -50,7 +50,12 @@ const UpdateTypeEvidence = () => {
         navigate(-1);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการแก้ไขประเภทของวัตถุพยาน : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการแก้ไขประเภทของวัตถุพยาน",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 

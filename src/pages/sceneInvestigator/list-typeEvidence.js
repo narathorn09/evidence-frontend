@@ -109,11 +109,15 @@ const ListTypeEvidence = () => {
               setRefetch(!refetch);
             });
         } catch (err) {
-          alert(`${err?.message}`);
+          Swal.fire({
+            title: "เกิดข้อผิดพลาด!",
+            text: "เกิดข้อผิดพลาดในการลบประเภทของวัตถุพยาน",
+            icon: "error",
+            confirmButtonText: "ตกลง",
+          });
         }
       }
     });
-
   };
 
   const csvOptions = {

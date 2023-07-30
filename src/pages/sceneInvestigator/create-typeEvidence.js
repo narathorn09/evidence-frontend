@@ -25,7 +25,12 @@ const CreateTypeEvidence = () => {
         navigate(-1);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการเพิ่มประเภทของวัตถุพยาน : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการเพิ่มประเภทของวัตถุพยาน",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
