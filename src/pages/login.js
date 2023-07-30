@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Biotech } from "@mui/icons-material";
 import { request } from "../axios-config";
 import { useAuth } from "../contexts/auth-context";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,10 +27,21 @@ const Login = () => {
           await setAuthToken(accessToken);
           setLogin(true);
           setLoadings(false);
+          Swal.fire({
+            title: "เข้าสู่ระบบสำเร็จ!",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500
+          });
         }
       } catch (err) {
         setLoadings(false);
-        alert("Invalid username / password");
+        Swal.fire({
+          title: "เข้าสู่ระบบไม่สำเร็จ!",
+          text: "โปรดตรวจสอบ username และ password อีกครั้ง",
+          icon: "error",
+          confirmButtonText: "ตกลง",
+        });
       }
     },
     [setAuthToken]
