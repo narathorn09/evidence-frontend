@@ -7,10 +7,12 @@ import {
   GridToolbarExportContainer,
   GridCsvExportMenuItem,
 } from "@mui/x-data-grid";
-import { DeleteForever, AddCircle, Edit } from "@mui/icons-material";
+import { DeleteForever, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
+import { Button as ButtonAntd } from "antd";
 
 const ListTypeEvidence = () => {
   const requestPrivate = useAxiosPrivate();
@@ -31,6 +33,7 @@ const ListTypeEvidence = () => {
       field: "type_e_name",
       headerName: "ประเภทของวัตถุพยาน",
       width: 400,
+      flex: 1,
       headerClassName: "super-app-theme--header",
     },
     {
@@ -61,7 +64,10 @@ const ListTypeEvidence = () => {
       renderCell: (params) => (
         <IconButton
           onClick={() => {
-            RemoveTypeEvidence(params?.row?.type_e_id, params?.row?.type_e_name);
+            RemoveTypeEvidence(
+              params?.row?.type_e_id,
+              params?.row?.type_e_name
+            );
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >
@@ -81,17 +87,33 @@ const ListTypeEvidence = () => {
   }, [refetch]);
 
   const RemoveTypeEvidence = async (typeId, typeName) => {
-    const confirmed = window.confirm(`คุณต้องการลบ ${typeName}?`);
-    if (confirmed) {
-      try {
-        await requestPrivate.delete(`/typeEvidenceById/${typeId}`).then(() => {
-          setRefetch(!refetch);
-          alert(`ลบ ${typeName} สำเร็จ`);
-        });
-      } catch (err) {
-        alert(`${err?.message}`);
+    Swal.fire({
+      title: "แจ้งเตือน!",
+      text: `คุณต้องการลบ ${typeName} ซึ่งเป็นประเภทของวัตถุพยาน?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ตกลง",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await requestPrivate
+            .delete(`/typeEvidenceById/${typeId}`)
+            .then(() => {
+              Swal.fire({
+                title: "ลบสำเร็จ!",
+                text: `ลบ ${typeName} สำเร็จ`,
+                icon: "success",
+                confirmButtonText: "ตกลง",
+              });
+              setRefetch(!refetch);
+            });
+        } catch (err) {
+          alert(`${err?.message}`);
+        }
       }
-    }
+    });
+
   };
 
   const csvOptions = {
@@ -135,7 +157,10 @@ const ListTypeEvidence = () => {
         <title>Lists Type Evidence - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
-        pages={[{ title: "จัดการประเภทของวัตถุพยาน" }, { title: "รายการประเภทของวัตถุพยาน" }]}
+        pages={[
+          { title: "จัดการประเภทของวัตถุพยาน" },
+          { title: "รายการประเภทของวัตถุพยาน" },
+        ]}
       />
       <Grid
         sx={{
@@ -151,12 +176,15 @@ const ListTypeEvidence = () => {
           <h2>รายการประเภทของวัตถุพยาน</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          <IconButton onClick={() => navigate("/inves/manage-type-evidence/create")}>
-            <AddCircle />
-          </IconButton>
+          <ButtonAntd
+            type="primary"
+            onClick={() => navigate("/inves/manage-type-evidence/create")}
+          >
+            เพิ่ม
+          </ButtonAntd>
         </Grid>
         <DataGrid
-          rows={ 
+          rows={
             items
               ? items?.map((e, index) => ({
                   ...e,
