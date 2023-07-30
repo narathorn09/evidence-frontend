@@ -5,6 +5,7 @@ import { Grid, IconButton } from "@mui/material";
 import { MenuRounded } from "@mui/icons-material";
 import { useAuth } from "../contexts/auth-context";
 import useAxiosPrivate from "../hook/use-axios-private";
+import Swal from "sweetalert2";
 
 const Header = ({ openNavMobile }) => {
   const navigate = useNavigate();
@@ -40,17 +41,24 @@ const Header = ({ openNavMobile }) => {
       if (value === "profile") {
         navigate(`/profile/${me?.id}`);
       } else if (value === "logout") {
-        const confirmed = window.confirm(`คุณต้องการออกจากระบบ ?`);
-        if (confirmed) {
-          try {
-            await requestPrivate.get("/logout");
-            setAuthToken(null); // Clear the access token in the authentication context
-            localStorage.removeItem("token"); // Remove the access token from local storage
-            navigate("/login");
-          } catch (err) {
-            alert(`${err?.message}`);
+        Swal.fire({
+          title: "คุณต้องการออกจากระบบ?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "ตกลง",
+          cancelButtonText: "ยกเลิก",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              await requestPrivate.get("/logout");
+              setAuthToken(null); // Clear the access token in the authentication context
+              localStorage.removeItem("token"); // Remove the access token from local storage
+              navigate("/login");
+            } catch (err) {
+              alert(`${err?.message}`);
+            }
           }
-        }
+        });
       }
     } catch (err) {
       navigate("/login");
