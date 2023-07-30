@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Button, Form, Input, Typography, Select, Modal, Tooltip } from "antd";
-import { Box, Grid, IconButton, Card } from "@mui/material";
+import { Box, Grid, Card } from "@mui/material";
 import { Edit, AccountCircle, Key } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
 
 const Profile = () => {
   const requestPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [me, setMe] = useState();
   const [isEdit, setIsEdit] = useState(false);
@@ -82,16 +81,26 @@ const Profile = () => {
 
   const onFinish = async (value) => {
     const data = { id: me?.id, role: me?.role, ...value };
-    console.log(data);
+    // console.log(data);
     try {
       const response = await requestPrivate.put("/profile", data);
       if (response) {
-        window.location.reload();
-        alert(`แก้ไขข้อมูลส่วนตัวสำเร็จ`);
-        setIsEdit(false);
+        Swal.fire({
+          title: "แก้ไขข้อมูลส่วนตัวสำเร็จ!",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        }).then(() => {
+          window.location.reload();
+          setIsEdit(false);
+        });
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการแก้ไขข้อมูลส่วน : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการแก้ไขข้อมูลส่วนตัว",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
       setIsEdit(false);
     }
   };
@@ -132,21 +141,37 @@ const Profile = () => {
 
   const [formPass] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const showModal = () => {
     setIsModalOpen(true);
   };
+
   const handlePassFinish = async (value) => {
     const data = { id: me?.id, ...value };
     try {
       const response = await requestPrivate.put("/password", data);
       if (response) {
-        if (response.data === false) return alert(`รหัสผ่านไม่ถูกต้อง !`);
-        alert(`เปลี่ยนรหัสผ่านสำเร็จ !`);
+        if (response.data === false)
+          return Swal.fire({
+            title: "รหัสผ่านไม่ถูกต้อง!",
+            icon: "error",
+            confirmButtonText: "ตกลง",
+          });
+        Swal.fire({
+          title: "เปลี่ยนรหัสผ่านสำเร็จ!",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
         setIsModalOpen(false);
         formPass.resetFields();
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการเปลี่ยนรหัสผ่าน : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -268,15 +293,6 @@ const Profile = () => {
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             autoComplete="off"
-            // fields={fields}
-            // onFieldsChange={(fieldValues, allFields) => {
-            //   if (fieldValues[0].name[0] === 'username')
-            //   validUsername(fieldValues[0].value);
-            // }}
-            // onValuesChange={(changedValues, allValues) => {
-            //   // if (changedValues?.username)
-            //   handleUsernameChange(changedValues?.username);
-            // }}
           >
             {me?.nametitle && (
               <Form.Item
@@ -510,7 +526,11 @@ const Profile = () => {
                 },
               ]}
             >
-              {!isEdit ? <Typography>{me?.username}</Typography> : <Input disabled={true}/>}
+              {!isEdit ? (
+                <Typography>{me?.username}</Typography>
+              ) : (
+                <Input disabled={true} />
+              )}
             </Form.Item>
 
             {isEdit && (
