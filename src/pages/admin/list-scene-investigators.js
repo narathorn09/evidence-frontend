@@ -7,10 +7,12 @@ import {
   GridToolbarExportContainer,
   GridCsvExportMenuItem,
 } from "@mui/x-data-grid";
-import { DeleteForever, PersonAddAlt1, Edit } from "@mui/icons-material";
+import { DeleteForever, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
+import { Button as ButtonAntd } from "antd";
 
 const ListSceneInvestigator = () => {
   const requestPrivate = useAxiosPrivate();
@@ -111,17 +113,35 @@ const ListSceneInvestigator = () => {
   }, [refetch]);
 
   const RemoveMember = async (memId, username) => {
-    const confirmed = window.confirm(`คุณต้องการลบชื่อผู้ใช้ ${username}?`);
-    if (confirmed) {
-      try {
-        await requestPrivate.delete(`/memberById/${memId}`).then(() => {
-          setRefetch(!refetch);
-          alert(`ลบชื่อผู้ใช้ ${username} สำเร็จ`);
-        });
-      } catch (err) {
-        alert(`${err?.data?.message}`);
+     Swal.fire({
+      title: "แจ้งเตือน!",
+      text: `คุณต้องการลบชื่อผู้ใช้ ${username}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ตกลง",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await requestPrivate.delete(`/memberById/${memId}`).then(() => {
+            Swal.fire({
+              title: "ลบสำเร็จ!",
+              text: `ลบ ${username} สำเร็จ`,
+              icon: "success",
+              confirmButtonText: "ตกลง",
+            });
+            setRefetch(!refetch);
+          });
+        } catch (err) {
+          Swal.fire({
+            title: "เกิดข้อผิดพลาด!",
+            text: "เกิดข้อผิดพลาดในการลบผู้ใช้ระบบ",
+            icon: "error",
+            confirmButtonText: "ตกลง",
+          });
+        }
       }
-    }
+    });
   };
 
   const csvOptions = {
@@ -184,13 +204,14 @@ const ListSceneInvestigator = () => {
           <h2>รายชื่อพนักงานตรวจสถานที่เกิดเหตุ</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          <IconButton
+          <ButtonAntd
+            type="primary"
             onClick={() =>
               navigate("/user-management/scene-investigator/create")
             }
           >
-            <PersonAddAlt1 />
-          </IconButton>
+            เพิ่ม
+          </ButtonAntd>
         </Grid>
         <DataGrid
           rows={

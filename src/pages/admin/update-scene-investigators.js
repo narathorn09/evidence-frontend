@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Button, Form, Input, Select } from "antd";
 import { Box, Grid } from "@mui/material";
-import { useNavigate , useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
 
 const UpdateSceneInvestigator = () => {
   const params = useParams();
@@ -13,11 +14,13 @@ const UpdateSceneInvestigator = () => {
   const [form] = Form.useForm();
   const [personData, setPersonData] = useState({});
   const [group, setGroup] = useState([]);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await requestPrivate.get(`/sceneInvestigatorById/${params?.id}`);
+        const response = await requestPrivate.get(
+          `/sceneInvestigatorById/${params?.id}`
+        );
         setPersonData(response?.data[0]);
       } catch (error) {
         console.error(error);
@@ -55,14 +58,25 @@ const UpdateSceneInvestigator = () => {
   const onFinish = async (value) => {
     const data = { mem_id: params?.id, ...value };
     // console.log(data);
+
     try {
       const response = await requestPrivate.put("/sceneInvestigator", data);
       if (response) {
-        alert(`แก้ไขข้อมูลสมาชิกสำเร็จ`);
+        Swal.fire({
+          title: "แก้ไขสำเร็จ!",
+          text: "แก้ไขข้อมูลพนักงานตรวจสถานที่เกิดเหตุสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
         navigate(-1);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการแก้ไขข้อมูลสมาชิก : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการแก้ไขข้อมูล พนง.ตรวจสถานที่เกิดเหตุ",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 

@@ -5,6 +5,7 @@ import { Box, Grid } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
 
 const UpdateDirector = () => {
   const params = useParams();
@@ -12,11 +13,13 @@ const UpdateDirector = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [personData, setPersonData] = useState({});
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await requestPrivate.get(`/directorById/${params?.id}`);
+        const response = await requestPrivate.get(
+          `/directorById/${params?.id}`
+        );
         setPersonData(response?.data[0]);
       } catch (error) {
         console.error(error);
@@ -42,11 +45,21 @@ const UpdateDirector = () => {
     try {
       const response = await requestPrivate.put("/director", data);
       if (response) {
-        alert(`แก้ไขข้อมูลสมาชิกสำเร็จ`);
+        Swal.fire({
+          title: "แก้ไขสำเร็จ!",
+          text: "แก้ไขข้อมูลผู้กำกับสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
         navigate(-1);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการแก้ไขข้อมูลสมาชิก : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการแก้ไขข้อมูลผู้กำกับ",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -69,7 +82,7 @@ const UpdateDirector = () => {
       console.log(err);
     }
   };
-  
+
   // Reset fields and set default values
   const handleResetFields = () => {
     form.setFieldsValue(defaultValues);

@@ -7,10 +7,12 @@ import {
   GridToolbarExportContainer,
   GridCsvExportMenuItem,
 } from "@mui/x-data-grid";
-import { DeleteForever, AddCircle, Edit } from "@mui/icons-material";
+import { DeleteForever, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
+import { Button as ButtonAntd } from "antd";
 
 const ListGroup = () => {
   const requestPrivate = useAxiosPrivate();
@@ -54,7 +56,7 @@ const ListGroup = () => {
       headerClassName: "super-app-theme--header",
       renderCell: (params) => {
         let status = ""; // Default value is an empty string
-        
+
         if (params.row?.group_status === "0") {
           status = "เปิด"; // "เปิด" for group_status = "0"
         } else if (params.row?.group_status === "1") {
@@ -122,17 +124,35 @@ const ListGroup = () => {
   }, [refetch]);
 
   const RemoveMember = async (groupId, groupName) => {
-    const confirmed = window.confirm(`คุณต้องการลบ ${groupName}?`);
-    if (confirmed) {
-      try {
-        await requestPrivate.delete(`/groupById/${groupId}`).then(() => {
-          setRefetch(!refetch);
-          alert(`ลบ ${groupName} สำเร็จ`);
-        });
-      } catch (err) {
-        alert(`${err?.data?.message}`);
+    Swal.fire({
+      title: "แจ้งเตือน!",
+      text: `คุณต้องการลบ ${groupName}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ตกลง",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await requestPrivate.delete(`/groupById/${groupId}`).then(() => {
+            Swal.fire({
+              title: "ลบสำเร็จ!",
+              text: `ลบ ${groupName} สำเร็จ`,
+              icon: "success",
+              confirmButtonText: "ตกลง",
+            });
+            setRefetch(!refetch);
+          });
+        } catch (err) {
+          Swal.fire({
+            title: "เกิดข้อผิดพลาด!",
+            text: "เกิดข้อผิดพลาดในการลบกลุ่มงาน",
+            icon: "error",
+            confirmButtonText: "ตกลง",
+          });
+        }
       }
-    }
+    });
   };
 
   const csvOptions = {
@@ -192,9 +212,12 @@ const ListGroup = () => {
           <h2>รายชื่อกลุ่มงาน</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          <IconButton onClick={() => navigate("/group-management/create")}>
-            <AddCircle />
-          </IconButton>
+          <ButtonAntd
+            type="primary"
+            onClick={() => navigate("/group-management/create")}
+          >
+            เพิ่ม
+          </ButtonAntd>
         </Grid>
         <DataGrid
           rows={

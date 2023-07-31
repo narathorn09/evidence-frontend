@@ -5,6 +5,7 @@ import { Box, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
 
 const CreateGroup = () => {
   const requestPrivate = useAxiosPrivate();
@@ -35,11 +36,21 @@ const CreateGroup = () => {
     try {
       const response = await requestPrivate.post("/group", value);
       if (response) {
-        alert(`เพิ่มกลุ่มงานสำเร็จ`);
+        Swal.fire({
+          title: "เพิ่มสำเร็จ!",
+          text: "เพิ่มกลุ่มงานสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
         navigate(-1);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการเพิ่มกลุ่มงาน : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการเพิ่มกลุ่มงาน",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -193,7 +204,7 @@ const CreateGroup = () => {
               onClick={() => form.resetFields()}
               style={{ marginLeft: 10 }}
             >
-              รีเซ็ต
+              ล้างค่า
             </Button>
           </Form.Item>
         </Form>

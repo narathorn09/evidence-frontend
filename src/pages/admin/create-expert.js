@@ -5,6 +5,7 @@ import { Box, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
 
 const CreateExpert = () => {
   const requestPrivate = useAxiosPrivate();
@@ -29,11 +30,21 @@ const CreateExpert = () => {
     try {
       const response = await requestPrivate.post("/expert", value);
       if (response) {
-        alert(`เพิ่มสมาชิกสำเร็จ`);
+          Swal.fire({
+          title: "เพิ่มสำเร็จ!",
+          text: "เพิ่มผู้ชำนาญการสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
         navigate(-1);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการเพิ่มสมาชิก : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการเพิ่มผู้ชำนาญการ",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -348,7 +359,7 @@ const CreateExpert = () => {
               ยกเลิก
             </Button>
             <Button onClick={handleResetFields} style={{ marginLeft: 10 }}>
-              รีเซ็ต
+              ล้างค่า
             </Button>
           </Form.Item>
         </Form>
