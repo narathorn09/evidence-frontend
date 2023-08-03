@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet";
 import {
   Button,
@@ -14,7 +14,7 @@ import {
   Tooltip,
   Image,
 } from "antd";
-import { PlusOutlined, DeleteOutlined, DeleteFilled } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { Box, Grid, Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
@@ -24,15 +24,16 @@ import useAxiosPrivate from "../../hook/use-axios-private";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import locale from "antd/es/locale/th_TH";
+import Swal from "sweetalert2";
 
 const { TextArea } = Input;
-dayjs.locale("th");
 let indexSelector = 0;
+dayjs.locale("th");
 
 const CreateCase = () => {
-  const { auth } = useAuth();
   const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
+  const { auth } = useAuth();
   const [typeEvidence, setTypeEvidence] = useState([]);
   const [invesId, setInvesId] = useState();
   const [form] = Form.useForm();
@@ -81,26 +82,6 @@ const CreateCase = () => {
   }, [auth?.user]);
 
   const onFinish = async (value) => {
-    // const case_save_time = value?.case_save_time?.$d.toString()?.split(" ")[4];
-    // const dateSaveString = value?.case_save_date?.toString();
-    // const case_save_date =
-    //   dateSaveString?.split(" ")[1] +
-    //   " " +
-    //   dateSaveString?.split(" ")[2] +
-    //   " " +
-    //   dateSaveString?.split(" ")[3];
-
-    // const case_accident_time = value?.case_accident_time?.$d
-    //   .toString()
-    //   ?.split(" ")[4];
-    // const dateAccidentString = value?.case_accident_date?.toString();
-    // const case_accident_date =
-    //   dateAccidentString?.split(" ")[1] +
-    //   " " +
-    //   dateAccidentString?.split(" ")[2] +
-    //   " " +
-    //   dateAccidentString?.split(" ")[3];
-
     try {
       if (evidence.length > 0) {
         const responseURLs = await requestPrivate.post("/uploads", {
@@ -111,19 +92,20 @@ const CreateCase = () => {
           const data = {
             ...value,
             inves_id: invesId,
-            // case_save_date: case_save_date,
-            // case_save_time: case_save_time,
-            // case_accident_date: case_accident_date,
-            // case_accident_time: case_accident_time,
             evidence_list: [...responseURLs.data.result],
           };
 
-          console.log("data", data);
+          // console.log("data", data);
+
           const responseCase = await requestPrivate.post("/case", data);
           if (responseCase.status === 200) {
-            alert("เพิ่มคดีสำเร็จ");
-            // window.location.reload()
-            // navigate(-1)
+            Swal.fire({
+              title: "เพิ่มคดีสำเร็จ!",
+              icon: "success",
+              confirmButtonText: "ตกลง",
+            });
+
+            navigate(-1);
           }
         } else {
           alert("No evidence URLs were returned.");
@@ -138,7 +120,12 @@ const CreateCase = () => {
         console.log("data", data);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการเพิ่มคดี : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการเพิ่มคดี",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -196,7 +183,8 @@ const CreateCase = () => {
         updatedEvidence.evidence_factor.splice(i, 1, {
           ef_photo: reader.result || null,
           ef_detail: updatedEvidence.evidence_factor[i]?.ef_detail || "",
-          assignGroupId: updatedEvidence.evidence_factor[i]?.assignGroupId || null,
+          assignGroupId:
+            updatedEvidence.evidence_factor[i]?.assignGroupId || null,
         });
         newEvidence[index] = updatedEvidence;
         return newEvidence;
@@ -228,7 +216,8 @@ const CreateCase = () => {
       updatedEvidence.evidence_factor.splice(i, 1, {
         ef_photo: updatedEvidence.evidence_factor[i]?.ef_photo || null,
         ef_detail: text,
-        assignGroupId: updatedEvidence.evidence_factor[i]?.assignGroupId || null,
+        assignGroupId:
+          updatedEvidence.evidence_factor[i]?.assignGroupId || null,
       });
       newEvidence[index] = updatedEvidence;
       return newEvidence;
@@ -241,8 +230,12 @@ const CreateCase = () => {
   };
 
   const handleDateChange = (dateDayJs, dateString, name) => {
+    const formattedDate = dayjs(dateString, "DD-MM-YYYY").format("YYYY-MM-DD");
+    form.setFieldValue(`${name}`, formattedDate);
+  };
+
+  const handleTimeChange = (dateDayJs, dateString, name) => {
     form.setFieldValue(`${name}`, dateString);
-    // console.log(`${name}`, form.getFieldValue(`${name}`));
   };
 
   const tailLayout = {
@@ -287,15 +280,6 @@ const CreateCase = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
-          // fields={fields}
-          // onFieldsChange={(fieldValues, allFields) => {
-          //   if (fieldValues[0].name[0] === 'username')
-          //   validUsername(fieldValues[0].value);
-          // }}
-          // onValuesChange={(changedValues, allValues) => {
-          //   // if (changedValues?.username)
-          //   handleUsernameChange(changedValues?.username);
-          // }}
         >
           <Form.Item
             label="หมายเลข บก."
@@ -419,6 +403,7 @@ const CreateCase = () => {
             >
               <ConfigProvider locale={locale}>
                 <DatePicker
+                  format="DD-MM-YYYY"
                   onChange={(date, dateString) =>
                     handleDateChange(date, dateString, "case_save_date")
                   }
@@ -454,7 +439,7 @@ const CreateCase = () => {
               <ConfigProvider locale={locale}>
                 <TimePicker
                   onChange={(date, dateString) =>
-                    handleDateChange(date, dateString, "case_save_time")
+                    handleTimeChange(date, dateString, "case_save_time")
                   }
                 />
               </ConfigProvider>
@@ -487,6 +472,7 @@ const CreateCase = () => {
             >
               <ConfigProvider locale={locale}>
                 <DatePicker
+                  format="DD-MM-YYYY"
                   onChange={(date, dateString) =>
                     handleDateChange(date, dateString, "case_accident_date")
                   }
@@ -516,7 +502,7 @@ const CreateCase = () => {
               <ConfigProvider locale={locale}>
                 <TimePicker
                   onChange={(date, dateString) =>
-                    handleDateChange(date, dateString, "case_accident_time")
+                    handleTimeChange(date, dateString, "case_accident_time")
                   }
                 />
               </ConfigProvider>
@@ -708,7 +694,11 @@ const CreateCase = () => {
                           let evs = evidence.slice();
                           evs[index].evidence_factor = [
                             ...evs[index].evidence_factor,
-                            { ef_photo: null, ef_detail: "", assignGroupId: null},
+                            {
+                              ef_photo: null,
+                              ef_detail: "",
+                              assignGroupId: null,
+                            },
                           ];
                         } else if (info.type === "down") {
                           let evs = evidence.slice();
@@ -867,7 +857,10 @@ const CreateCase = () => {
                               <Select
                                 placeholder="เลือกกลุ่มงานที่จะมอบงานตรวจ"
                                 allowClear={true}
-                                value={evidence[index]?.evidence_factor[i]?.assignGroupId}
+                                value={
+                                  evidence[index]?.evidence_factor[i]
+                                    ?.assignGroupId
+                                }
                                 onChange={(value, obj) => {
                                   console.log("obj", obj);
                                   const res = [...evidence]; // Clone the evidence array
@@ -933,10 +926,13 @@ const CreateCase = () => {
               ยกเลิก
             </Button>
             <Button
-              onClick={() => form.resetFields()}
+              onClick={() => {
+                form.resetFields();
+                setEvidence([]);
+              }}
               style={{ marginLeft: 10 }}
             >
-              รีเซ็ต
+              ล้างค่า
             </Button>
           </Form.Item>
         </Form>
