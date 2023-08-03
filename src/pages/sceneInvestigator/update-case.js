@@ -32,6 +32,7 @@ import weekOfYear from "dayjs/plugin/weekOfYear";
 import weekYear from "dayjs/plugin/weekYear";
 // import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import Swal from "sweetalert2";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(advancedFormat);
@@ -202,12 +203,21 @@ const UpdateCase = () => {
 
           const responseCase = await requestPrivate.put("/case", allData);
           if (responseCase.status === 200) {
-            alert("แก้ไขคดีสำเร็จ");
-            // window.location.reload()
+            Swal.fire({
+              title: "แก้ไขสำเร็จ!",
+              text: "แก้ไขข้อมูลคดีสำเร็จ",
+              icon: "success",
+              confirmButtonText: "ตกลง",
+            });
             navigate(-1);
           }
         } else {
-          alert("No evidence URLs were returned.");
+          Swal.fire({
+            title: "เกิดข้อผิดพลาด!",
+            text: "เกิดข้อผิดพลาดในการแก้ไขแก้ไขข้อมูลคดี",
+            icon: "error",
+            confirmButtonText: "ตกลง",
+          });
         }
       } else {
         const data = {

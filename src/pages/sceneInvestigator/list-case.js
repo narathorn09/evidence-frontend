@@ -18,6 +18,7 @@ import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 import { Button as ButtonAntd } from "antd";
 import dayjs from "dayjs";
+import Swal from "sweetalert2";
 
 const ListCase = () => {
   const { auth } = useAuth();
@@ -138,10 +139,10 @@ const ListCase = () => {
       renderCell: (params) => (
         <IconButton
           onClick={() => {
-            // RemoveTypeEvidence(
-            //   params?.row?.type_e_id,
-            //   params?.row?.type_e_name
-            // );
+            RemoveCase(
+              params?.row?.id,
+              params?.row?.case_numboko
+            );
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >
@@ -174,18 +175,38 @@ const ListCase = () => {
     fetchData();
   }, [refetch, invesId]);
 
-  const RemoveCase = async (caseId, caseName) => {
-    // const confirmed = window.confirm(`คุณต้องการลบคดี ${caseName}?`);
-    // if (confirmed) {
-    //   try {
-    //     await requestPrivate.delete(`/typeEvidenceById/${typeId}`).then(() => {
-    //       setRefetch(!refetch);
-    //       alert(`ลบคดี ${caseName} สำเร็จ`);
-    //     });
-    //   } catch (err) {
-    //     alert(`${err?.message}`);
-    //   }
-    // }
+  const RemoveCase = async (caseId, caseNumboko) => {
+    Swal.fire({
+      title: "แจ้งเตือน!",
+      text: `คุณต้องการลบคดีหมายเลข บก. ${caseNumboko}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ตกลง",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await requestPrivate
+            .delete(`/caseByCaseId/${caseId}`)
+            .then(() => {
+              Swal.fire({
+                title: "ลบสำเร็จ!",
+                text: `ลบคดีหมายเลข บก. ${caseNumboko} สำเร็จ`,
+                icon: "success",
+                confirmButtonText: "ตกลง",
+              });
+              setRefetch(!refetch);
+            });
+        } catch (err) {
+          Swal.fire({
+            title: "เกิดข้อผิดพลาด!",
+            text: "เกิดข้อผิดพลาดในการลบคดี",
+            icon: "error",
+            confirmButtonText: "ตกลง",
+          });
+        }
+      }
+    });
   };
 
   const csvOptions = {
