@@ -9,7 +9,6 @@ import {
 } from "@mui/x-data-grid";
 import {
   DeleteForever,
-  AddCircle,
   Edit,
   Visibility,
 } from "@mui/icons-material";
@@ -17,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import { Button as ButtonAntd } from "antd";
 import dayjs from "dayjs";
 
 const ListCase = () => {
@@ -54,7 +54,7 @@ const ListCase = () => {
       width: 150,
       headerClassName: "super-app-theme--header",
       renderCell: (params) =>
-        dayjs(params?.row?.case_save_date).format("DD MMM YYYY"),
+        dayjs(params?.row?.case_save_date).format("DD-MM-YYYY"),
     },
     {
       field: "case_save_time",
@@ -70,7 +70,7 @@ const ListCase = () => {
       width: 150,
       headerClassName: "super-app-theme--header",
       renderCell: (params) =>
-        dayjs(params?.row?.case_accident_date).format("DD MMM YYYY"),
+        dayjs(params?.row?.case_accident_date).format("DD-MM-YYYY"),
     },
     {
       field: "case_accident_time",
@@ -245,9 +245,9 @@ const ListCase = () => {
           <h2>รายการคดี</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          <IconButton onClick={() => navigate("/inves/manage-case/create")}>
-            <AddCircle />
-          </IconButton>
+          <ButtonAntd type="primary" onClick={() => navigate("/inves/manage-case/create")}>
+            เพิ่ม
+          </ButtonAntd>
         </Grid>
         <DataGrid
           rows={
