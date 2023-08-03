@@ -10,7 +10,7 @@ const useRefreshToken = () => {
       const response = await request.get("/accesstoken", {
         withCredentials: true,
       });
-      setAuthToken(response.data.accessToken);
+      await setAuthToken(response.data.accessToken);
       return response.data.accessToken;
     } catch (err) {
       navigate("/login");
