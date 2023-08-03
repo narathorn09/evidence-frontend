@@ -21,10 +21,8 @@ import { useAuth } from "../../contexts/auth-context";
 import { Delete, ExpandMore, ExpandLess } from "@mui/icons-material";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
-// import dayjs from "dayjs";
 import "dayjs/locale/th";
 import locale from "antd/es/locale/th_TH";
-import moment from "moment";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -66,6 +64,7 @@ const UpdateCase = () => {
   const [dateAccident, setdateAccident] = useState("");
   const [timeSave, setTimeSave] = useState("");
   const [timeAccident, setTimeAccident] = useState("");
+  const [efDelete, setEfDelete] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +73,7 @@ const UpdateCase = () => {
           `/caseByCaseId/${params?.caseId}`
         );
         setCaseData(response.data[0]);
+        setEvidence(response.data[0].evidence_list);
       } catch (err) {
         alert(`เกิดข้อผิดพลาดในการดึงข้อมูลคดี : ${err}`);
       }
@@ -123,9 +123,11 @@ const UpdateCase = () => {
   const defaultValues = {
     case_numboko: caseData?.case_numboko,
     case_type: caseData?.case_type,
-    case_save_date: caseData?.case_save_date,
+    case_save_date: dayjs(caseData?.case_save_date).format("YYYY-MM-DD"),
     case_save_time: caseData?.case_save_time,
-    case_accident_date: caseData?.case_accident_date,
+    case_accident_date: dayjs(caseData?.case_accident_date).format(
+      "YYYY-MM-DD"
+    ),
     case_accident_time: caseData?.case_accident_time,
     case_location: caseData?.case_location,
   };
@@ -150,44 +152,75 @@ const UpdateCase = () => {
     const data = {
       ...value,
       inves_id: invesId,
+      evidence_list: evidence,
     };
-    console.log("data", data);
 
-    // try {
-    //   if (evidence.length > 0) {
-    //     const responseURLs = await requestPrivate.post("/uploads", {
-    //       evidence_list: evidence,
-    //     });
+    const defElements = data.evidence_list.filter((evidence) =>
+      caseData.evidence_list.some(
+        (item) => item.evidence_id === evidence.evidence_id
+      )
+    );
 
-    //     if (responseURLs.data.result.length > 0) {
-    //       const data = {
-    //         ...value,
-    //         inves_id: invesId,
-    //         evidence_list: [...responseURLs.data.result],
-    //       };
+    const newElements = data.evidence_list.filter(
+      (evidence) =>
+        !caseData.evidence_list.some(
+          (item) => item.evidence_id === evidence.evidence_id
+        )
+    );
 
-    //       console.log("data", data);
-    //       const responseCase = await requestPrivate.post("/case", data);
-    //       if (responseCase.status === 200) {
-    //         alert("เพิ่มคดีสำเร็จ");
-    //         // window.location.reload()
-    //         // navigate(-1)
-    //       }
-    //     } else {
-    //       alert("No evidence URLs were returned.");
-    //     }
-    //   } else {
-    //     const data = {
-    //       ...value,
-    //       inves_id: invesId,
-    //       evidence_list: [],
-    //     };
+    const missingElements = caseData.evidence_list.filter(
+      (evidence) =>
+        !data.evidence_list.some(
+          (item) => item.evidence_id === evidence.evidence_id
+        )
+    );
 
-    //     console.log("data", data);
-    //   }
-    // } catch (err) {
-    //   alert(`เกิดปัญหาในการเพิ่มคดี : ${err}`);
-    // }
+    try {
+      if (evidence.length > 0) {
+        const responseAfterUpdateImg = await requestPrivate.put(
+          "/update/uploads",
+          {
+            defElements: defElements,
+            missingElements: missingElements,
+            newElements: newElements,
+            efDelete: efDelete,
+          }
+        );
+
+        if (responseAfterUpdateImg && responseAfterUpdateImg.status === 200) {
+          const allData = {
+            ...value,
+            case_id: caseData.case_id,
+            inves_id: invesId,
+            defEvidence: responseAfterUpdateImg.data.defEvidence,
+            removeEvidenceFactorInDef:
+              responseAfterUpdateImg.data.removeEvidenceFactorInDef,
+            newEvidence: responseAfterUpdateImg.data.newEvidence,
+            removeEvidence: responseAfterUpdateImg.data.removeEvidence,
+          };
+          console.log(allData);
+
+          const responseCase = await requestPrivate.put("/case", allData);
+          if (responseCase.status === 200) {
+            alert("แก้ไขคดีสำเร็จ");
+            // window.location.reload()
+            navigate(-1);
+          }
+        } else {
+          alert("No evidence URLs were returned.");
+        }
+      } else {
+        const data = {
+          ...value,
+          inves_id: invesId,
+          evidence_list: [],
+        };
+
+        console.log("data", data);
+      }
+    } catch (err) {
+      alert(`เกิดปัญหาในการเพิ่มคดี : ${err}`);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -224,6 +257,13 @@ const UpdateCase = () => {
   const handleDeleteEvidenceFactor = (i, index) => {
     setEvidence((prevEvidence) => {
       const newEvidence = [...prevEvidence];
+      if (newEvidence[index].evidence_factor[i]?.ef_id !== undefined)
+        setEfDelete((prev) => [
+          ...prev,
+          {
+            ...newEvidence[index].evidence_factor[i],
+          },
+        ]);
       newEvidence[index].evidence_factor.splice(i, 1);
       newEvidence[index] = {
         ...newEvidence[index],
@@ -242,10 +282,14 @@ const UpdateCase = () => {
         const newEvidence = [...prevEvidence];
         const updatedEvidence = { ...newEvidence[index] };
         updatedEvidence.evidence_factor.splice(i, 1, {
+          ...updatedEvidence.evidence_factor[i],
+          ef_photo_remove:
+            updatedEvidence.evidence_factor[i]?.ef_photo ||
+            updatedEvidence.evidence_factor[i]?.ef_photo_remove,
           ef_photo: reader.result || null,
           ef_detail: updatedEvidence.evidence_factor[i]?.ef_detail || "",
-          assignGroupId:
-            updatedEvidence.evidence_factor[i]?.assignGroupId || null,
+          // assignGroupId:
+          //   updatedEvidence.evidence_factor[i]?.assignGroupId || null,
         });
         newEvidence[index] = updatedEvidence;
         return newEvidence;
@@ -262,6 +306,11 @@ const UpdateCase = () => {
       const newEvidence = [...prevEvidence];
       const updatedEvidence = { ...newEvidence[index] };
       let updatedEvidenceFactor = { ...updatedEvidence.evidence_factor[i] };
+      updatedEvidenceFactor.ef_photo_remove =
+        updatedEvidenceFactor.ef_photo?.split(";")[1]?.split(",")[0] ===
+        "base64"
+          ? null
+          : updatedEvidenceFactor.ef_photo;
       updatedEvidenceFactor.ef_photo = null;
       updatedEvidence.evidence_factor[i] = updatedEvidenceFactor;
       newEvidence[index] = updatedEvidence;
@@ -275,10 +324,11 @@ const UpdateCase = () => {
       const newEvidence = [...prevEvidence];
       const updatedEvidence = { ...newEvidence[index] };
       updatedEvidence.evidence_factor.splice(i, 1, {
-        ef_photo: updatedEvidence.evidence_factor[i]?.ef_photo || null,
+        ...updatedEvidence.evidence_factor[i],
+        // ef_photo: updatedEvidence.evidence_factor[i]?.ef_photo || null,
         ef_detail: text,
-        assignGroupId:
-          updatedEvidence.evidence_factor[i]?.assignGroupId || null,
+        // assignGroupId:
+        //   updatedEvidence.evidence_factor[i]?.assignGroupId || null,
       });
       newEvidence[index] = updatedEvidence;
       return newEvidence;
@@ -291,12 +341,26 @@ const UpdateCase = () => {
   };
 
   const handleDateChange = (dateDayJs, dateString, name) => {
-    console.log("dateString", dateString);
-    form.setFieldValue(`${name}`, dateString);
-    if (name === "case_save_date") setDateSave(dateString);
-    else if (name === "case_accident_date") setdateAccident(dateString);
-    else if (name === "case_save_time") setTimeSave(dateString);
-    else if (name === "case_accident_time") setTimeAccident(dateString);
+    // console.log("dateString", dateString);
+    if (name === "case_save_date") {
+      const formattedDate = dayjs(dateString, "DD-MM-YYYY").format(
+        "YYYY-MM-DD"
+      );
+      form.setFieldValue(`${name}`, formattedDate);
+      setDateSave(formattedDate);
+    } else if (name === "case_accident_date") {
+      const formattedDate = dayjs(dateString, "DD-MM-YYYY").format(
+        "YYYY-MM-DD"
+      );
+      form.setFieldValue(`${name}`, formattedDate);
+      setdateAccident(formattedDate);
+    } else if (name === "case_save_time") {
+      form.setFieldValue(`${name}`, dateString);
+      setTimeSave(dateString);
+    } else if (name === "case_accident_time") {
+      form.setFieldValue(`${name}`, dateString);
+      setTimeAccident(dateString);
+    }
   };
 
   const tailLayout = {
@@ -309,18 +373,18 @@ const UpdateCase = () => {
   return (
     <div>
       <Helmet>
-        <title>Add Case - Forensic Science</title>
+        <title>Edit Case - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
           { title: "จัดการคดี" },
           { title: "รายการคดี", path: "/inves/manage-case/list" },
-          { title: "เพิ่มคดี" },
+          { title: "แก้ไขคดี" },
         ]}
       />
       <Box sx={{ width: "100%", height: "100%" }}>
         <Grid sx={{ textAlign: "left" }}>
-          <h2>เพิ่มคดี</h2>
+          <h2>แก้ไขคดี</h2>
         </Grid>
 
         <Form
@@ -341,15 +405,6 @@ const UpdateCase = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
-          // fields={fields}
-          // onFieldsChange={(fieldValues, allFields) => {
-          //   if (fieldValues[0].name[0] === 'username')
-          //   validUsername(fieldValues[0].value);
-          // }}
-          // onValuesChange={(changedValues, allValues) => {
-          //   // if (changedValues?.username)
-          //   handleUsernameChange(changedValues?.username);
-          // }}
         >
           <Form.Item
             label="หมายเลข บก."
@@ -467,7 +522,7 @@ const UpdateCase = () => {
             >
               <ConfigProvider locale={locale}>
                 <DatePicker
-                  format="YYYY-MM-DD"
+                  format="DD-MM-YYYY"
                   allowClear={false}
                   defaultValue={dayjs(dateSave)}
                   value={dayjs(dateSave)}
@@ -536,7 +591,7 @@ const UpdateCase = () => {
             >
               <ConfigProvider locale={locale}>
                 <DatePicker
-                  format="YYYY-MM-DD"
+                  format="DD-MM-YYYY"
                   allowClear={false}
                   defaultValue={dayjs(dateAccident)}
                   value={dayjs(dateAccident)}
@@ -773,6 +828,14 @@ const UpdateCase = () => {
                         } else if (info.type === "down") {
                           let evs = evidence.slice();
                           evs[index].evidence_factor.splice(-1, 1);
+                          setEfDelete((prev) => [
+                            ...prev,
+                            {
+                              ...evs[index].evidence_factor[
+                                evs[index].evidence_factor.length - 1
+                              ],
+                            },
+                          ]);
                         }
                         let re = {
                           ...evs[index],
@@ -891,9 +954,15 @@ const UpdateCase = () => {
                                         borderRadius: "8px",
                                       }}
                                       src={
-                                        evidence[index]?.evidence_factor[i]
-                                          ?.ef_photo
+                                        evidence[index]?.evidence_factor[
+                                          i
+                                        ]?.ef_photo
+                                          ?.split(";")[1]
+                                          ?.split(",")[0] !== "base64"
+                                          ? `${process.env.REACT_APP_URL_ASSET}/${evidence[index]?.evidence_factor[i]?.ef_photo}`
+                                          : `${evidence[index]?.evidence_factor[i]?.ef_photo}`
                                       }
+                                      // src={`${process.env.REACT_APP_URL_ASSET}/${evidence[index]?.evidence_factor[i]?.ef_photo}`}
                                     />
                                   </Box>
 
@@ -931,12 +1000,28 @@ const UpdateCase = () => {
                                   evidence[index]?.evidence_factor[i]
                                     ?.assignGroupId
                                 }
+                                defaultValue={
+                                  evidence[index]?.evidence_factor[i]?.group_id
+                                }
+                                onClear={() => {
+                                  const res = [...evidence]; // Clone the evidence array
+                                  const re = {
+                                    ...evidence[index]?.evidence_factor[i],
+                                    assignGroupId_remove: true,
+                                  };
+                                  console.log("re", re);
+                                  res[index].evidence_factor[i] = re; // Update the specific evidence_factor
+                                  setEvidence(res);
+                                }}
                                 onChange={(value, obj) => {
                                   console.log("obj", obj);
                                   const res = [...evidence]; // Clone the evidence array
                                   const re = {
                                     ...evidence[index]?.evidence_factor[i],
                                     assignGroupId: obj?.value || null,
+                                    assignGroupId_remove: obj?.value 
+                                      ? false
+                                      : true,
                                   };
                                   console.log("re", re);
                                   res[index].evidence_factor[i] = re; // Update the specific evidence_factor
@@ -976,6 +1061,7 @@ const UpdateCase = () => {
               onClick={() => {
                 let res = evidence.slice();
                 res = {
+                  new_evidence: "new",
                   type_e_id: null,
                   evidence_amount: null,
                   evidence_factor: [],
@@ -995,12 +1081,12 @@ const UpdateCase = () => {
             <Button onClick={() => navigate(-1)} style={{ marginLeft: 10 }}>
               ยกเลิก
             </Button>
-            <Button
-              onClick={() => form.resetFields()}
+            {/* <Button
+              onClick={() => form.setFieldsValue(defaultValues)}
               style={{ marginLeft: 10 }}
             >
-              รีเซ็ต
-            </Button>
+              คืนค่า
+            </Button> */}
           </Form.Item>
         </Form>
       </Box>
