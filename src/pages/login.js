@@ -163,16 +163,16 @@ const Login = () => {
             <Form.Item
               label="Username"
               name="username"
-              rules={[
-                {
-                  required: true,
-                  message: (
-                    <span style={{ fontSize: "12px" }}>
-                      กรุณากรอก username!
-                    </span>
-                  ),
-                },
-              ]}
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: (
+              //       <span style={{ fontSize: "12px" }}>
+              //         กรุณากรอก username!
+              //       </span>
+              //     ),
+              //   },
+              // ]}
             >
               <Input />
             </Form.Item>
@@ -180,16 +180,16 @@ const Login = () => {
             <Form.Item
               label="Password"
               name="password"
-              rules={[
-                {
-                  required: true,
-                  message: (
-                    <span style={{ fontSize: "12px" }}>
-                      กรุณากรอก password!
-                    </span>
-                  ),
-                },
-              ]}
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: (
+              //       <span style={{ fontSize: "12px" }}>
+              //         กรุณากรอก password!
+              //       </span>
+              //     ),
+              //   },
+              // ]}
             >
               <Input.Password />
             </Form.Item>
