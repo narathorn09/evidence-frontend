@@ -18,9 +18,9 @@ export const checkTokenExpired = (accessToken) => {
     } catch (err) {
       console.log("Error decoding token:", err);
     }
+  } else {
+    return { user: null, accessToken: null };
   }
-
-  return { user: null, accessToken: null };
 };
 
 const useToken = () => {
