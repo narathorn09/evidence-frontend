@@ -238,6 +238,11 @@ const CreateCase = () => {
     form.setFieldValue(`${name}`, dateString);
   };
 
+  useEffect(() => {
+    form.setFieldValue(`case_save_date`, dayjs().format("YYYY-MM-DD"));
+    form.setFieldValue(`case_save_time`, dayjs().format("HH:mm:ss"));
+  },[])
+
   const tailLayout = {
     wrapperCol: {
       offset: 4,
@@ -404,6 +409,7 @@ const CreateCase = () => {
               <ConfigProvider locale={locale}>
                 <DatePicker
                   format="DD-MM-YYYY"
+                  defaultValue={dayjs()}
                   onChange={(date, dateString) =>
                     handleDateChange(date, dateString, "case_save_date")
                   }
@@ -438,6 +444,7 @@ const CreateCase = () => {
             >
               <ConfigProvider locale={locale}>
                 <TimePicker
+                  defaultValue={dayjs()}
                   onChange={(date, dateString) =>
                     handleTimeChange(date, dateString, "case_save_time")
                   }
