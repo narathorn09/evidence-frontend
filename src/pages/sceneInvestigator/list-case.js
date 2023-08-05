@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Button, IconButton, Grid } from "@mui/material";
+import { Button, IconButton, Grid, Box } from "@mui/material";
 import {
   DataGrid,
   GridToolbarContainer,
   GridToolbarExportContainer,
   GridCsvExportMenuItem,
 } from "@mui/x-data-grid";
-import {
-  DeleteForever,
-  Edit,
-  Visibility,
-} from "@mui/icons-material";
+import { DeleteForever, Edit, Visibility } from "@mui/icons-material";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
-import { Button as ButtonAntd } from "antd";
+import { Button as ButtonAntd, Tooltip } from "antd";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
 
@@ -62,8 +59,7 @@ const ListCase = () => {
       headerName: "เวลาที่ลงบันทึกคดี",
       width: 150,
       headerClassName: "super-app-theme--header",
-      renderCell: (params) =>
-       `${params?.row?.case_save_time} น.`
+      renderCell: (params) => `${params?.row?.case_save_time} น.`,
     },
     {
       field: "case_accident_date",
@@ -78,8 +74,7 @@ const ListCase = () => {
       headerName: "เวลาที่เกิดเหตุ",
       width: 150,
       headerClassName: "super-app-theme--header",
-      renderCell: (params) =>
-       `${params?.row?.case_accident_time} น.`
+      renderCell: (params) => `${params?.row?.case_accident_time} น.`,
     },
     {
       field: "case_location",
@@ -118,16 +113,58 @@ const ListCase = () => {
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
-      renderCell: (params) => (
-        <IconButton
-          onClick={() => {
-            navigate(`/inves/manage-case/update/${params?.row?.id}`);
-          }}
-          sx={{ ":hover": { color: "var(--color--main-light9)" } }}
-        >
-          <Edit />
-        </IconButton>
-      ),
+      renderCell: (params) => {
+        let check;
+        params.row.evidence_list.forEach((evidence) => {
+          evidence.evidence_factor.forEach((factor) => {
+            if (factor.assign_direc_status === "1") {
+              check = true;
+            }
+          });
+        });
+
+        return check ? (
+          <Tooltip
+            title={
+              <Box
+                style={{
+                  // textAlign: "center",
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <Grid sx={{ mr: 1 }}>
+                  <ExclamationCircleOutlined />
+                </Grid>
+                <Grid>ไม่สามารถแก้ไขได้ เนื่องจากมีการกดรับคดีแล้ว</Grid>
+              </Box>
+            }
+            // color={"var(--color--orange)"}
+            color={"#f50"}
+            style={{ cursor: "pointer", textAlign: "center" }}
+          >
+            {/* <IconButton
+              disabled={check}
+              style={{ opacity: 0.4 }}
+              onClick={() => {
+                navigate(`/inves/manage-case/update/${params?.row?.id}`);
+              }}
+              sx={{ ":hover": { color: "var(--color--main-light9)" } }}
+            > */}
+            <Edit style={{ opacity: 0.3 }} />
+            {/* </IconButton> */}
+          </Tooltip>
+        ) : (
+          <IconButton
+            onClick={() => {
+              navigate(`/inves/manage-case/update/${params?.row?.id}`);
+            }}
+            sx={{ ":hover": { color: "var(--color--main-light9)" } }}
+          >
+            <Edit />
+          </IconButton>
+        );
+      },
     },
     {
       field: "Delete",
@@ -136,19 +173,66 @@ const ListCase = () => {
       width: 100,
       align: "center",
       headerAlign: "center",
-      renderCell: (params) => (
-        <IconButton
-          onClick={() => {
-            RemoveCase(
-              params?.row?.id,
-              params?.row?.case_numboko
-            );
-          }}
-          sx={{ ":hover": { color: "var(--color--main-light9)" } }}
-        >
-          <DeleteForever />
-        </IconButton>
-      ),
+      renderCell: (params) => {
+        let check;
+        params.row.evidence_list.forEach((evidence) => {
+          evidence.evidence_factor.forEach((factor) => {
+            if (factor.assign_direc_status === "1") {
+              check = true;
+            }
+          });
+        });
+
+        const caseDataById = items.filter(
+          (item) => item?.case_id === params?.row?.id
+        );
+
+        return check ? (
+          <Tooltip
+            title={
+              <Box
+                style={{
+                  // textAlign: "center",
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <Grid sx={{ mr: 1 }}>
+                  <ExclamationCircleOutlined />
+                </Grid>
+                <Grid>ไม่สามารถลบได้ เนื่องจากมีการกดรับคดีแล้ว</Grid>
+              </Box>
+            }
+            // color={"var(--color--orange)"}
+            color={"#f50"}
+            style={{ cursor: "pointer", textAlign: "center" }}
+          >
+            {/* <IconButton
+              disabled={check}
+              style={{ opacity: 0.4 }}
+              onClick={() => {
+                navigate(`/inves/manage-case/update/${params?.row?.id}`);
+              }}
+              sx={{ ":hover": { color: "var(--color--main-light9)" } }}
+            > */}
+            <DeleteForever style={{ opacity: 0.3 }} />
+            {/* </IconButton> */}
+          </Tooltip>
+        ) : (
+          <IconButton
+            onClick={() => {
+              RemoveCase(
+                params?.row?.id,
+                params?.row?.case_numboko,
+                caseDataById
+              );
+            }}
+            sx={{ ":hover": { color: "var(--color--main-light9)" } }}
+          >
+            <DeleteForever />
+          </IconButton>
+        );
+      },
     },
   ];
 
@@ -175,7 +259,7 @@ const ListCase = () => {
     fetchData();
   }, [refetch, invesId]);
 
-  const RemoveCase = async (caseId, caseNumboko) => {
+  const RemoveCase = async (caseId, caseNumboko, caseDataById) => {
     Swal.fire({
       title: "แจ้งเตือน!",
       text: `คุณต้องการลบคดีหมายเลข บก. ${caseNumboko}?`,
@@ -186,9 +270,11 @@ const ListCase = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await requestPrivate
-            .delete(`/caseByCaseId/${caseId}`)
-            .then(() => {
+          const removeImages = await requestPrivate.post(`/delete/uploads`, {
+            caseData: caseDataById?.[0],
+          });
+          if (removeImages.status === 200) {
+            await requestPrivate.delete(`/caseByCaseId/${caseId}`).then(() => {
               Swal.fire({
                 title: "ลบสำเร็จ!",
                 text: `ลบคดีหมายเลข บก. ${caseNumboko} สำเร็จ`,
@@ -197,6 +283,7 @@ const ListCase = () => {
               });
               setRefetch(!refetch);
             });
+          }
         } catch (err) {
           Swal.fire({
             title: "เกิดข้อผิดพลาด!",
@@ -266,7 +353,10 @@ const ListCase = () => {
           <h2>รายการคดี</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          <ButtonAntd type="primary" onClick={() => navigate("/inves/manage-case/create")}>
+          <ButtonAntd
+            type="primary"
+            onClick={() => navigate("/inves/manage-case/create")}
+          >
             เพิ่ม
           </ButtonAntd>
         </Grid>
