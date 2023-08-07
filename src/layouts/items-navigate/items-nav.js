@@ -123,5 +123,27 @@ export const itemSceneInvestigator = [
   },
 ];
 
-export const itemDirector = [];
+export const itemDirector = [
+  {
+    key: "G0",
+    label: "หน้าแรก",
+    icon: <Home sx={{ fontSize: "20px" }} />,
+    link: "/home",
+    linkP: "/home",
+  },
+  {
+    key: "G1",
+    label: "คดีที่ได้รับ",
+    icon: <Work sx={{ fontSize: "20px" }} />,
+    link: "/director/manage-case/list",
+    linkP: "/director/manage-case",
+  },
+  {
+    key: "G2",
+    label: "รายงานสรุปผล",
+    icon: <Description sx={{ fontSize: "20px" }} />,
+    link: "/director/manage-report",
+    linkP: "/director/manage-report",
+  },
+];
 export const itemExpert = [];
