@@ -468,7 +468,7 @@ const GetCaseById = () => {
                     let textStatus;
                     switch (itemFactor?.ef_status) {
                       case "0": //รอการมอบหมายงาน
-                        colorStatus = "var(--color--blue)";
+                        colorStatus = "var(--color--orange)";
                         textStatus = "รอการมอบหมายงาน";
                         break;
                       case "1": //รอกลุ่มงานรับการมอบหมาย
@@ -476,7 +476,7 @@ const GetCaseById = () => {
                         textStatus = "รอกลุ่มงานรับการมอบหมาย";
                         break;
                       case "2": //กลุ่มงานรับการมอบหมายเรียบร้อย
-                        colorStatus = "var(--color--orange)";
+                        colorStatus = "var(--color--blue)";
                         textStatus = "กลุ่มงานรับการมอบหมายเรียบร้อย";
                         break;
                       case "3": //ตรวจสอบเรียบร้อย
