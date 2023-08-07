@@ -85,8 +85,24 @@ const ListCase = () => {
     {
       field: "case_status",
       headerName: "สถานะของคดี",
-      width: 100,
+      width: 180,
       headerClassName: "super-app-theme--header",
+      renderCell: (params) => {
+        let textStatus;
+        let colorStatus;
+        if (params?.row?.case_status === "0") {
+          textStatus = "อยู่ระหว่างดำเนินการ";
+          colorStatus = "var(--color--blue)";
+        } else if (params?.row?.case_status === "1") {
+          textStatus = "ดำเนินการเสร็จสิ้น";
+          colorStatus = "var(--color--green)";
+        } else if (params?.row?.case_status === "2") {
+          textStatus = "ปิดคดีแล้ว";
+          colorStatus = "var(--color--orange)";
+        }
+
+        return <span style={{color: colorStatus}}>{textStatus}</span>;
+      },
     },
     {
       field: "Detail",
