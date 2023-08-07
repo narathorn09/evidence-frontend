@@ -30,6 +30,8 @@ import CreateCase from "./pages/sceneInvestigator/create-case";
 import ListCase from "./pages/sceneInvestigator/list-case";
 import GetCaseById from "./pages/sceneInvestigator/getbyid-case";
 import UpdateCase from "./pages/sceneInvestigator/update-case";
+import ListCaseAssign from "./pages/director/list-case-assign";
+import GetCaseAssignById from "./pages/director/getbyid-case-assign";
 
 const App = () => {
   const { auth } = useAuth();
@@ -86,7 +88,10 @@ const App = () => {
           )}
            {role === "3" && ( //Director
             <>
-              <Route exact path="/" element={<>Director</>} />
+              <Route exact path="/home" element={<>Director</>} />
+              <Route exact path="/director/manage-case/list" element={<ListCaseAssign />} />
+              <Route exact path="/director/manage-case/casebyid/:caseId" element={<GetCaseAssignById />} />
+
             </>
           )}
            {role === "4" && ( //Expert
