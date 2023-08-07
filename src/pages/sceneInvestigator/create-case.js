@@ -14,7 +14,7 @@ import {
   Tooltip,
   Image,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { Box, Grid, Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
@@ -110,14 +110,6 @@ const CreateCase = () => {
         } else {
           alert("No evidence URLs were returned.");
         }
-      } else {
-        const data = {
-          ...value,
-          inves_id: invesId,
-          evidence_list: [],
-        };
-
-        console.log("data", data);
       }
     } catch (err) {
       Swal.fire({
@@ -241,7 +233,7 @@ const CreateCase = () => {
   useEffect(() => {
     form.setFieldValue(`case_save_date`, dayjs().format("YYYY-MM-DD"));
     form.setFieldValue(`case_save_time`, dayjs().format("HH:mm:ss"));
-  },[])
+  }, [])
 
   const tailLayout = {
     wrapperCol: {
@@ -408,6 +400,7 @@ const CreateCase = () => {
             >
               <ConfigProvider locale={locale}>
                 <DatePicker
+                  allowClear={false}
                   format="DD-MM-YYYY"
                   defaultValue={dayjs()}
                   onChange={(date, dateString) =>
@@ -444,6 +437,7 @@ const CreateCase = () => {
             >
               <ConfigProvider locale={locale}>
                 <TimePicker
+                  allowClear={false}
                   defaultValue={dayjs()}
                   onChange={(date, dateString) =>
                     handleTimeChange(date, dateString, "case_save_time")
@@ -479,6 +473,7 @@ const CreateCase = () => {
             >
               <ConfigProvider locale={locale}>
                 <DatePicker
+                  allowClear={false}
                   format="DD-MM-YYYY"
                   onChange={(date, dateString) =>
                     handleDateChange(date, dateString, "case_accident_date")
@@ -508,6 +503,7 @@ const CreateCase = () => {
             >
               <ConfigProvider locale={locale}>
                 <TimePicker
+                  allowClear={false}
                   onChange={(date, dateString) =>
                     handleTimeChange(date, dateString, "case_accident_time")
                   }
@@ -555,6 +551,10 @@ const CreateCase = () => {
                 : item.type_e_id;
             let isLastIndex = index === evidence?.length - 1;
             if (evidence.length === 0) isLastIndex = true;
+            if (evidence[index]?.evidence_amount === null) {
+              evidence[index].evidence_amount = 1;
+            }
+
             return (
               <Box key={index}>
                 <Divider orientation="left" orientationMargin="0">
@@ -691,7 +691,7 @@ const CreateCase = () => {
                   >
                     <InputNumber
                       value={evidence[index]?.evidence_amount}
-                      // defaultValue={1}
+                      defaultValue={1}
                       controls={true}
                       min={1}
                       onStep={(value, info) => {
@@ -734,16 +734,17 @@ const CreateCase = () => {
                                   evidence[index]?.type_e_name || "วัตถุที่"
                                 } ${i + 1}`}
                               />
-
-                              <Tooltip title="ลบ">
-                                <Button
-                                  shape="circle"
-                                  icon={<Delete />}
-                                  onClick={() =>
-                                    handleDeleteEvidenceFactor(i, index)
-                                  }
-                                />
-                              </Tooltip>
+                              {evidence[index].evidence_amount !== 1 && (
+                                <Tooltip title="ลบ">
+                                  <Button
+                                    shape="circle"
+                                    icon={<Delete />}
+                                    onClick={() =>
+                                      handleDeleteEvidenceFactor(i, index)
+                                    }
+                                  />
+                                </Tooltip>
+                              )}
                             </Box>
                           </Divider>
                           <Box
@@ -926,9 +927,33 @@ const CreateCase = () => {
           </Form.Item>
 
           <Form.Item {...tailLayout}>
-            <Button type="primary" htmlType="submit">
-              ยืนยัน
-            </Button>
+            {evidence.length > 0 ? (
+              <Button type="primary" htmlType="submit">
+                ยืนยัน
+              </Button>
+            ) : (
+              <Tooltip
+                title={
+                  <Box
+                    style={{
+                      // textAlign: "center",
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                  >
+                    <Grid sx={{ mr: 1 }}>
+                      <ExclamationCircleOutlined />
+                    </Grid>
+                    <Grid>กรุณาเพิ่มวัตถุพยาน</Grid>
+                  </Box>
+                }
+              >
+                <Button type="primary" htmlType="submit" disabled={true}>
+                  ยืนยัน
+                </Button>
+              </Tooltip>
+            )}
+
             <Button onClick={() => navigate(-1)} style={{ marginLeft: 10 }}>
               ยกเลิก
             </Button>

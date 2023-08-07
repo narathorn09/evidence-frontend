@@ -14,7 +14,7 @@ import {
   Tooltip,
   Image,
 } from "antd";
-import { PlusOutlined, DeleteOutlined, DeleteFilled } from "@ant-design/icons";
+import { PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
 import { Box, Grid, Chip } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
@@ -683,6 +683,15 @@ const UpdateCase = () => {
                 : item.type_e_id;
             let isLastIndex = index === evidence?.length - 1;
             if (evidence.length === 0) isLastIndex = true;
+            let nameType = null;
+            typeEvidence.forEach((type) => {
+              if (type.type_e_id === evidence[index]?.type_e_id) {
+                nameType = type.type_e_name;
+              }
+            });
+            if (evidence[index]?.evidence_amount === null) {
+              evidence[index].evidence_amount = 1;
+            }
             return (
               <Box key={index}>
                 <Divider orientation="left" orientationMargin="0">
@@ -696,9 +705,7 @@ const UpdateCase = () => {
                     <Chip
                       sx={{ mr: "10px" }}
                       label={`วัตถุพยานประเภทที่ ${index + 1} ${
-                        evidence[index]?.type_e_name
-                          ? evidence[index]?.type_e_name
-                          : ""
+                        nameType || evidence[index]?.type_e_name || ""
                       }`}
                     />
 
@@ -860,6 +867,7 @@ const UpdateCase = () => {
                   {Array.from(
                     { length: evidence[index]?.evidence_amount },
                     (item, i) => {
+
                       return (
                         <div key={i}>
                           <Divider orientation="left" orientationMargin="0">
@@ -867,19 +875,22 @@ const UpdateCase = () => {
                               <Chip
                                 sx={{ mr: "10px" }}
                                 label={`${
-                                  evidence[index]?.type_e_name || "วัตถุที่"
+                                  nameType ||
+                                  evidence[index]?.type_e_name ||
+                                  "วัตถุที่"
                                 } ${i + 1}`}
                               />
-
-                              <Tooltip title="ลบ">
-                                <Button
-                                  shape="circle"
-                                  icon={<Delete />}
-                                  onClick={() =>
-                                    handleDeleteEvidenceFactor(i, index)
-                                  }
-                                />
-                              </Tooltip>
+                              {evidence[index].evidence_amount !== 1 && (
+                                <Tooltip title="ลบ">
+                                  <Button
+                                    shape="circle"
+                                    icon={<Delete />}
+                                    onClick={() =>
+                                      handleDeleteEvidenceFactor(i, index)
+                                    }
+                                  />
+                                </Tooltip>
+                              )}
                             </Box>
                           </Divider>
                           <Box
@@ -1029,7 +1040,7 @@ const UpdateCase = () => {
                                   const re = {
                                     ...evidence[index]?.evidence_factor[i],
                                     assignGroupId: obj?.value || null,
-                                    assignGroupId_remove: obj?.value 
+                                    assignGroupId_remove: obj?.value
                                       ? false
                                       : true,
                                   };
@@ -1074,7 +1085,11 @@ const UpdateCase = () => {
                   new_evidence: "new",
                   type_e_id: null,
                   evidence_amount: null,
-                  evidence_factor: [],
+                  evidence_factor: [{                            
+                    ef_photo: null,
+                    ef_detail: "",
+                    assignGroupId: null,
+                  }],
                   expanded: false,
                 };
                 setEvidence([...evidence, res]);
@@ -1085,9 +1100,35 @@ const UpdateCase = () => {
           </Form.Item>
 
           <Form.Item {...tailLayout}>
-            <Button type="primary" htmlType="submit">
+            {/* <Button type="primary" htmlType="submit">
               ยืนยัน
-            </Button>
+            </Button> */}
+            {evidence.length > 0 ? (
+              <Button type="primary" htmlType="submit">
+                ยืนยัน
+              </Button>
+            ) : (
+              <Tooltip
+                title={
+                  <Box
+                    style={{
+                      // textAlign: "center",
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                  >
+                    <Grid sx={{ mr: 1 }}>
+                      <ExclamationCircleOutlined />
+                    </Grid>
+                    <Grid>กรุณาเพิ่มวัตถุพยาน</Grid>
+                  </Box>
+                }
+              >
+                <Button type="primary" htmlType="submit" disabled={true}>
+                  ยืนยัน
+                </Button>
+              </Tooltip>
+            )}
             <Button onClick={() => navigate(-1)} style={{ marginLeft: 10 }}>
               ยกเลิก
             </Button>
