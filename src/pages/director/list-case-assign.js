@@ -165,7 +165,7 @@ const ListCaseAssign = () => {
             กดรับคดี
           </ButtonAntd>
         ) : (
-          <Box sx={{color: "green"}}>รับคดีแล้ว</Box>
+          <Box sx={{ color: "green" }}>รับคดีแล้ว</Box>
         );
       },
     },
@@ -190,13 +190,17 @@ const ListCaseAssign = () => {
             disabled={check}
             danger={true}
             onClick={() => {
-              CancelCase(params?.row?.id, params?.row?.case_numboko);
+              CancelCase(
+                params?.row?.id,
+                DirectorId,
+                params?.row?.case_numboko
+              );
             }}
             sx={{ ":hover": { color: "var(--color--main-light9)" } }}
           >
             ยกเลิกคดี
           </ButtonAntd>
-        )
+        );
       },
     },
   ];
@@ -234,7 +238,8 @@ const ListCaseAssign = () => {
     });
   };
 
-  const CancelCase = async (caseId, caseNumboko) => {
+  const CancelCase = async (case_id, director_id, caseNumboko) => {
+    const data = { case_id, director_id };
     Swal.fire({
       title: "แจ้งเตือน!",
       text: `คุณต้องการยกเลิกคดีหมายเลข บก. ${caseNumboko}?`,
@@ -245,19 +250,19 @@ const ListCaseAssign = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // await requestPrivate.delete(`/caseByCaseId/${caseId}`).then(() => {
-          //   Swal.fire({
-          //     title: "ลบสำเร็จ!",
-          //     text: `ลบคดีหมายเลข บก. ${caseNumboko} สำเร็จ`,
-          //     icon: "success",
-          //     confirmButtonText: "ตกลง",
-          //   });
-          //   setRefetch(!refetch);
-          // });
+          await requestPrivate.put(`/cancelCase`, data).then(() => {
+            Swal.fire({
+              title: "ยกเลิกสำเร็จ!",
+              text: `ยกเลิกคดีหมายเลข บก. ${caseNumboko} สำเร็จ`,
+              icon: "success",
+              confirmButtonText: "ตกลง",
+            });
+            setRefetch(!refetch);
+          });
         } catch (err) {
           Swal.fire({
             title: "เกิดข้อผิดพลาด!",
-            text: "เกิดข้อผิดพลาดในการลบคดี",
+            text: "เกิดข้อผิดพลาดในการยกเลิกคดี",
             icon: "error",
             confirmButtonText: "ตกลง",
           });
