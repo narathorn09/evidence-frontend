@@ -110,7 +110,7 @@ export const itemSceneInvestigator = [
   {
     key: "G2",
     label: "จัดการประเภทวัตถุพยาน",
-    icon: <Description sx={{ fontSize: "20px" }} />,
+    icon: <Workspaces sx={{ fontSize: "20px" }} />,
     link: "/inves/manage-type-evidence/list",
     linkP: "/inves/manage-type-evidence",
   },
