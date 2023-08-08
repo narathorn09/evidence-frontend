@@ -267,13 +267,14 @@ const UpdateCase = () => {
   const handleDeleteEvidenceFactor = (i, index) => {
     setEvidence((prevEvidence) => {
       const newEvidence = [...prevEvidence];
-      if (newEvidence[index].evidence_factor[i]?.ef_id !== undefined)
+      if (newEvidence[index].evidence_factor[i]?.ef_id !== undefined) {
         setEfDelete((prev) => [
           ...prev,
           {
             ...newEvidence[index].evidence_factor[i],
           },
         ]);
+      }
       newEvidence[index].evidence_factor.splice(i, 1);
       newEvidence[index] = {
         ...newEvidence[index],
@@ -867,7 +868,6 @@ const UpdateCase = () => {
                   {Array.from(
                     { length: evidence[index]?.evidence_amount },
                     (item, i) => {
-
                       return (
                         <div key={i}>
                           <Divider orientation="left" orientationMargin="0">
@@ -1015,11 +1015,12 @@ const UpdateCase = () => {
                                 }}
                               />
                               <Select
-                                placeholder="เลือกกลุ่มงานที่จะมอบงานตรวจ"
+                                placeholder="เลือกกลุ่มงานที่จะมอบหมายงานตรวจ"
                                 allowClear={true}
                                 value={
+                                  evidence[index]?.evidence_factor[i]?.assignGroupId_remove ? null :
                                   evidence[index]?.evidence_factor[i]
-                                    ?.assignGroupId
+                                    ?.assignGroupId || evidence[index]?.evidence_factor[i]?.group_id
                                 }
                                 defaultValue={
                                   evidence[index]?.evidence_factor[i]?.group_id
@@ -1036,6 +1037,7 @@ const UpdateCase = () => {
                                 }}
                                 onChange={(value, obj) => {
                                   console.log("obj", obj);
+                                  
                                   const res = [...evidence]; // Clone the evidence array
                                   const re = {
                                     ...evidence[index]?.evidence_factor[i],
@@ -1085,11 +1087,13 @@ const UpdateCase = () => {
                   new_evidence: "new",
                   type_e_id: null,
                   evidence_amount: null,
-                  evidence_factor: [{                            
-                    ef_photo: null,
-                    ef_detail: "",
-                    assignGroupId: null,
-                  }],
+                  evidence_factor: [
+                    {
+                      ef_photo: null,
+                      ef_detail: "",
+                      assignGroupId: null,
+                    },
+                  ],
                   expanded: false,
                 };
                 setEvidence([...evidence, res]);
