@@ -14,7 +14,8 @@ const UpdateGroup = () => {
   const [form] = Form.useForm();
   const [groupData, setGroupData] = useState({});
   const [director, setDirector] = useState([]);
-  
+  const [group, setGroup] = useState([]);
+
   const gruopStatus = [
     {value: '0', text: "เปิด"},
     {value: '1', text: "ปิด"}
@@ -55,6 +56,15 @@ const UpdateGroup = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await requestPrivate.get(`/group`).then((response) => {
+        setGroup(response.data);
+      });
+    };
+    fetchData();
+  }, []);
+
   const onFinish = async (value) => {
     const data = {group_id: params?.id, ...value}
     console.log(data);
@@ -82,6 +92,11 @@ const UpdateGroup = () => {
   const onFinishFailed = (errorInfo) => {
     // console.log("Failed:", errorInfo);
     return;
+  };
+
+  const handleDirectorSelected = (valueId, valueSelected) => {
+    if (valueId === valueSelected) return false;
+    return group.some((selected) => selected.director_id === valueSelected);
   };
 
   const handleResetFields = () => {
@@ -187,10 +202,11 @@ const UpdateGroup = () => {
             // ]}
             style={{ textAlign: "start" }}
           >
-            <Select>
+            <Select allowClear={true}>
               {director.map((director, index) => (
                 <Select.Option
                   key={index}
+                  disabled={handleDirectorSelected(groupData?.director_id, director.director_id)}
                   value={director.director_id}
                 >{`${director.director_rank} ${director.director_fname} ${director.director_lname}`}</Select.Option>
               ))}

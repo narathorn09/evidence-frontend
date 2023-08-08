@@ -1,4 +1,4 @@
-import React, { useEffect ,useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Button, Form, Input, Select } from "antd";
 import { Box, Grid } from "@mui/material";
@@ -12,12 +12,34 @@ const CreateGroup = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [director, setDirector] = useState([]);
+  const [group, setGroup] = useState([]);
 
-    
   const gruopStatus = [
-    {value: '0', text: "เปิด"},
-    {value: '1', text: "ปิด"}
-  ]
+    { value: "0", text: "เปิด" },
+    { value: "1", text: "ปิด" },
+  ];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await requestPrivate.get(`/director`);
+        setDirector(response.data);
+      } catch (err) {
+        alert(`เกิดข้อผิดพลาดในการดึงข้อมูลผู้กำกับ : ${err}`);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await requestPrivate.get(`/group`).then((response) => {
+        setGroup(response.data);
+      });
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,6 +79,11 @@ const CreateGroup = () => {
   const onFinishFailed = (errorInfo) => {
     // console.log("Failed:", errorInfo);
     return;
+  };
+
+  const handleDirectorSelected = (valueSelected) => {
+    // if (valueId === valueSelected) return false;
+    return group.some((selected) => selected.director_id === valueSelected);
   };
 
   const tailLayout = {
@@ -158,10 +185,11 @@ const CreateGroup = () => {
             // ]}
             style={{ textAlign: "start" }}
           >
-            <Select>
+            <Select allowClear={true}>
               {director.map((director, index) => (
                 <Select.Option
                   key={index}
+                  disabled={handleDirectorSelected(director.director_id)}
                   value={director.director_id}
                 >{`${director.director_rank} ${director.director_fname} ${director.director_lname}`}</Select.Option>
               ))}
