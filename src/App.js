@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes , Navigate  } from "react-router-dom";
 import { useAuth } from "./contexts/auth-context";
 import ListAdmin from "./pages/admin/list-admin";
 import Layout from "./layouts/layout";
@@ -40,8 +40,8 @@ const App = () => {
     <Router>
       <Layout>
         <Routes>
-          <Route exact path="/login" element={<Login />} />
-          //
+          <Route  path="/login" element={<Login />} />
+          <Route exact path="/" element={<Navigate to="/home" />} />
           <Route exact path="/profile/:id" element={<Profile />} />
           {role === "0" && ( //admin
             <>
