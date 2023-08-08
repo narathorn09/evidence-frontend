@@ -78,7 +78,7 @@ const UpdateTypeEvidence = () => {
   return (
     <div>
       <Helmet>
-        <title>Add Type Evidence - Forensic Science</title>
+        <title>Edit Type Evidence - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

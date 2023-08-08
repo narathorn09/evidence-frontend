@@ -863,7 +863,7 @@ const CreateCase = () => {
                                 }}
                               />
                               <Select
-                                placeholder="เลือกกลุ่มงานที่จะมอบงานตรวจ"
+                                placeholder="เลือกกลุ่มงานที่จะมอบหมายงานตรวจ"
                                 allowClear={true}
                                 value={
                                   evidence[index]?.evidence_factor[i]

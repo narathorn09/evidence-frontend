@@ -124,12 +124,12 @@ const GetCaseById = () => {
         pages={[
           { title: "จัดการคดี" },
             { title: "รายการคดี", path: "/inves/manage-case/list" },
-            { title: `คดีหมายเลข บก. ที่ ${caseData?.case_numboko}`  },
+            { title: `ข้อมููลคดีหมายเลข บก. ที่ ${caseData?.case_numboko}`  },
         ]}
       />
       <Box sx={{ width: "100%", height: "100%" }}>
         <Grid sx={{ textAlign: "left" }}>
-          <h2>คดี</h2>
+          <h2>ข้อมูลคดี</h2>
         </Grid>
 
         <Form
