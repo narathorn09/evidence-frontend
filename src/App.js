@@ -69,7 +69,7 @@ const App = () => {
           )}
           {role === "1" && ( //commander
             <>
-              <Route exact path="/" element={<>commander</>} />
+              <Route exact path="/" element={<>Home commander</>} />
             </>
           )}
            {role === "2" && ( //Scene Investigator
@@ -88,7 +88,7 @@ const App = () => {
           )}
            {role === "3" && ( //Director
             <>
-              <Route exact path="/home" element={<>Director</>} />
+              <Route exact path="/home" element={<>Home Director</>} />
               <Route exact path="/director/manage-case/list" element={<ListCaseAssign />} />
               <Route exact path="/director/manage-case/casebyid/:caseId" element={<GetCaseAssignById />} />
 
@@ -96,7 +96,7 @@ const App = () => {
           )}
            {role === "4" && ( //Expert
             <>
-              <Route exact path="/" element={<>Expert</>} />
+              <Route exact path="/" element={<>Home Expert</>} />
             </>
           )}
         </Routes>
