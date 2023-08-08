@@ -51,6 +51,7 @@ const ListCase = () => {
       headerName: "วันที่ลงบันทึกคดี",
       width: 150,
       headerClassName: "super-app-theme--header",
+      valueGetter: (params) => dayjs(params?.value).format("DD-MM-YYYY"),
       renderCell: (params) =>
         dayjs(params?.row?.case_save_date).format("DD-MM-YYYY"),
     },
@@ -66,6 +67,7 @@ const ListCase = () => {
       headerName: "วันที่เกิดเหตุ",
       width: 150,
       headerClassName: "super-app-theme--header",
+      valueGetter: (params) => dayjs(params?.value).format("DD-MM-YYYY"),
       renderCell: (params) =>
         dayjs(params?.row?.case_accident_date).format("DD-MM-YYYY"),
     },
@@ -87,6 +89,19 @@ const ListCase = () => {
       headerName: "สถานะของคดี",
       width: 180,
       headerClassName: "super-app-theme--header",
+      valueGetter: (params) => {
+        let textStatus;
+
+        if (params?.value === "0") {
+          textStatus = "อยู่ระหว่างดำเนินการ";
+        } else if (params?.value === "1") {
+          textStatus = "ดำเนินการเสร็จสิ้น";
+        } else if (params?.value === "2") {
+          textStatus = "ปิดคดีแล้ว";
+        }
+
+        return textStatus;
+      },
       renderCell: (params) => {
         let textStatus;
         let colorStatus;
@@ -101,7 +116,7 @@ const ListCase = () => {
           colorStatus = "var(--color--orange)";
         }
 
-        return <span style={{color: colorStatus}}>{textStatus}</span>;
+        return <span style={{ color: colorStatus }}>{textStatus}</span>;
       },
     },
     {
@@ -315,7 +330,17 @@ const ListCase = () => {
   const csvOptions = {
     fileName: "รายการคดี",
     utf8WithBom: true,
-    fields: ["index", "type_e_name"],
+    fields: [
+      "index",
+      "case_numboko",
+      "case_type",
+      "case_save_date",
+      "case_save_time",
+      "case_accident_date",
+      "case_accident_time",
+      "case_location",
+      "case_status",
+    ],
   };
 
   function CustomExportButton(props) {

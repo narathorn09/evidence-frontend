@@ -54,6 +54,7 @@ const ListGroup = () => {
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
+      valueGetter: (params) => (params.value === "0" ? "เปิด" : "ปิด"),
       renderCell: (params) => {
         let status = ""; // Default value is an empty string
 
@@ -158,7 +159,7 @@ const ListGroup = () => {
   const csvOptions = {
     fileName: "รายชื่อกลุ่มงาน",
     utf8WithBom: true,
-    fields: ["index", "group_name", "director"],
+    fields: ["index", "group_name", "director", "group_status"],
   };
 
   function CustomExportButton(props) {

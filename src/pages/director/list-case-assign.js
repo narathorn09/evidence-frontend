@@ -79,6 +79,7 @@ const ListCaseAssign = () => {
       headerName: "วันที่ลงบันทึกคดี",
       width: 150,
       headerClassName: "super-app-theme--header",
+      valueGetter: (params) => dayjs(params?.value).format("DD-MM-YYYY"),
       renderCell: (params) =>
         dayjs(params?.row?.case_save_date).format("DD-MM-YYYY"),
     },
@@ -94,6 +95,7 @@ const ListCaseAssign = () => {
       headerName: "วันที่เกิดเหตุ",
       width: 150,
       headerClassName: "super-app-theme--header",
+      valueGetter: (params) => dayjs(params?.value).format("DD-MM-YYYY"),
       renderCell: (params) =>
         dayjs(params?.row?.case_accident_date).format("DD-MM-YYYY"),
     },
@@ -111,10 +113,38 @@ const ListCaseAssign = () => {
       headerClassName: "super-app-theme--header",
     },
     {
-      field: "case_status",
-      headerName: "สถานะของคดี",
-      width: 100,
+      field: "case_accept_status",
+      headerName: "สถานะการรับคดี",
+      width: 150,
       headerClassName: "super-app-theme--header",
+      valueGetter: (params) => {
+        let textStatus;
+
+        let check = false;
+        params.row.evidence_list.forEach((evidence) => {
+          evidence.evidence_factor.forEach((factor) => {
+            if (factor.assign_direc_status === "1") {
+              check = true;
+            }
+          });
+        });
+        return !check ? (textStatus = "ยังไม่รับคดี") : (textStatus = "รับคดีแล้ว");
+      },
+      renderCell: (params) => {
+        let check = false;
+        params.row.evidence_list.forEach((evidence) => {
+          evidence.evidence_factor.forEach((factor) => {
+            if (factor.assign_direc_status === "1") {
+              check = true;
+            }
+          });
+        });
+        return !check ? (
+          <Box sx={{ color: "red" }}>ยังไม่รับคดี</Box>
+        ) : (
+          <Box sx={{ color: "green" }}>รับคดีแล้ว</Box>
+        );
+      },
     },
     {
       field: "Detail",
@@ -136,7 +166,7 @@ const ListCaseAssign = () => {
     },
     {
       field: "accept",
-      headerName: "การรับคดี",
+      headerName: "รับคดี",
       width: 120,
       align: "center",
       headerAlign: "center",
@@ -150,9 +180,9 @@ const ListCaseAssign = () => {
             }
           });
         });
-        return !check ? (
+        return (
           <ButtonAntd
-            styles={{ color: "red" }}
+            disabled={check}
             onClick={() => {
               acceptCase(
                 params?.row?.id,
@@ -164,8 +194,6 @@ const ListCaseAssign = () => {
           >
             กดรับคดี
           </ButtonAntd>
-        ) : (
-          <Box sx={{ color: "green" }}>รับคดีแล้ว</Box>
         );
       },
     },
@@ -272,9 +300,19 @@ const ListCaseAssign = () => {
   };
 
   const csvOptions = {
-    fileName: "รายการคดี",
+    fileName: "รายการคดีที่ได้รับมอบหมาย",
     utf8WithBom: true,
-    fields: ["index", "type_e_name"],
+    fields: [
+      "index",
+      "case_numboko",
+      "case_type",
+      "case_save_date",
+      "case_save_time",
+      "case_accident_date",
+      "case_accident_time",
+      "case_location",
+      "case_accept_status",
+    ],
   };
 
   function CustomExportButton(props) {
@@ -312,7 +350,10 @@ const ListCaseAssign = () => {
         <title>Lists Case - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
-        pages={[{ title: "จัดการคดี" }, { title: "รายการคดี" }]}
+        pages={[
+          { title: "คดีที่ได้รับ" },
+          { title: "รายการคดีที่ได้รับมอบหมาย" },
+        ]}
       />
       <Grid
         sx={{
@@ -328,12 +369,12 @@ const ListCaseAssign = () => {
           <h2>รายการคดีที่ได้รับมอบหมาย</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          <ButtonAntd
+          {/* <ButtonAntd
             type="primary"
             onClick={() => navigate("/inves/manage-case/create")}
           >
             เพิ่ม
-          </ButtonAntd>
+          </ButtonAntd> */}
         </Grid>
         <DataGrid
           rows={
@@ -349,7 +390,7 @@ const ListCaseAssign = () => {
           slots={{
             toolbar: CustomToolbar,
           }}
-          sx={{ borderRadius: "8px", height: "400px" }}
+          sx={{ borderRadius: "8px", height: "460px" }}
         />
       </Grid>
     </div>

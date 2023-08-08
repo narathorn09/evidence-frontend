@@ -147,7 +147,7 @@ const ListExpert = () => {
   const csvOptions = {
     fileName: "รายชื่อผู้ชำนาญการ",
     utf8WithBom: true,
-    fields: ["index", "username", "nametitle", "rank", "fname", "lname"],
+    fields: ["index", "username", "nametitle", "rank", "fname", "lname", "group"],
   };
 
   function CustomExportButton(props) {
@@ -185,7 +185,7 @@ const ListExpert = () => {
         <title>Lists Expert - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
-        pages={[{ title: "จัดการผู้ใช้" }, { title: "รายชื่อผู้ชำนาญ" }]}
+        pages={[{ title: "จัดการผู้ใช้" }, { title: "รายชื่อผู้ชำนาญการ" }]}
       />
       <Grid
         sx={{

@@ -147,7 +147,7 @@ const ListSceneInvestigator = () => {
   const csvOptions = {
     fileName: "รายชื่อพนักงานตรวจสถานที่เกิดเหตุ",
     utf8WithBom: true,
-    fields: ["index", "username", "nametitle", "rank", "fname", "lname"],
+    fields: ["index", "username", "nametitle", "rank", "fname", "lname", "group"],
   };
 
   function CustomExportButton(props) {
