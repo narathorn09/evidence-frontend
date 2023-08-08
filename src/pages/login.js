@@ -25,7 +25,7 @@ const Login = () => {
         if (response.status === 200) {
           const { accessToken } = response.data;
           await setAuthToken(accessToken);
-          setLogin(true);
+          // setLogin(true);
           setLoadings(false);
           Swal.fire({
             title: "เข้าสู่ระบบสำเร็จ!",
@@ -33,6 +33,8 @@ const Login = () => {
             showConfirmButton: false,
             timer: 1500
           });
+          navigate("/home")
+
         }
       } catch (err) {
         setLoadings(false);
@@ -47,17 +49,17 @@ const Login = () => {
     [setAuthToken]
   );
 
-  useEffect(() => {
-    const role = auth?.user?.role;
-    if (role) {
-      if (role === "0") navigate("/home"); //admin
-      else if (role === "1") navigate("/home"); //commander
-      else if (role === "2") navigate("/home"); //Scene Investigator
-      else if (role === "3") navigate("/home"); //Director
-      else if (role === "4") navigate("/home"); //Expert
-      console.log("Auth", auth?.user);
-    }
-  }, [login]);
+  // useEffect(() => {
+    // const role = auth?.user?.role;
+    // if (role) {
+    //   if (role === "0") navigate("/home"); //admin
+    //   else if (role === "1") navigate("/home"); //commander
+    //   else if (role === "2") navigate("/home"); //Scene Investigator
+    //   else if (role === "3") navigate("/home"); //Director
+    //   else if (role === "4") navigate("/home"); //Expert
+    //   console.log("Auth", auth?.user);
+    // }
+  // }, [login]);
 
   // const onFinishFailed = (errorInfo) => {
   //   console.log("Failed:", errorInfo);
