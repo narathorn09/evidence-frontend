@@ -73,22 +73,11 @@ export const itemAdmin = [
 
 export const itemCommander = [
   {
-    key: "1",
-    icon: <UserOutlined />,
-    label: "user",
-    link: "/",
-  },
-  {
-    key: "2",
-    icon: <VideoCameraOutlined />,
-    label: "nav 2asd",
-    link: "/2",
-  },
-  {
-    key: "3",
-    icon: <UploadOutlined />,
-    label: "nav 3asd",
-    link: "/3",
+    key: "G0",
+    label: "หน้าแรก",
+    icon: <Home sx={{ fontSize: "20px" }} />,
+    link: "/home",
+    linkP: "/home",
   },
 ];
 
@@ -146,4 +135,13 @@ export const itemDirector = [
     linkP: "/director/manage-report",
   },
 ];
-export const itemExpert = [];
+
+export const itemExpert = [
+  {
+    key: "G0",
+    label: "หน้าแรก",
+    icon: <Home sx={{ fontSize: "20px" }} />,
+    link: "/home",
+    linkP: "/home",
+  },
+];

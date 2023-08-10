@@ -69,7 +69,7 @@ const App = () => {
           )}
           {role === "1" && ( //commander
             <>
-              <Route exact path="/" element={<>Home commander</>} />
+              <Route exact path="/home" element={<>Home commander</>} />
             </>
           )}
            {role === "2" && ( //Scene Investigator
@@ -96,7 +96,7 @@ const App = () => {
           )}
            {role === "4" && ( //Expert
             <>
-              <Route exact path="/" element={<>Home Expert</>} />
+              <Route exact path="/home" element={<>Home Expert</>} />
             </>
           )}
         </Routes>
