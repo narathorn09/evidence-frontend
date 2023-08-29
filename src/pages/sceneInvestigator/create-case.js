@@ -655,8 +655,18 @@ const CreateCase = () => {
                         res[index] = re;
                         setEvidence(res);
                       }}
-                    >
-                      {typeEvidence.map((item, index) => (
+                      filterOption={(input, option) =>
+                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                      }
+                      showSearch
+                      placeholder="เลือกประเภทของวัตถุพยาน"
+                      optionFilterProp="label"
+                      options={typeEvidence.map((item) => ({
+                        value: item.type_e_id,
+                        label: item.type_e_name,
+                      }))}
+                    />
+                      {/* {typeEvidence.map((item, index) => (
                         <Select.Option
                           key={index}
                           disabled={handleTypeEvidenceSelected(
@@ -665,8 +675,8 @@ const CreateCase = () => {
                           )}
                           value={item.type_e_id}
                         >{`${item.type_e_name}`}</Select.Option>
-                      ))}
-                    </Select>
+                      ))} */}
+                    {/* </Select> */}
                   </Form.Item>
 
                   <Form.Item
