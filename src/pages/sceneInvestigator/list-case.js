@@ -145,11 +145,12 @@ const ListCase = () => {
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
       renderCell: (params) => {
-        let check;
+        let check = true;  // Initialize check as true
+
         params.row.evidence_list.forEach((evidence) => {
           evidence.evidence_factor.forEach((factor) => {
-            if (factor.assign_direc_status === "1") {
-              check = true;
+            if (factor.assign_direc_status !== "1") {
+              check = false;  // If any factor's assign_direc_status is not "1", set check to false
             }
           });
         });
@@ -167,7 +168,7 @@ const ListCase = () => {
                 <Grid sx={{ mr: 1 }}>
                   <ExclamationCircleOutlined />
                 </Grid>
-                <Grid>ไม่สามารถแก้ไขได้ เนื่องจากมีการกดรับคดีแล้ว</Grid>
+                <Grid>ไม่สามารถแก้ไขได้ เนื่องจากมีการกดรับคดีทุกกลุ่มงานแล้ว</Grid>
               </Box>
             }
             // color={"var(--color--orange)"}
@@ -205,11 +206,12 @@ const ListCase = () => {
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
-        let check;
+        let check = true;  // Initialize check as true
+
         params.row.evidence_list.forEach((evidence) => {
           evidence.evidence_factor.forEach((factor) => {
-            if (factor.assign_direc_status === "1") {
-              check = true;
+            if (factor.assign_direc_status !== "1") {
+              check = false;  // If any factor's assign_direc_status is not "1", set check to false
             }
           });
         });
@@ -231,7 +233,7 @@ const ListCase = () => {
                 <Grid sx={{ mr: 1 }}>
                   <ExclamationCircleOutlined />
                 </Grid>
-                <Grid>ไม่สามารถลบได้ เนื่องจากมีการกดรับคดีแล้ว</Grid>
+                <Grid>ไม่สามารถลบได้ เนื่องจากมีการกดรับคดีทุกกลุ่มงานแล้ว</Grid>
               </Box>
             }
             // color={"var(--color--orange)"}
