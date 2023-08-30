@@ -31,7 +31,7 @@
     "web-vitals": "^3.3.1"
   },
   "scripts": {
-    "start": "node getIPv4.js && react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
