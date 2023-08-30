@@ -32,6 +32,9 @@ import GetCaseById from "./pages/sceneInvestigator/getbyid-case";
 import UpdateCase from "./pages/sceneInvestigator/update-case";
 import ListCaseAssign from "./pages/director/list-case-assign";
 import GetCaseAssignById from "./pages/director/getbyid-case-assign";
+import AssignEvidence from "./pages/director/assign-evidence";
+import ListCaseAccept from "./pages/director/list-case-accept";
+import GetCaseAcceptById from "./pages/director/getbyid-case-accept";
 
 const App = () => {
   const { auth } = useAuth();
@@ -89,8 +92,11 @@ const App = () => {
            {role === "3" && ( //Director
             <>
               <Route exact path="/home" element={<>Home Director</>} />
-              <Route exact path="/director/manage-case/list" element={<ListCaseAssign />} />
-              <Route exact path="/director/manage-case/casebyid/:caseId" element={<GetCaseAssignById />} />
+              <Route exact path="/director/manage-case/list-assign/main" element={<ListCaseAssign />} />
+              <Route exact path="/director/manage-case/list-accept/main" element={<ListCaseAccept />} />
+              <Route exact path="/director/manage-case/list-assign/casebyid/:caseId" element={<GetCaseAssignById />} />
+              <Route exact path="/director/manage-case/list-accept/casebyid/:caseId" element={<GetCaseAcceptById />} />
+              <Route exact path="/director/manage-case/list-accept/assign-evidence/:caseId" element={<AssignEvidence />} />
 
             </>
           )}

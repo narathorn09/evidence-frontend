@@ -1,8 +1,8 @@
-import Icon, {
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+// import Icon, {
+//   UserOutlined,
+//   VideoCameraOutlined,
+//   UploadOutlined,
+// } from "@ant-design/icons";
 import {
   PeopleAlt,
   Workspaces,
@@ -122,10 +122,22 @@ export const itemDirector = [
   },
   {
     key: "G1",
-    label: "คดีที่ได้รับ",
+    label: "คดี",
     icon: <Work sx={{ fontSize: "20px" }} />,
-    link: "/director/manage-case/list",
-    linkP: "/director/manage-case",
+    childItems: [
+      {
+        key: "G1-child1",
+        label: "คดีที่ได้รับ",
+        link: "/director/manage-case/list-assign/main",
+        linkP: "/director/manage-case/list-assign",
+      },
+      {
+        key: "G1-child2",
+        label: "มอบหมายงานตรวจ",
+        link: "/director/manage-case/list-accept/main",
+        linkP: "/director/manage-case/list-accept",
+      },
+    ],
   },
   {
     key: "G2",
