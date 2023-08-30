@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { Form, Divider, Image, Typography, Button, Select, Tag } from "antd";
-import { FileImageOutlined } from "@ant-design/icons";
+import {
+  Form,
+  Divider,
+  Image,
+  Typography,
+  Button,
+  Select,
+  Tooltip,
+} from "antd";
+import {
+  FileImageOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import { Box, Grid, Chip } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
@@ -24,8 +35,8 @@ const AssignEvidence = () => {
   const [DirectorId, setDirectorId] = useState(null);
   const [expert, setExpert] = useState([]);
   const [expertFilter, setExpertFilter] = useState([]);
-  const [expertSelection, setExpertSelection] = useState([]);
   const [groupId, setGroupId] = useState(null);
+  const [expertId, setExpertId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -127,19 +138,9 @@ const AssignEvidence = () => {
 
   useEffect(() => {
     if (caseData) {
-      const newSelection = caseData.evidence_list?.map((evidence) => {
-        const newEvidence = {
-          evidence_id: evidence?.evidence_id,
-          evidence_factor: evidence.evidence_factor.map((e) => ({
-            assignId: e.assign_id,
-            expertId: e.expert_id,
-          })),
-        };
-
-        return newEvidence;
-      });
-
-      setExpertSelection(newSelection);
+      setExpertId(
+        caseData?.evidence_list?.[0]?.evidence_factor?.[0]?.expert_id
+      );
     }
   }, [caseData]);
 
@@ -155,10 +156,15 @@ const AssignEvidence = () => {
   };
 
   const onConfirmAssign = async () => {
-    console.log("expertSelection", expertSelection);
     try {
+      const data = {
+        expert_id: expertId,
+        case_id: caseData?.case_id,
+        group_id: groupId,
+      };
+      console.log("data", data);
       const response = await requestPrivate.post("/assignEvidence", {
-        assignList: expertSelection,
+        dataForAssign: data,
       });
       if (response) {
         Swal.fire({
@@ -179,44 +185,11 @@ const AssignEvidence = () => {
     }
   };
 
-  const onChangeSelectExpert = (
-    expertId,
-    assignId,
-    evidenceIndex,
-    factorIndex
-  ) => {
-    const updatedExpertSelection = [...expertSelection];
-
-    const newEvidenceFactor = {
-      assignId: assignId,
-      expertId: expertId || null,
-    };
-
-    updatedExpertSelection[evidenceIndex].evidence_factor.splice(
-      factorIndex,
-      1,
-      newEvidenceFactor
-    );
-
-    setExpertSelection(updatedExpertSelection);
+  const onChangeSelectExpert = (expertId) => {
+    setExpertId(expertId);
   };
 
-  const onClearExpert = (evidenceIndex, factorIndex) => {
-    const updatedExpertSelection = [...expertSelection];
-
-    const newEvidenceFactor = {
-      assignId: null,
-      expertId: null,
-    };
-
-    updatedExpertSelection[evidenceIndex].evidence_factor.splice(
-      factorIndex,
-      1,
-      newEvidenceFactor
-    );
-
-    setExpertSelection(updatedExpertSelection);
-  };
+  const onClearExpert = () => {};
 
   const defaultValues = {
     case_numboko: caseData?.case_numboko,
@@ -247,7 +220,10 @@ const AssignEvidence = () => {
       <BreadcrumbLayout
         pages={[
           { title: "จัดการคดี" },
-          { title: "รายการคดี", path: "/director/manage-case/list-accept/main" },
+          {
+            title: "รายการคดีที่ได้รับมอบหมาย",
+            path: "/director/manage-case/list-accept/main",
+          },
           {
             title: `มอบหมายงานตรวจ คดีหมายเลข บก. ที่ ${caseData?.case_numboko}`,
           },
@@ -339,28 +315,6 @@ const AssignEvidence = () => {
                   </Form.Item>
 
                   {item?.evidence_factor?.map((itemFactor, i) => {
-                    let colorStatus;
-                    let textStatus;
-                    switch (itemFactor?.assign_evi_result) {
-                      case null:
-                        colorStatus = "processing";
-                        textStatus = "รอผลการตรวจสอบ";
-                        break;
-                      case "พบ":
-                        colorStatus = "success";
-                        textStatus = "พบ DNA";
-                        break;
-                      case "ไม่พบ":
-                        colorStatus = "error";
-                        textStatus = "ไม่พบ DNA";
-                        break;
-                      default:
-                        colorStatus = "";
-                        textStatus = "";
-                        break;
-                    }
-
-                    let c;
                     return (
                       <div key={i}>
                         <Divider orientation="left" orientationMargin="0">
@@ -443,72 +397,6 @@ const AssignEvidence = () => {
                             </Typography>
                           </Box>
                         </Box>
-
-                        <Form.Item
-                          label={
-                            <span style={{ fontWeight: "bold" }}>
-                              ผู้ชำนาญการ
-                            </span>
-                          }
-                          // name = "assign"
-                          // style={{
-                          //   textAlign: "start",
-                          //   display: "inline-block",
-
-                          // }}
-                        >
-                          <Select
-                            allowClear={true}
-                            disabled={itemFactor?.assign_exp_status === "1"}
-                            defaultValue={itemFactor?.expert_id}
-                            showSearch
-                            placeholder="เลือกผู้ชำนาญการ"
-                            optionFilterProp="children"
-                            onChange={(expertId) =>
-                              onChangeSelectExpert(
-                                expertId,
-                                // expertId ? itemFactor.assign_id : null,
-                                itemFactor.assign_id,
-                                index,
-                                i
-                              )
-                            }
-                            onClear={() => onClearExpert(index, i)}
-                            // onSearch={onSearch}
-                            filterOption={(input, option) =>
-                              (option?.text ?? "")
-                                .toLowerCase()
-                                .includes(input.toLowerCase())
-                            }
-                            options={expertFilter}
-                          />
-                        </Form.Item>
-                        {(itemFactor?.assign_exp_status === "1" ||
-                          itemFactor?.assign_exp_status === "2") && (
-                          <Form.Item
-                            label={
-                              <span style={{ fontWeight: "bold" }}>
-                                ผลการตรวจ
-                              </span>
-                            }
-                            style={{
-                              marginTop: "-15px",
-                            }}
-                          >
-                            <Tag
-                              style={{
-                                width: "fit-content",
-                                height: "fit-content",
-                                fontSize: "14px",
-                                padding: "8px",
-                                borderRadius: "8px",
-                              }}
-                              color={colorStatus}
-                            >
-                              {textStatus}
-                            </Tag>
-                          </Form.Item>
-                        )}
                       </div>
                     );
                   })}
@@ -516,6 +404,67 @@ const AssignEvidence = () => {
               </Box>
             );
           })}
+          <Form.Item
+            label={<span style={{ fontWeight: "bold" }}>ผู้ชำนาญการ</span>}
+          >
+            {caseData?.evidence_list?.[0]?.evidence_factor?.[0]
+              ?.assign_exp_status === "1" ||
+            caseData?.evidence_list?.[0]?.evidence_factor?.[0]
+              ?.assign_exp_status === "2" ? (
+              <Tooltip
+                title={
+                  <Box
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                  >
+                    <Grid sx={{ mr: 1 }}>
+                      <ExclamationCircleOutlined />
+                    </Grid>
+                    <Grid>
+                      ไม่สามารถเปลี่ยนผู้ชำนาญการได้ เนื่องจากมีการกดรับงานแล้ว
+                    </Grid>
+                  </Box>
+                }
+                color={"#f50"}
+                style={{ cursor: "pointer", textAlign: "center" }}
+              >
+                <Select
+                  allowClear={true}
+                  disabled={true}
+                  value={expertId}
+                  showSearch
+                  placeholder="เลือกผู้ชำนาญการ"
+                  optionFilterProp="children"
+                  onChange={(expertId) => onChangeSelectExpert(expertId)}
+                  onClear={() => onClearExpert()}
+                  filterOption={(input, option) =>
+                    (option?.text ?? "")
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  options={expertFilter}
+                />
+              </Tooltip>
+            ) : (
+              <Select
+                allowClear={true}
+                value={expertId}
+                showSearch
+                placeholder="เลือกผู้ชำนาญการ"
+                optionFilterProp="children"
+                onChange={(expertId) => onChangeSelectExpert(expertId)}
+                onClear={() => onClearExpert()}
+                filterOption={(input, option) =>
+                  (option?.text ?? "")
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={expertFilter}
+              />
+            )}
+          </Form.Item>
           <Form.Item {...tailLayout}>
             <Button type="primary" htmlType="submit">
               ยืนยัน
