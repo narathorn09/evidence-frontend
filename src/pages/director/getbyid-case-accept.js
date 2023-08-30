@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { Form, Divider, Image, Typography } from "antd";
+import { Form, Divider, Image, Typography, Tag } from "antd";
 import { FileImageOutlined } from "@ant-design/icons";
 import { Box, Grid, Chip } from "@mui/material";
 import { useParams } from "react-router-dom";
@@ -11,7 +11,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 dayjs.locale("th");
 
-const GetCaseAssignById = () => {
+const GetCaseAcceptById = () => {
   const params = useParams();
   const { auth } = useAuth();
   const requestPrivate = useAxiosPrivate();
@@ -19,13 +19,23 @@ const GetCaseAssignById = () => {
   const [form] = Form.useForm();
   const [caseData, setCaseData] = useState({});
   const [DirectorId, setDirectorId] = useState(null);
+  const [groupId, setGroupId] = useState(null);
+  const [expert, setExpert] = useState([]);
 
   useEffect(() => {
     const data = { id: auth?.user?.id, role: auth?.user?.role };
     const fetchData = async () => {
       try {
         const response = await requestPrivate.post(`/id`, data);
-        setDirectorId(response?.data[0]?.director_id);
+        if (response.status === 200) {
+          setDirectorId(response?.data[0]?.director_id);
+          const group = await requestPrivate.get(
+            `/groupByDirectorId/${response?.data[0]?.director_id}`
+          );
+          if (group.status === 200) {
+            setGroupId(group.data[0].group_id);
+          }
+        }
       } catch (err) {
         alert(`เกิดข้อผิดพลาดในการดึงไอดี : ${err}`);
       }
@@ -33,6 +43,21 @@ const GetCaseAssignById = () => {
 
     fetchData();
   }, [auth?.user]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await requestPrivate.get(
+          `/expertByGroupId/${groupId}`
+        );
+        setExpert(response?.data);
+      } catch (err) {
+        alert(`เกิดข้อผิดพลาดในการดึงข้อมูลผู้ชำนาญการ : ${err}`);
+      }
+    };
+
+    fetchData();
+  }, [groupId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,14 +111,14 @@ const GetCaseAssignById = () => {
   return (
     <div>
       <Helmet>
-        <title>Get Case - Forensic Science</title>
+        <title>Get Case Accept- Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
           { title: "จัดการคดี" },
           {
-            title: "รายการคดี",
-            path: "/director/manage-case/list-assign/main",
+            title: "รายการคดีที่ได้รับมอบหมาย",
+            path: "/director/manage-case/list-accept/main",
           },
           { title: `คดีหมายเลข บก. ที่ ${caseData?.case_numboko}` },
         ]}
@@ -222,6 +247,7 @@ const GetCaseAssignById = () => {
               <span style={{ fontWeight: "bold" }}>สถานที่ที่เกิดเหตุ</span>
             }
             name="case_location"
+            style={{ textAlign: "start" }}
           >
             <Typography>{caseData?.case_location}</Typography>
           </Form.Item>
@@ -230,6 +256,33 @@ const GetCaseAssignById = () => {
           <Grid sx={{ textAlign: "left", mb: 3, mt: 2 }}>
             <h2>วัตถุพยานที่ได้รับมอบหมาย</h2>
           </Grid>
+          <Grid
+            sx={{
+              textAlign: "left",
+              mb: 3,
+              mt: 2,
+              display: "flex",
+              flexDirection: "row",
+            }}
+          >
+            <span
+              style={{ fontWeight: "bold" }}
+            >{`ผู้ชำนาญการที่รับผิดชอบงานตรวจ:\u00A0\u00A0\u00A0`}</span>
+            <span>
+              {expert
+                .filter(
+                  (e) =>
+                    e.expert_id ===
+                    caseData?.evidence_list?.[0]?.evidence_factor?.[0]
+                      ?.expert_id
+                )
+                .map(
+                  (e) => `${e.expert_rank} ${e.expert_fname} ${e.expert_lname}`
+                )
+                .join(", ") || "ยังไม่ได้มอบหมายงาน"}
+            </span>
+          </Grid>
+
           {caseData?.evidence_list?.map((item, index) => {
             const nameTypeEvidence = typeEvidence
               .filter((te) => item?.type_e_id === te?.type_e_id)
@@ -278,6 +331,26 @@ const GetCaseAssignById = () => {
                   </Form.Item>
 
                   {item?.evidence_factor?.map((itemFactor, i) => {
+                    let colorStatus;
+                    let textStatus;
+                    switch (itemFactor?.assign_evi_result) {
+                      case null:
+                        colorStatus = "processing";
+                        textStatus = "รอผลการตรวจสอบ";
+                        break;
+                      case "พบ":
+                        colorStatus = "success";
+                        textStatus = "พบ DNA";
+                        break;
+                      case "ไม่พบ":
+                        colorStatus = "error";
+                        textStatus = "ไม่พบ DNA";
+                        break;
+                      default:
+                        colorStatus = "";
+                        textStatus = "";
+                        break;
+                    }
                     return (
                       <div key={i}>
                         <Divider orientation="left" orientationMargin="0">
@@ -358,6 +431,30 @@ const GetCaseAssignById = () => {
                             <Typography>
                               {itemFactor?.ef_detail || "-"}
                             </Typography>
+                            {(itemFactor?.assign_exp_status === "1" ||
+                              itemFactor?.assign_exp_status === "2") && (
+                              <Form.Item
+                                label={
+                                  <span style={{ fontWeight: "bold" }}>
+                                    ผลการตรวจ
+                                  </span>
+                                }
+                                style={{
+                                  marginTop: "0px",
+                                }}
+                              >
+                                <Tag
+                                  style={{
+                                    width: "fit-content",
+                                    height: "fit-content",
+                                    fontSize: "14px",
+                                  }}
+                                  color={colorStatus}
+                                >
+                                  {textStatus}
+                                </Tag>
+                              </Form.Item>
+                            )}
                           </Box>
                         </Box>
                       </div>
@@ -373,4 +470,4 @@ const GetCaseAssignById = () => {
   );
 };
 
-export default GetCaseAssignById;
+export default GetCaseAcceptById;
