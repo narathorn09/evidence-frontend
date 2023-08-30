@@ -7,21 +7,19 @@ import {
   GridToolbarExportContainer,
   GridCsvExportMenuItem,
 } from "@mui/x-data-grid";
-import {  Visibility } from "@mui/icons-material";
+import { Visibility } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 import { Button as ButtonAntd } from "antd";
 import dayjs from "dayjs";
-import Swal from "sweetalert2";
 
-const ListCaseAssign = () => {
+const ListCaseAccept = () => {
   const { auth } = useAuth();
   const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
-  const [refetch, setRefetch] = useState(false);
   const [DirectorId, setDirectorId] = useState(null);
 
   useEffect(() => {
@@ -51,7 +49,7 @@ const ListCaseAssign = () => {
     };
 
     fetchData();
-  }, [DirectorId, refetch]);
+  }, [DirectorId]);
 
   const columns = [
     {
@@ -123,7 +121,7 @@ const ListCaseAssign = () => {
         <IconButton
           onClick={() => {
             navigate(
-              `/director/manage-case/list-assign/casebyid/${params?.row?.id}`
+              `/director/manage-case/list-accept/casebyid/${params?.row?.id}`
             );
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
@@ -133,11 +131,9 @@ const ListCaseAssign = () => {
       ),
     },
     {
-      field: "accept",
-      headerName: "รับคดี",
-      width: 120,
-      align: "center",
-      headerAlign: "center",
+      field: "assign_evidence",
+      headerName: "มอบหมายงานตรวจ",
+      width: 150,
       headerClassName: "super-app-theme--header",
       renderCell: (params) => {
         let check = false;
@@ -148,124 +144,22 @@ const ListCaseAssign = () => {
             }
           });
         });
-        return (
+        return !check ? (
+          <ButtonAntd disabled={true}>มอบหมายงาน</ButtonAntd>
+        ) : (
           <ButtonAntd
-            disabled={check}
             onClick={() => {
-              acceptCase(
-                params?.row?.id,
-                DirectorId,
-                params?.row?.case_numboko
+              navigate(
+                `/director/manage-case/list-accept/assign-evidence/${params?.row?.id}`
               );
             }}
-            sx={{ ":hover": { color: "var(--color--main-light9)" } }}
           >
-            กดรับคดี
-          </ButtonAntd>
-        );
-      },
-    },
-    {
-      field: "Delete",
-      headerName: "ยกเลิกคดี",
-      headerClassName: "super-app-theme--header",
-      width: 120,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) => {
-        let check = false;
-        params.row.evidence_list.forEach((evidence) => {
-          evidence.evidence_factor.forEach((factor) => {
-            if (factor.assign_direc_status === "1") {
-              check = true;
-            }
-          });
-        });
-        return (
-          <ButtonAntd
-            disabled={check}
-            danger={true}
-            onClick={() => {
-              CancelCase(
-                params?.row?.id,
-                DirectorId,
-                params?.row?.case_numboko
-              );
-            }}
-            sx={{ ":hover": { color: "var(--color--main-light9)" } }}
-          >
-            ยกเลิกคดี
+            มอบหมายงาน
           </ButtonAntd>
         );
       },
     },
   ];
-
-  const acceptCase = (case_id, director_id, caseNumboko) => {
-    const data = { case_id, director_id };
-    Swal.fire({
-      title: "คุณกำลังกดรับคดี!",
-      text: `คุณต้องการรับคดีหมายเลข บก. ${caseNumboko}?`,
-      icon: "info",
-      showCancelButton: true,
-      confirmButtonText: "ตกลง",
-      cancelButtonText: "ยกเลิก",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await requestPrivate.put(`/acceptCase`, data).then(() => {
-            Swal.fire({
-              title: "รับคดีสำเร็จ!",
-              text: `รับคดีหมายเลข บก. ${caseNumboko} สำเร็จ`,
-              icon: "success",
-              confirmButtonText: "ตกลง",
-            });
-            setRefetch(!refetch);
-          });
-        } catch (err) {
-          Swal.fire({
-            title: "เกิดข้อผิดพลาด!",
-            text: "เกิดข้อผิดพลาดในการรับคดี",
-            icon: "error",
-            confirmButtonText: "ตกลง",
-          });
-        }
-      }
-    });
-  };
-
-  const CancelCase = async (case_id, director_id, caseNumboko) => {
-    const data = { case_id, director_id };
-    Swal.fire({
-      title: "แจ้งเตือน!",
-      text: `คุณต้องการยกเลิกคดีหมายเลข บก. ${caseNumboko}?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "ตกลง",
-      cancelButtonText: "ยกเลิก",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await requestPrivate.put(`/cancelCase`, data).then(() => {
-            Swal.fire({
-              title: "ยกเลิกสำเร็จ!",
-              text: `ยกเลิกคดีหมายเลข บก. ${caseNumboko} สำเร็จ`,
-              icon: "success",
-              confirmButtonText: "ตกลง",
-            });
-            setRefetch(!refetch);
-          });
-        } catch (err) {
-          Swal.fire({
-            title: "เกิดข้อผิดพลาด!",
-            text: "เกิดข้อผิดพลาดในการยกเลิกคดี",
-            icon: "error",
-            confirmButtonText: "ตกลง",
-          });
-        }
-      }
-    });
-  };
 
   const csvOptions = {
     fileName: "รายการคดีที่ได้รับมอบหมาย",
@@ -318,10 +212,7 @@ const ListCaseAssign = () => {
         <title>Lists Case - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
-        pages={[
-          { title: "คดีที่ได้รับ" },
-          { title: "รายการคดีที่ได้รับมอบหมาย" },
-        ]}
+        pages={[{ title: "คดี" }, { title: "รายการคดีที่ได้รับมอบหมาย" }]}
       />
       <Grid
         sx={{
@@ -353,7 +244,7 @@ const ListCaseAssign = () => {
 
                     e.evidence_list.forEach((evidence) => {
                       evidence.evidence_factor.forEach((factor) => {
-                        if (factor.assign_direc_status === "0") {
+                        if (factor.assign_direc_status === "1") {
                           check = true;
                         }
                       });
@@ -382,4 +273,4 @@ const ListCaseAssign = () => {
   );
 };
 
-export default ListCaseAssign;
+export default ListCaseAccept;
