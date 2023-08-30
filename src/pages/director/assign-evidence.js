@@ -257,12 +257,6 @@ const AssignEvidence = () => {
               .filter((te) => item?.type_e_id === te?.type_e_id)
               .map((te) => te?.type_e_name);
 
-            const typeEvidenceValue =
-              item?.type_e_id !== undefined && item?.type_e_id !== ""
-                ? item?.type_e_id
-                : item.type_e_id;
-            let isLastIndex = index === caseData?.evidence_list?.length - 1;
-            if (caseData?.evidence_list?.length === 0) isLastIndex = true;
             return (
               <Box key={index}>
                 <Divider orientation="left" orientationMargin="0">
