@@ -338,11 +338,11 @@ const GetCaseAcceptById = () => {
                         colorStatus = "processing";
                         textStatus = "รอผลการตรวจสอบ";
                         break;
-                      case "พบ":
+                      case "พบ DNA":
                         colorStatus = "success";
                         textStatus = "พบ DNA";
                         break;
-                      case "ไม่พบ":
+                      case "ไม่พบ DNA":
                         colorStatus = "error";
                         textStatus = "ไม่พบ DNA";
                         break;
