@@ -156,4 +156,30 @@ export const itemExpert = [
     link: "/home",
     linkP: "/home",
   },
+  {
+    key: "G1",
+    label: "งานตรวจ",
+    icon: <Work sx={{ fontSize: "20px" }} />,
+    childItems: [
+      {
+        key: "G1-child1",
+        label: "งานตรวจที่ได้รับ",
+        link: "/expert/manage-evidence/list-assign/main",
+        linkP: "/expert/manage-evidence/list-assign",
+      },
+      {
+        key: "G1-child2",
+        label: "บันทึกผลการตรวจ",
+        link: "/expert/manage-evidence/list-accept/main",
+        linkP: "/expert/manage-evidence/list-accept",
+      },
+    ],
+  },
+  {
+    key: "G2",
+    label: "รายงานสรุปผล",
+    icon: <Description sx={{ fontSize: "20px" }} />,
+    link: "/expert/manage-report",
+    linkP: "/expert/manage-report",
+  },
 ];

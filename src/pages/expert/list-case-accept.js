@@ -16,7 +16,7 @@ import { Button as ButtonAntd } from "antd";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
 
-const ListCaseAssignByExpertId = () => {
+const ListCaseAcceptOfExpert = () => {
   const { auth } = useAuth();
   const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -116,158 +116,25 @@ const ListCaseAssignByExpertId = () => {
     },
     {
       field: "Detail",
-      headerName: "ดูเพิ่มเติม",
-      width: 100,
+      headerName: "บันทึกผลตรวจ",
+      width: 200,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
       renderCell: (params) => (
-        <IconButton
+        <ButtonAntd
           onClick={() => {
             navigate(
-              `/expert/manage-evidence/list-assign/casebyid/${params?.row?.id}`
+              `/expert/manage-evidence/list-accept/saveResult/${params?.row?.id}`
             );
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >
-          <Visibility />
-        </IconButton>
+          บันทึกผลตรวจ
+        </ButtonAntd>
       ),
     },
-    {
-      field: "accept",
-      headerName: "รับงาน",
-      width: 120,
-      align: "center",
-      headerAlign: "center",
-      headerClassName: "super-app-theme--header",
-      renderCell: (params) => {
-        let check = false;
-        params.row.evidence_list.forEach((evidence) => {
-          evidence.evidence_factor.forEach((factor) => {
-            if (factor.assign_exp_status !== "0") {
-              check = true;
-            }
-          });
-        });
-        return (
-          <ButtonAntd
-            disabled={check}
-            onClick={() => {
-              acceptCase(
-                params?.row?.id,
-                expertId,
-                params?.row?.case_numboko
-              );
-            }}
-            sx={{ ":hover": { color: "var(--color--main-light9)" } }}
-          >
-            กดรับงาน
-          </ButtonAntd>
-        );
-      },
-    },
-    // {
-    //   field: "Delete",
-    //   headerName: "ยกเลิกงาน",
-    //   headerClassName: "super-app-theme--header",
-    //   width: 120,
-    //   align: "center",
-    //   headerAlign: "center",
-    //   renderCell: (params) => {
-    //     let check = false;
-    //     params.row.evidence_list.forEach((evidence) => {
-    //       evidence.evidence_factor.forEach((factor) => {
-    //         if (factor.assign_exp_status !== "0") {
-    //           check = true;
-    //         }
-    //       });
-    //     });
-    //     return (
-    //       <ButtonAntd
-    //         disabled={check}
-    //         danger={true}
-    //         onClick={() => {
-    //           CancelCase(
-    //             params?.row?.id,
-    //             // DirectorId,
-    //             params?.row?.case_numboko
-    //           );
-    //         }}
-    //         sx={{ ":hover": { color: "var(--color--main-light9)" } }}
-    //       >
-    //         ยกเลิกงาน
-    //       </ButtonAntd>
-    //     );
-    //   },
-    // },
   ];
-
-  const acceptCase = (case_id, expert_id, caseNumboko) => {
-    const data = { case_id, expert_id };
-    Swal.fire({
-      title: "คุณกำลังกดรับงานตรวจ!",
-      text: `คุณต้องการรับงานตรวจ หมายเลข บก. ${caseNumboko}?`,
-      icon: "info",
-      showCancelButton: true,
-      confirmButtonText: "ตกลง",
-      cancelButtonText: "ยกเลิก",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await requestPrivate.put(`/acceptWork`, data).then(() => {
-            Swal.fire({
-              title: "รับงานตรวจสำเร็จ!",
-              text: `รับงานตรวจ หมายเลข บก. ${caseNumboko} สำเร็จ`,
-              icon: "success",
-              confirmButtonText: "ตกลง",
-            });
-            setRefetch(!refetch);
-          });
-        } catch (err) {
-          Swal.fire({
-            title: "เกิดข้อผิดพลาด!",
-            text: "เกิดข้อผิดพลาดในการรับงานตรวจ",
-            icon: "error",
-            confirmButtonText: "ตกลง",
-          });
-        }
-      }
-    });
-  };
-
-  // const CancelCase = async (case_id, director_id, caseNumboko) => {
-  //   const data = { case_id, director_id };
-  //   Swal.fire({
-  //     title: "แจ้งเตือน!",
-  //     text: `คุณต้องการยกเลิกคดีหมายเลข บก. ${caseNumboko}?`,
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonText: "ตกลง",
-  //     cancelButtonText: "ยกเลิก",
-  //   }).then(async (result) => {
-  //     if (result.isConfirmed) {
-  //       try {
-  //         await requestPrivate.put(`/cancelCase`, data).then(() => {
-  //           Swal.fire({
-  //             title: "ยกเลิกสำเร็จ!",
-  //             text: `ยกเลิกคดีหมายเลข บก. ${caseNumboko} สำเร็จ`,
-  //             icon: "success",
-  //             confirmButtonText: "ตกลง",
-  //           });
-  //           setRefetch(!refetch);
-  //         });
-  //       } catch (err) {
-  //         Swal.fire({
-  //           title: "เกิดข้อผิดพลาด!",
-  //           text: "เกิดข้อผิดพลาดในการยกเลิกคดี",
-  //           icon: "error",
-  //           confirmButtonText: "ตกลง",
-  //         });
-  //       }
-  //     }
-  //   });
-  // };
 
   const csvOptions = {
     fileName: "รายการคดีที่ได้รับมอบหมาย",
@@ -355,7 +222,7 @@ const ListCaseAssignByExpertId = () => {
 
                     e.evidence_list.forEach((evidence) => {
                       evidence.evidence_factor.forEach((factor) => {
-                        if (factor.assign_exp_status === "0") {
+                        if (factor.assign_exp_status !== "0") {
                           check = true;
                         }
                       });
@@ -384,4 +251,4 @@ const ListCaseAssignByExpertId = () => {
   );
 };
 
-export default ListCaseAssignByExpertId;
+export default ListCaseAcceptOfExpert;

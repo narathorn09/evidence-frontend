@@ -35,6 +35,11 @@ import GetCaseAssignById from "./pages/director/getbyid-case-assign";
 import AssignEvidence from "./pages/director/assign-evidence";
 import ListCaseAccept from "./pages/director/list-case-accept";
 import GetCaseAcceptById from "./pages/director/getbyid-case-accept";
+import ListCaseAssignByExpertId from "./pages/expert/list-case-assign";
+import GetCaseAssignByExpertId from "./pages/expert/getbyid-case-assign";
+import ListCaseAcceptOfExpert from "./pages/expert/list-case-accept";
+import SaveResultEvidence from "./pages/expert/save-result";
+
 
 const App = () => {
   const { auth } = useAuth();
@@ -103,6 +108,10 @@ const App = () => {
            {role === "4" && ( //Expert
             <>
               <Route exact path="/home" element={<>Home Expert</>} />
+              <Route exact path="/expert/manage-evidence/list-assign/main" element={<ListCaseAssignByExpertId />} />
+              <Route exact path="/expert/manage-evidence/list-accept/main" element={<ListCaseAcceptOfExpert />} />
+              <Route exact path="/expert/manage-evidence/list-accept/saveResult/:caseId" element={<SaveResultEvidence />} />
+              <Route exact path="/expert/manage-evidence/list-assign/casebyid/:caseId" element={<GetCaseAssignByExpertId />} />
             </>
           )}
         </Routes>
