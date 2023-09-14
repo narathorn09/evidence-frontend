@@ -117,7 +117,7 @@ const ListCaseAcceptOfExpert = () => {
     {
       field: "Detail",
       headerName: "บันทึกผลตรวจ",
-      width: 200,
+      width: 150,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
@@ -134,6 +134,27 @@ const ListCaseAcceptOfExpert = () => {
         </ButtonAntd>
       ),
     },
+    {
+      field: "confirm",
+      headerName: "ปิดงานตรวจ",
+      width: 150,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "super-app-theme--header",
+      renderCell: (params) => (
+        <ButtonAntd
+          onClick={() => {
+            navigate(
+              `/expert/manage-evidence/list-accept/closeWork/${params?.row?.id}`
+            );
+          }}
+          sx={{ ":hover": { color: "var(--color--main-light9)" } }}
+        >
+          ปิดงานตรวจ
+        </ButtonAntd>
+      ),
+    },
+    
   ];
 
   const csvOptions = {
@@ -203,7 +224,7 @@ const ListCaseAcceptOfExpert = () => {
         }}
       >
         <Grid sx={{ textAlign: "left" }}>
-          <h2>งานตรวจที่ได้รับมอบหมาย</h2>
+          <h2>งานตรวจที่รับมอบหมายแล้ว</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
           {/* <ButtonAntd
@@ -224,7 +245,12 @@ const ListCaseAcceptOfExpert = () => {
                       evidence.evidence_factor.forEach((factor) => {
                         if (factor.assign_exp_status !== "0") {
                           check = true;
+                          if (factor.assign_exp_close_work === "1") {
+                            check = false;
+                          }
                         }
+                       
+                        
                       });
                     });
 

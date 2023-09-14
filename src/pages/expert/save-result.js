@@ -76,6 +76,7 @@ const SaveResultEvidence = () => {
           evidence_factor: evidence.evidence_factor.map((e) => ({
             assignId: e.assign_id,
             assign_evi_result: e.assign_evi_result,
+            assign_exp_status: e.assign_exp_status
           })),
         };
 
@@ -116,6 +117,7 @@ const SaveResultEvidence = () => {
     const newResultEvidenceFactor = {
       assignId: assignId,
       assign_evi_result: value || null,
+      assign_exp_status: value ? "2" : "1"
     };
 
     updatedResult[evidenceIndex].evidence_factor.splice(

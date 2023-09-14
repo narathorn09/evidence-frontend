@@ -39,7 +39,9 @@ import ListCaseAssignByExpertId from "./pages/expert/list-case-assign";
 import GetCaseAssignByExpertId from "./pages/expert/getbyid-case-assign";
 import ListCaseAcceptOfExpert from "./pages/expert/list-case-accept";
 import SaveResultEvidence from "./pages/expert/save-result";
-
+import CloseWork from "./pages/expert/close-work";
+import ReportWorkOfExpertMonth from "./pages/expert/report-work-month";
+import ReportWorkOfExpertYear from "./pages/expert/report-work-year";
 
 const App = () => {
   const { auth } = useAuth();
@@ -111,7 +113,10 @@ const App = () => {
               <Route exact path="/expert/manage-evidence/list-assign/main" element={<ListCaseAssignByExpertId />} />
               <Route exact path="/expert/manage-evidence/list-accept/main" element={<ListCaseAcceptOfExpert />} />
               <Route exact path="/expert/manage-evidence/list-accept/saveResult/:caseId" element={<SaveResultEvidence />} />
+              <Route exact path="/expert/manage-evidence/list-accept/closeWork/:caseId" element={<CloseWork />} />
               <Route exact path="/expert/manage-evidence/list-assign/casebyid/:caseId" element={<GetCaseAssignByExpertId />} />
+              <Route exact path="/expert/manage-report/month" element={<ReportWorkOfExpertMonth />} />
+              <Route exact path="/expert/manage-report/year" element={<ReportWorkOfExpertYear />} />
             </>
           )}
         </Routes>

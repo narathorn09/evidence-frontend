@@ -179,7 +179,19 @@ export const itemExpert = [
     key: "G2",
     label: "รายงานสรุปผล",
     icon: <Description sx={{ fontSize: "20px" }} />,
-    link: "/expert/manage-report",
-    linkP: "/expert/manage-report",
+    childItems: [
+      {
+        key: "G2-child1",
+        label: "รายงานรอบเดือน",
+        link: "/expert/manage-report/month",
+        linkP: "/expert/manage-report/month",
+      },
+      {
+        key: "G2-child2",
+        label: "รายงานรอบปี",
+        link: "/expert/manage-report/year",
+        linkP: "/expert/manage-report/year",
+      },
+    ],
   },
 ];
