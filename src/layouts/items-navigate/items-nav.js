@@ -143,9 +143,22 @@ export const itemDirector = [
     key: "G2",
     label: "รายงานสรุปผล",
     icon: <Description sx={{ fontSize: "20px" }} />,
-    link: "/director/manage-report",
-    linkP: "/director/manage-report",
+    childItems: [
+      {
+        key: "G2-child1",
+        label: "รายงานรอบเดือน",
+        link: "/director/manage-report/month",
+        linkP: "/director/manage-report/month",
+      },
+      {
+        key: "G2-child2",
+        label: "รายงานรอบปี",
+        link: "/director/manage-report/year",
+        linkP: "/director/manage-report/year",
+      },
+    ],
   },
+
 ];
 
 export const itemExpert = [

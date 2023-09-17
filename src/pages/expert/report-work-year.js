@@ -1,28 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Button, IconButton, Grid, Box } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Button, Grid } from "@mui/material";
 import {
   DataGrid,
   GridToolbarContainer,
   GridToolbarExportContainer,
   GridCsvExportMenuItem,
 } from "@mui/x-data-grid";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
-import { Button as ButtonAntd, Select } from "antd";
+import { Select } from "antd";
 import dayjs from "dayjs";
+import NoDataUi from "../../components/no-data";
 
 const ReportWorkOfExpertYear = () => {
   const { auth } = useAuth();
   const requestPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
   const [items, setItems] = useState([]);
-  const [refetch, setRefetch] = useState(false);
   const [expertId, setExpertId] = useState(null);
-  const [month, setMonth] = useState(null);
   const [year, setYear] = useState(null);
   const [labelYear, setLabelYear] = useState([]);
 
@@ -53,11 +49,11 @@ const ReportWorkOfExpertYear = () => {
     };
 
     fetchData();
-  }, [expertId, refetch]);
+  }, [expertId]);
 
   useEffect(() => {
     const data = items.map((item) => {
-      return item.case_save_date;
+      return  dayjs(item.case_save_date).format("DD-MM-YYYY").split("-")[2];
     });
 
     const years = data.map((dateString) => {
@@ -85,52 +81,35 @@ const ReportWorkOfExpertYear = () => {
     },
     {
       field: "case_save_date",
-      headerName: "วันที่ลงบันทึกคดี",
-      width: 250,
+      headerName: "เดือน",
+      width: 300,
       headerClassName: "super-app-theme--header",
       valueGetter: (params) => {
         return params?.row?.case_save_date
-          ? dayjs(params?.row?.case_save_date).format("DD-MM-YYYY")
+          ? dayjs(params?.row?.case_save_date).format("MMMM")
           : null;
       },
       renderCell: (params) => {
         return params?.value || "";
-      }
+      },
     },
     {
-      field: "case_numboko",
-      headerName: "หมายเลข บก.",
-      width: 200,
-      headerClassName: "super-app-theme--header",
-    },
-    {
-      field: "case_type",
-      headerName: "ประเภทของคดี",
-      width: 200,
-      headerClassName: "super-app-theme--header",
-    },
-    {
-      field: "countEvidence",
-      headerName: "จำนวนวัตถุพยานทั้งหมด",
-      width: 200,
+      field: "count_case",
+      headerName: "จำนวนคดีทั้งหมด",
+      width: 280,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
-      renderCell: (params) => {
-        const countEvidenceAll = params.row?.evidence_list
-          ?.map((row) =>
-            row.evidence_factor?.filter((itemFactor) => itemFactor)
-          )
-          .flat().length;
-        return countEvidenceAll;
-      },
+    },
+    {
+      field: "count_evidence",
+      headerName: "จำนวนวัตถุพยานทั้งหมด",
+      width: 280,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "super-app-theme--header",
     },
   ];
-
-  const handleMonthChange = (i, obj) => {
-    setMonth(obj?.value || null);
-    console.log(obj?.value);
-  };
 
   const handleYearChange = (i, obj) => {
     setYear(obj?.value || null);
@@ -139,34 +118,45 @@ const ReportWorkOfExpertYear = () => {
 
   let totalEvidenceCount = 0;
   let totalCaseCount = 0;
+  const monthCounts = {};
+  const eCounts = {};
 
   if (items) {
     items.forEach((e) => {
       let check = false;
-      const itemMonth = e.case_save_date.split("-")[1];
-      const itemYear = e.case_save_date.split("-")[0];
+      const itemMonth = dayjs(e.case_save_date).format("DD-MM-YYYY").split("-")[1];
+      const itemYear = dayjs(e.case_save_date).format("DD-MM-YYYY").split("-")[2];
+      const checkClosedCase = e.case_status === "2";
 
-      if (
-        (!month && !year) ||
-        (itemMonth === month && itemYear === year) ||
-        (itemMonth === month && !year)
-      ) {
-        check = e.evidence_list.some((evidence) =>
-          evidence.evidence_factor.every(
-            (factor) =>
-              factor.assign_exp_status !== "0" &&
-              factor.assign_exp_close_work === "1"
-          )
-        );
-
-        if (check) {
-          const evidenceCount = e.evidence_list
-            .map((row) =>
-              row.evidence_factor?.filter((itemFactor) => itemFactor)
+      if (checkClosedCase) {
+        if (!year || itemYear === year) {
+          check = e.evidence_list.some((evidence) =>
+            evidence.evidence_factor.every(
+              (factor) =>
+                factor.assign_exp_status !== "0" &&
+                factor.assign_exp_close_work === "1"
             )
-            .flat().length;
-          totalEvidenceCount += evidenceCount;
-          totalCaseCount += 1;
+          );
+  
+          if (check) {
+            const evidenceCount = e.evidence_list
+              .map((row) =>
+                row.evidence_factor?.filter((itemFactor) => itemFactor)
+              )
+              .flat().length;
+            totalEvidenceCount += evidenceCount;
+            totalCaseCount += 1;
+            console.log("evidenceCount", evidenceCount);
+  
+            if (itemMonth in monthCounts) {
+              monthCounts[itemMonth] += 1;
+              eCounts[itemMonth] += evidenceCount;
+              // console.log("evidenceCount", itemMonth,evidenceCount);
+            } else {
+              monthCounts[itemMonth] = 1;
+              eCounts[itemMonth] = 1;
+            }
+          }
         }
       }
     });
@@ -174,44 +164,57 @@ const ReportWorkOfExpertYear = () => {
 
   const totalEvidenceRow = {
     id: "totalEvidenceRow",
-    countEvidence: totalEvidenceCount,
+    count_evidence: totalEvidenceCount,
     index: "รวม",
     case_save_date: null,
-    case_numboko: totalCaseCount,
+    count_case: totalCaseCount,
   };
 
-  // Filter items based on month and year
   const filteredItems = items.filter((e) => {
-    const itemMonth = e.case_save_date.split("-")[1];
-    const itemYear = e.case_save_date.split("-")[0];
+    const itemYear = dayjs(e.case_save_date).format("DD-MM-YYYY").split("-")[2];
+    const checkClosedCase = e.case_status === "2";
 
-    return (
-      (!month && !year) ||
-      (itemMonth === month && itemYear === year) ||
-      (itemMonth === month && !year)
-    );
+    if(checkClosedCase){
+      return !year || itemYear === year;
+    }else{
+      return (null);
+    }
+    
   });
 
-  // Add the total evidence row to the filtered items
   const rows = filteredItems
     ? filteredItems
-        .map((e, index) => ({
+        .map((e, index, array) => ({
           ...e,
           id: e.case_id,
           index: index + 1,
+        }))
+        .filter(
+          (e, index, array) =>
+            index ===
+            array.findIndex(
+              (item) =>
+              dayjs(item.case_save_date).format("DD-MM-YYYY").split("-")[1] ===
+              dayjs(e.case_save_date).format("DD-MM-YYYY").split("-")[1]
+            )
+        )
+        .map((e, newIndex) => ({
+          ...e,
+          index: newIndex + 1,
+          count_case: monthCounts[dayjs(e.case_save_date).format("DD-MM-YYYY").split("-")[1]],
+          count_evidence: eCounts[dayjs(e.case_save_date).format("DD-MM-YYYY").split("-")[1]],
         }))
         .concat(totalEvidenceRow)
     : [];
 
   const csvOptions = {
-    fileName: "รายงานสรุปผลการตรวจ",
+    fileName: "รายงานสรุปผลในรอบปี",
     utf8WithBom: true,
     fields: [
       "index",
       "case_save_date",
-      "case_numboko",
-      "case_type",
-      "countEvidence",
+      "count_case",
+      "count_evidence",
     ],
   };
 
@@ -244,87 +247,6 @@ const ReportWorkOfExpertYear = () => {
     );
   }
 
-  // function CustomFooter({ rows }) {
-  //   // Calculate the sum of the "amount" column
-  //   // const sum = rows.reduce((total, row) => total + parseFloat(row.amount || 0), 0).toFixed(2);
-
-  //   return (
-  //     <div>
-  //       {/* You can customize the footer layout as needed */}
-  //       <div>Total Amount: 52</div>
-  //     </div>
-  //   );
-  // }
-  const StyledGridOverlay = styled("div")(({ theme }) => ({
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100%",
-    "& .ant-empty-img-1": {
-      fill: theme.palette.mode === "light" ? "#aeb8c2" : "#262626",
-    },
-    "& .ant-empty-img-2": {
-      fill: theme.palette.mode === "light" ? "#f5f5f7" : "#595959",
-    },
-    "& .ant-empty-img-3": {
-      fill: theme.palette.mode === "light" ? "#dce0e6" : "#434343",
-    },
-    "& .ant-empty-img-4": {
-      fill: theme.palette.mode === "light" ? "#fff" : "#1c1c1c",
-    },
-    "& .ant-empty-img-5": {
-      fillOpacity: theme.palette.mode === "light" ? "0.8" : "0.08",
-      fill: theme.palette.mode === "light" ? "#f5f5f5" : "#fff",
-    },
-  }));
-
-  function CustomNoRowsOverlay() {
-    return (
-      <StyledGridOverlay>
-        <svg
-          width="120"
-          height="100"
-          viewBox="0 0 184 152"
-          aria-hidden
-          focusable="false"
-        >
-          <g fill="none" fillRule="evenodd">
-            <g transform="translate(24 31.67)">
-              <ellipse
-                className="ant-empty-img-5"
-                cx="67.797"
-                cy="106.89"
-                rx="67.797"
-                ry="12.668"
-              />
-              <path
-                className="ant-empty-img-1"
-                d="M122.034 69.674L98.109 40.229c-1.148-1.386-2.826-2.225-4.593-2.225h-51.44c-1.766 0-3.444.839-4.592 2.225L13.56 69.674v15.383h108.475V69.674z"
-              />
-              <path
-                className="ant-empty-img-2"
-                d="M33.83 0h67.933a4 4 0 0 1 4 4v93.344a4 4 0 0 1-4 4H33.83a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z"
-              />
-              <path
-                className="ant-empty-img-3"
-                d="M42.678 9.953h50.237a2 2 0 0 1 2 2V36.91a2 2 0 0 1-2 2H42.678a2 2 0 0 1-2-2V11.953a2 2 0 0 1 2-2zM42.94 49.767h49.713a2.262 2.262 0 1 1 0 4.524H42.94a2.262 2.262 0 0 1 0-4.524zM42.94 61.53h49.713a2.262 2.262 0 1 1 0 4.525H42.94a2.262 2.262 0 0 1 0-4.525zM121.813 105.032c-.775 3.071-3.497 5.36-6.735 5.36H20.515c-3.238 0-5.96-2.29-6.734-5.36a7.309 7.309 0 0 1-.222-1.79V69.675h26.318c2.907 0 5.25 2.448 5.25 5.42v.04c0 2.971 2.37 5.37 5.277 5.37h34.785c2.907 0 5.277-2.421 5.277-5.393V75.1c0-2.972 2.343-5.426 5.25-5.426h26.318v33.569c0 .617-.077 1.216-.221 1.789z"
-              />
-            </g>
-            <path
-              className="ant-empty-img-3"
-              d="M149.121 33.292l-6.83 2.65a1 1 0 0 1-1.317-1.23l1.937-6.207c-2.589-2.944-4.109-6.534-4.109-10.408C138.802 8.102 148.92 0 161.402 0 173.881 0 184 8.102 184 18.097c0 9.995-10.118 18.097-22.599 18.097-4.528 0-8.744-1.066-12.28-2.902z"
-            />
-            <g className="ant-empty-img-4" transform="translate(149.65 15.383)">
-              <ellipse cx="20.654" cy="3.167" rx="2.849" ry="2.815" />
-              <path d="M5.698 5.63H0L2.898.704zM9.259.704h4.985V5.63H9.259z" />
-            </g>
-          </g>
-        </svg>
-        <Box sx={{ mt: 1 }}>ไม่มีข้อมูล</Box>
-      </StyledGridOverlay>
-    );
-  }
 
   return (
     <div>
@@ -348,80 +270,9 @@ const ReportWorkOfExpertYear = () => {
         }}
       >
         <Grid sx={{ textAlign: "left" }}>
-          <h2>รายงานสรุปผลในรอบเดือน</h2>
+          <h2>รายงานสรุปผลในรอบปี</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          <Select
-            allowClear
-            showSearch
-            style={{
-              width: 200,
-              marginRight: "20px",
-            }}
-            placeholder="เลือกเดือน"
-            optionFilterProp="children"
-            filterOption={(input, option) =>
-              (option?.label ?? "").includes(input)
-            }
-            // filterSort={(optionA, optionB) =>
-            //   (optionA?.label ?? "")
-            //     .toLowerCase()
-            //     .localeCompare((optionB?.label ?? "").toLowerCase())
-            // }
-            onChange={handleMonthChange}
-            value={month}
-            options={[
-              {
-                value: "01",
-                label: "มกราคม",
-              },
-              {
-                value: "02",
-                label: "กุมภาพันธ์",
-              },
-              {
-                value: "03",
-                label: "มีนาคม",
-              },
-              {
-                value: "04",
-                label: "เมษายน",
-              },
-              {
-                value: "05",
-                label: "พฤษภาคม",
-              },
-              {
-                value: "06",
-                label: "มิถุนายน",
-              },
-              {
-                value: "07",
-                label: "กรกฎาคม",
-              },
-              {
-                value: "08",
-                label: "สิงหาคม",
-              },
-              {
-                value: "09",
-                label: "กันยายน",
-              },
-              {
-                value: "10",
-                label: "ตุลาคม",
-              },
-              {
-                value: "11",
-                label: "พฤศจิกายน",
-              },
-              {
-                value: "12",
-                label: "ธันวาคม",
-              },
-            ]}
-          />
-
           <Select
             allowClear
             showSearch
@@ -439,6 +290,7 @@ const ReportWorkOfExpertYear = () => {
                 .localeCompare((optionB?.label ?? "").toLowerCase())
             }
             onChange={handleYearChange}
+            // defaultValue={"ทุกปี"}
             value={year}
             options={labelYear}
           />
@@ -449,7 +301,7 @@ const ReportWorkOfExpertYear = () => {
           columns={columns}
           slots={{
             toolbar: CustomToolbar,
-            noRowsOverlay: CustomNoRowsOverlay,
+            noRowsOverlay: NoDataUi,
           }}
           sx={{ borderRadius: "8px", height: "460px" }}
         />

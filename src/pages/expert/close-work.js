@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { Form, Divider, Button, Typography, Tag } from "antd";
+import { Form, Divider, Button, Typography, Tag, Input } from "antd";
 import {
   Box,
   Grid,
@@ -18,6 +18,7 @@ import useAxiosPrivate from "../../hook/use-axios-private";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import Swal from "sweetalert2";
+
 dayjs.locale("th");
 
 const CloseWork = () => {
@@ -29,7 +30,7 @@ const CloseWork = () => {
   const [form] = Form.useForm();
   const [caseData, setCaseData] = useState({});
   const [expertId, setExpertId] = useState(null);
-  // const [listClose, setListClose] = useState([]);
+  const [summaryText, setSummaryText] = useState("");
 
   useEffect(() => {
     const data = { id: auth?.user?.id, role: auth?.user?.role };
@@ -56,6 +57,7 @@ const CloseWork = () => {
           }
         );
         setCaseData(response.data[0]);
+        setSummaryText(response.data[0]?.case_summary_text)
       } catch (err) {
         alert(`เกิดข้อผิดพลาดในการดึงข้อมูลกลุ่มงาน : ${err}`);
       }
@@ -99,7 +101,11 @@ const CloseWork = () => {
           });
 
           await requestPrivate
-            .post(`/expertCloseWork`, { listClose: updatedListClose })
+            .post(`/expertCloseWork`, {
+              listClose: updatedListClose,
+              case_id: caseData?.case_id,
+              case_summary_text: summaryText,
+            })
             .then(() => {
               Swal.fire({
                 title: "ปิดงานตรวจสำเร็จ!",
@@ -107,7 +113,7 @@ const CloseWork = () => {
                 icon: "success",
                 confirmButtonText: "ตกลง",
               });
-              navigate(-1)
+              navigate(-1);
             });
         } catch (err) {
           Swal.fire({
@@ -314,6 +320,15 @@ const CloseWork = () => {
           <Grid sx={{ textAlign: "left", mb: 3, mt: 2 }}>
             <h2>วัตถุพยานที่ได้รับมอบหมาย</h2>
           </Grid>
+
+          <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+            <spna>{`วัตถุพยานทั้งหมด: ${countEvidenceAll} \u00A0`} </spna>
+
+            <spna>{`ตรวจแล้ว: ${countEvidenceHaveResults} \u00A0`} </spna>
+
+            <spna>{`ยังไม่ตรวจ: ${countEvidenceDontHaveResults} \u00A0`} </spna>
+          </Grid>
+
           <TableContainer
             sx={{
               borderRadius: "8px",
@@ -418,33 +433,28 @@ const CloseWork = () => {
                     </>
                   );
                 })}
-                <TableRow sx={{ backgroundColor: "var(--color--main-light9)" }}>
-                  <TableCell>
-                    <span style={{ color: "#fff" }}>จำนวนวัตถุพยานทั้งหมด</span>
-                  </TableCell>
-                  <TableCell align="right">
-                    <span style={{ color: "#fff" }}>{countEvidenceAll}</span>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <span>จำนวนวัตถุพยานที่บันทึกผลตรวจแล้ว</span>
-                  </TableCell>
-                  <TableCell align="right">
-                    <span>{countEvidenceHaveResults}</span>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <span>จำนวนวัตถุพยานที่ยังไม่บันทึกผลตรวจ</span>
-                  </TableCell>
-                  <TableCell align="right">
-                    <span>{countEvidenceDontHaveResults}</span>
-                  </TableCell>
-                </TableRow>
               </TableBody>
             </Table>
           </TableContainer>
+
+          <Form.Item
+            label={
+              <span style={{ fontWeight: "bold" }}>สรุปรายละเอียดการตรวจ</span>
+            }
+            labelCol={{
+              span: 24,
+            }}
+            wrapperCol={{
+              span: 24,
+            }}
+            style={{ marginTop: "18px" }}
+          >
+            <Input.TextArea
+              style={{ height: "100px" }}
+              value={summaryText}
+              onChange={(e) => setSummaryText(e.target.value)}
+            />
+          </Form.Item>
 
           <div
             style={{
