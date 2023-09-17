@@ -7,22 +7,57 @@ import {
   GridToolbarExportContainer,
   GridCsvExportMenuItem,
 } from "@mui/x-data-grid";
-import {  Visibility } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 import { Button as ButtonAntd } from "antd";
 import dayjs from "dayjs";
-import Swal from "sweetalert2";
+import exportPdf from "../../libs/export-pdf";
 
 const ListCaseAcceptOfExpert = () => {
   const { auth } = useAuth();
+  const [me, setMe] = useState();
   const requestPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [refetch, setRefetch] = useState(false);
   const [expertId, setExpertId] = useState(null);
+  const [typeEvidence, setTypeEvidence] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const getMe = async () => {
+      try {
+        const response = await requestPrivate.get("/me", {
+          signal: controller.signal,
+        });
+        isMounted && setMe(response?.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getMe();
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await requestPrivate.get(`/typeEvidence`);
+        setTypeEvidence(response.data);
+      } catch (err) {
+        alert(`เกิดข้อผิดพลาดในการดึงข้อมูลประเภทของวัตถุพยาน : ${err}`);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const data = { id: auth?.user?.id, role: auth?.user?.role };
@@ -53,7 +88,7 @@ const ListCaseAcceptOfExpert = () => {
     fetchData();
   }, [expertId, refetch]);
 
-  console.log("items", items) 
+  console.log("items", items);
 
   const columns = [
     {
@@ -121,18 +156,31 @@ const ListCaseAcceptOfExpert = () => {
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
-      renderCell: (params) => (
-        <ButtonAntd
-          onClick={() => {
-            navigate(
-              `/expert/manage-evidence/list-accept/saveResult/${params?.row?.id}`
-            );
-          }}
-          sx={{ ":hover": { color: "var(--color--main-light9)" } }}
-        >
-          บันทึกผลตรวจ
-        </ButtonAntd>
-      ),
+      renderCell: (params) => {
+        let check = true; // Initialize check as true
+
+        params.row.evidence_list?.forEach((evidence) => {
+          evidence.evidence_factor?.forEach((factor) => {
+            if (factor.assign_exp_close_work !== "1") {
+              check = false; // If any factor's assign_direc_status is not "1", set check to false
+            }
+          });
+        });
+
+        return (
+          <ButtonAntd
+            disabled={check}
+            onClick={() => {
+              navigate(
+                `/expert/manage-evidence/list-accept/saveResult/${params?.row?.id}`
+              );
+            }}
+            sx={{ ":hover": { color: "var(--color--main-light9)" } }}
+          >
+            บันทึกผลตรวจ
+          </ButtonAntd>
+        );
+      },
     },
     {
       field: "confirm",
@@ -141,20 +189,69 @@ const ListCaseAcceptOfExpert = () => {
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
-      renderCell: (params) => (
-        <ButtonAntd
-          onClick={() => {
-            navigate(
-              `/expert/manage-evidence/list-accept/closeWork/${params?.row?.id}`
-            );
-          }}
-          sx={{ ":hover": { color: "var(--color--main-light9)" } }}
-        >
-          ปิดงานตรวจ
-        </ButtonAntd>
-      ),
+      renderCell: (params) => {
+        let check = true; // Initialize check as true
+
+        params.row.evidence_list?.forEach((evidence) => {
+          evidence.evidence_factor?.forEach((factor) => {
+            if (factor.assign_exp_close_work !== "1") {
+              check = false; // If any factor's assign_direc_status is not "1", set check to false
+            }
+          });
+        });
+
+        return (
+          <ButtonAntd
+            disabled={check}
+            onClick={() => {
+              navigate(
+                `/expert/manage-evidence/list-accept/closeWork/${params?.row?.id}`
+              );
+            }}
+            sx={{ ":hover": { color: "var(--color--main-light9)" } }}
+          >
+            ปิดงานตรวจ
+          </ButtonAntd>
+        );
+      },
     },
-    
+    {
+      field: "report",
+      headerName: "ออกรายงาน",
+      width: 150,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "super-app-theme--header",
+      renderCell: (params) => {
+        let check = true; // Initialize check as true
+
+        params.row.evidence_list?.forEach((evidence) => {
+          evidence.evidence_factor?.forEach((factor) => {
+            if (factor.assign_exp_close_work === "1") {
+              check = false; // If any factor's assign_direc_status is not "1", set check to false
+            }
+          });
+        });
+
+        return (
+          <ButtonAntd
+            disabled={check}
+            onClick={async () => {
+              await exportPdf({
+                data: {
+                  ...params?.row,
+                  name: `${me?.rank}${me?.fname} ${me?.lname}`,
+                  typeEvidence: typeEvidence,
+                },
+              });
+            }}
+            sx={{ ":hover": { color: "var(--color--main-light9)" } }}
+          >
+            ออกรายงาน
+          </ButtonAntd>
+        );
+      },
+    },
   ];
 
   const csvOptions = {
@@ -245,12 +342,10 @@ const ListCaseAcceptOfExpert = () => {
                       evidence.evidence_factor.forEach((factor) => {
                         if (factor.assign_exp_status !== "0") {
                           check = true;
-                          if (factor.assign_exp_close_work === "1") {
-                            check = false;
-                          }
+                          // if (factor.assign_exp_close_work === "1") {
+                          //   check = false;
+                          // }
                         }
-                       
-                        
                       });
                     });
 
