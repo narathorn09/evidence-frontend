@@ -147,8 +147,8 @@ const ListCase = () => {
       renderCell: (params) => {
         let check = true;  // Initialize check as true
 
-        params.row.evidence_list.forEach((evidence) => {
-          evidence.evidence_factor.forEach((factor) => {
+        params?.row.evidence_list?.forEach((evidence) => {
+          evidence?.evidence_factor?.forEach((factor) => {
             if (factor.assign_direc_status !== "1") {
               check = false;  // If any factor's assign_direc_status is not "1", set check to false
             }
@@ -208,8 +208,8 @@ const ListCase = () => {
       renderCell: (params) => {
         let check = true;  // Initialize check as true
 
-        params.row.evidence_list.forEach((evidence) => {
-          evidence.evidence_factor.forEach((factor) => {
+        params.row.evidence_list?.forEach((evidence) => {
+          evidence.evidence_factor?.forEach((factor) => {
             if (factor.assign_direc_status !== "1") {
               check = false;  // If any factor's assign_direc_status is not "1", set check to false
             }

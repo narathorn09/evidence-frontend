@@ -244,7 +244,7 @@ const ListCaseAccept = () => {
 
                     e.evidence_list.forEach((evidence) => {
                       evidence.evidence_factor.forEach((factor) => {
-                        if (factor.assign_direc_status === "1") {
+                        if (factor.assign_direc_status === "1" && factor.assign_exp_close_work === "0") {
                           check = true;
                         }
                       });
