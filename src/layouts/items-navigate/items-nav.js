@@ -91,16 +91,10 @@ export const itemSceneInvestigator = [
   },
   {
     key: "G1",
-    label: "คดี",
+    label: "จัดการคดี",
     icon: <Work sx={{ fontSize: "20px" }} />,
-    childItems: [
-      {
-        key: "G1-child1",
-        label: "รายการคดี",
-        link: "/inves/manage-case/list",
-        linkP: "/inves/manage-case",
-      },
-    ],
+    link: "/inves/manage-case/list",
+    linkP: "/inves/manage-case",
   },
   {
     key: "G2",

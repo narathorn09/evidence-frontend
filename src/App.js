@@ -48,6 +48,8 @@ import ReportWorkOfDirectorMonth from "./pages/director/report-work-month";
 import ReportWorkOfDirectorYear from "./pages/director/report-work-year";
 import ListExpertByGroup from "./pages/director/list-expert";
 import GetDetailExpertById from "./pages/director/getbyid-expert-detail";
+import CloseCase from "./pages/sceneInvestigator/close-case";
+
 
 const App = () => {
   const { auth } = useAuth();
@@ -99,6 +101,7 @@ const App = () => {
               <Route exact path="/inves/manage-type-evidence/list" element={<ListTypeEvidence />} />
               <Route exact path="/inves/manage-type-evidence/create" element={<CreateTypeEvidence />} />
               <Route exact path="/inves/manage-type-evidence/update/:id" element={<UpdateTypeEvidence />} />
+              <Route exact path="/inves/manage-case/close/:caseId" element={<CloseCase />} />
               <Route exact path="/inves/manage-report" element={<>report</>} />
             </>
           )}

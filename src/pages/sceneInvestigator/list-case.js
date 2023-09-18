@@ -130,7 +130,7 @@ const ListCase = () => {
         <ButtonAntd
           disabled={params?.row?.case_status !== "1"}
           onClick={() => {
-            CloseCase(params?.row?.id, params?.row?.case_numboko);
+            navigate(`/inves/manage-case/close/${params?.row?.id}`);
           }}
           sx={{ ":hover": { color: "var(--color--main-light9)" } }}
         >
@@ -331,43 +331,6 @@ const ListCase = () => {
     fetchData();
   }, [refetch, invesId]);
 
-  const CloseCase = async (case_id, caseNumboko) => {
-    Swal.fire({
-      title: "คุณต้องการปิดคดี!",
-      text: `คุณต้องการปิดคดีหมายเลข บก. ${caseNumboko}?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "ตกลง",
-      cancelButtonText: "ยกเลิก",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await requestPrivate
-            .put(`/caseStatusByCaseId`, {
-              case_id: case_id,
-              case_status: "2",
-            })
-            .then(() => {
-              Swal.fire({
-                title: "ปิดคดีสำเร็จ!",
-                text: `ปิดคดีหมายเลข บก. ${caseNumboko} สำเร็จ`,
-                icon: "success",
-                confirmButtonText: "ตกลง",
-              });
-              setRefetch(!refetch);
-            });
-        } catch (err) {
-          Swal.fire({
-            title: "เกิดข้อผิดพลาด!",
-            text: "เกิดข้อผิดพลาดในการปิดคดี",
-            icon: "error",
-            confirmButtonText: "ตกลง",
-          });
-        }
-      }
-    });
-  };
-
   const RemoveCase = async (caseId, caseNumboko, caseDataById) => {
     Swal.fire({
       title: "แจ้งเตือน!",
@@ -493,7 +456,7 @@ const ListCase = () => {
           slots={{
             toolbar: CustomToolbar,
           }}
-          sx={{ borderRadius: "8px", height: "400px" }}
+          sx={{ borderRadius: "8px", height: "450px" }}
         />
       </Grid>
     </div>
