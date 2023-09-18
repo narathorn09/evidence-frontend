@@ -6,4 +6,4 @@
 
 # step 2
 > yarn start
-// for run front end
+// for run frontend
