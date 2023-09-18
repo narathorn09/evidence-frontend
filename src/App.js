@@ -42,6 +42,12 @@ import SaveResultEvidence from "./pages/expert/save-result";
 import CloseWork from "./pages/expert/close-work";
 import ReportWorkOfExpertMonth from "./pages/expert/report-work-month";
 import ReportWorkOfExpertYear from "./pages/expert/report-work-year";
+import ListCaseConfirm from "./pages/director/list-case-confirm";
+import ConfirmCase from "./pages/director/confirm-case";
+import ReportWorkOfDirectorMonth from "./pages/director/report-work-month";
+import ReportWorkOfDirectorYear from "./pages/director/report-work-year";
+import ListExpertByGroup from "./pages/director/list-expert";
+import GetDetailExpertById from "./pages/director/getbyid-expert-detail";
 
 const App = () => {
   const { auth } = useAuth();
@@ -104,6 +110,12 @@ const App = () => {
               <Route exact path="/director/manage-case/list-assign/casebyid/:caseId" element={<GetCaseAssignById />} />
               <Route exact path="/director/manage-case/list-accept/casebyid/:caseId" element={<GetCaseAcceptById />} />
               <Route exact path="/director/manage-case/list-accept/assign-evidence/:caseId" element={<AssignEvidence />} />
+              <Route exact path="/director/manage-case/confirm" element={<ListCaseConfirm />} />
+              <Route exact path="/director/manage-case/confirm/casebyid/:caseId" element={<ConfirmCase />} />
+              <Route exact path="/director/manage-report/month" element={<ReportWorkOfDirectorMonth />} />
+              <Route exact path="/director/manage-report/year" element={<ReportWorkOfDirectorYear />} />
+              <Route exact path="/director/manage-expert" element={<ListExpertByGroup />} />
+              <Route exact path="/director/manage-expert/detail/:expertId" element={<GetDetailExpertById />} />
 
             </>
           )}

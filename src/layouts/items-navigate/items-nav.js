@@ -91,10 +91,16 @@ export const itemSceneInvestigator = [
   },
   {
     key: "G1",
-    label: "จัดการคดี",
+    label: "คดี",
     icon: <Work sx={{ fontSize: "20px" }} />,
-    link: "/inves/manage-case/list",
-    linkP: "/inves/manage-case",
+    childItems: [
+      {
+        key: "G1-child1",
+        label: "รายการคดี",
+        link: "/inves/manage-case/list",
+        linkP: "/inves/manage-case",
+      },
+    ],
   },
   {
     key: "G2",
@@ -137,28 +143,40 @@ export const itemDirector = [
         link: "/director/manage-case/list-accept/main",
         linkP: "/director/manage-case/list-accept",
       },
+      {
+        key: "G1-child3",
+        label: "อนุมัติงานตรวจ",
+        link: "/director/manage-case/confirm",
+        linkP: "/director/manage-case/confirm",
+      },
     ],
   },
   {
     key: "G2",
+    label: "ผู้ชำนาญการ",
+    icon: <PeopleAlt sx={{ fontSize: "20px" }} />,
+    link: "/director/manage-expert",
+    linkP: "/director/manage-expert",
+  },
+  {
+    key: "G3",
     label: "รายงานสรุปผล",
     icon: <Description sx={{ fontSize: "20px" }} />,
     childItems: [
       {
-        key: "G2-child1",
+        key: "G3-child1",
         label: "รายงานรอบเดือน",
         link: "/director/manage-report/month",
         linkP: "/director/manage-report/month",
       },
       {
-        key: "G2-child2",
+        key: "G3-child2",
         label: "รายงานรอบปี",
         link: "/director/manage-report/year",
         linkP: "/director/manage-report/year",
       },
     ],
   },
-
 ];
 
 export const itemExpert = [
