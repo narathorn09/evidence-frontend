@@ -165,13 +165,13 @@ export const itemDirector = [
     childItems: [
       {
         key: "G3-child1",
-        label: "รายงานรอบเดือน",
+        label: "รายงานสรุปผลในรอบเดือน",
         link: "/director/manage-report/month",
         linkP: "/director/manage-report/month",
       },
       {
         key: "G3-child2",
-        label: "รายงานรอบปี",
+        label: "รายงานสรุปผลในรอบปี",
         link: "/director/manage-report/year",
         linkP: "/director/manage-report/year",
       },
@@ -200,7 +200,7 @@ export const itemExpert = [
       },
       {
         key: "G1-child2",
-        label: "บันทึกผลการตรวจ",
+        label: "จัดการงานตรวจ",
         link: "/expert/manage-evidence/list-accept/main",
         linkP: "/expert/manage-evidence/list-accept",
       },
@@ -213,13 +213,13 @@ export const itemExpert = [
     childItems: [
       {
         key: "G2-child1",
-        label: "รายงานรอบเดือน",
+        label: "รายงานสรุปผลในรอบเดือน",
         link: "/expert/manage-report/month",
         linkP: "/expert/manage-report/month",
       },
       {
         key: "G2-child2",
-        label: "รายงานรอบปี",
+        label: "รายงานสรุปผลในรอบปี",
         link: "/expert/manage-report/year",
         linkP: "/expert/manage-report/year",
       },

@@ -111,13 +111,13 @@ const GetCaseAcceptById = () => {
   return (
     <div>
       <Helmet>
-        <title>Get Case Accept- Forensic Science</title>
+        <title>คดี - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
-          { title: "จัดการคดี" },
+          { title: "คดี" },
           {
-            title: "รายการคดีที่ได้รับมอบหมาย",
+            title: "รายการคดีที่รับมอบหมายแล้ว",
             path: "/director/manage-case/list-accept/main",
           },
           { title: `คดีหมายเลข บก. ที่ ${caseData?.case_numboko}` },

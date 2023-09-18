@@ -215,7 +215,7 @@ const AssignEvidence = () => {
   return (
     <div>
       <Helmet>
-        <title>Get Case - Forensic Science</title>
+        <title>มอบหมายงานตรวจ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

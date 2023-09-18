@@ -43,11 +43,11 @@ const GetDetailExpertById = () => {
   return (
     <div>
       <Helmet>
-        <title>Get Case - Forensic Science</title>
+        <title>ผู้ชำนาญการ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
-          { title: "จัดการคดี" },
+          { title: "ผู้ชำนาญการ" },
           {
             title: "รายชื่อผู้ชำนาญการ",
             path: "/director/manage-expert",

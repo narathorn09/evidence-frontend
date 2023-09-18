@@ -86,13 +86,13 @@ const GetCaseAssignById = () => {
   return (
     <div>
       <Helmet>
-        <title>Get Case - Forensic Science</title>
+        <title>คดี - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
-          { title: "จัดการคดี" },
+          { title: "คดี" },
           {
-            title: "รายการคดี",
+            title: "รายการคดีที่ได้รับมอบหมาย",
             path: "/director/manage-case/list-assign/main",
           },
           { title: `คดีหมายเลข บก. ที่ ${caseData?.case_numboko}` },

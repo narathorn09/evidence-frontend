@@ -270,7 +270,7 @@ const ListCaseAssignByExpertId = () => {
   // };
 
   const csvOptions = {
-    fileName: "รายการคดีที่ได้รับมอบหมาย",
+    fileName: "รายการงานตรวจที่ได้รับมอบหมาย",
     utf8WithBom: true,
     fields: [
       "index",
@@ -281,7 +281,6 @@ const ListCaseAssignByExpertId = () => {
       "case_accident_date",
       "case_accident_time",
       "case_location",
-      "case_accept_status",
     ],
   };
 
@@ -317,12 +316,12 @@ const ListCaseAssignByExpertId = () => {
   return (
     <div>
       <Helmet>
-        <title>Lists Case - Forensic Science</title>
+        <title>งานตรวจ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
-          { title: "คดีที่ได้รับ" },
-          { title: "รายการคดีที่ได้รับมอบหมาย" },
+          { title: "งานตรวจ" },
+          { title: "รายการงานตรวจที่ได้รับมอบหมาย" },
         ]}
       />
       <Grid
@@ -336,7 +335,7 @@ const ListCaseAssignByExpertId = () => {
         }}
       >
         <Grid sx={{ textAlign: "left" }}>
-          <h2>งานตรวจที่ได้รับมอบหมาย</h2>
+          <h2>รายการงานตรวจที่ได้รับมอบหมาย</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
           {/* <ButtonAntd

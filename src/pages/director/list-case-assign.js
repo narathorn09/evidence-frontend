@@ -279,7 +279,6 @@ const ListCaseAssign = () => {
       "case_accident_date",
       "case_accident_time",
       "case_location",
-      "case_accept_status",
     ],
   };
 
@@ -315,11 +314,11 @@ const ListCaseAssign = () => {
   return (
     <div>
       <Helmet>
-        <title>Lists Case - Forensic Science</title>
+        <title>คดี - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
-          { title: "คดีที่ได้รับ" },
+          { title: "คดี" },
           { title: "รายการคดีที่ได้รับมอบหมาย" },
         ]}
       />

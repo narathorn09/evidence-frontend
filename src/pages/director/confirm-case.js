@@ -179,19 +179,24 @@ const ConfirmCase = () => {
   return (
     <div>
       <Helmet>
-        <title>Get Case Accept- Forensic Science</title>
+        <title>อนุมัติงานตรวจ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
           { title: "จัดการคดี" },
           {
-            title: "รายการคดีที่ได้รับมอบหมาย",
-            path: "/director/manage-case/list-accept/main",
+            title: "รายการคดีที่รออนุมัติงานตรวจ",
+            path: "/director/manage-case/confirm",
           },
-          { title: `คดีหมายเลข บก. ที่ ${caseData?.case_numboko}` },
+          {
+            title: `อนุมัติงานตรวจ คดีหมายเลข บก. ที่ ${caseData?.case_numboko}`,
+          },
         ]}
       />
       <Box sx={{ width: "100%", height: "100%" }}>
+        <Grid sx={{ textAlign: "left", mb: 2 }}>
+          <h2 style={{ color: "var(--color--main)" }}>อนุมัติงานตรวจ</h2>
+        </Grid>
         <Grid sx={{ textAlign: "left", mb: 2 }}>
           <h2>ข้อมูลคดี</h2>
         </Grid>

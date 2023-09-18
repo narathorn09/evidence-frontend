@@ -255,7 +255,7 @@ const ListCaseAcceptOfExpert = () => {
   ];
 
   const csvOptions = {
-    fileName: "รายการคดีที่ได้รับมอบหมาย",
+    fileName: "รายการงานตรวจที่รับมอบหมายแล้ว",
     utf8WithBom: true,
     fields: [
       "index",
@@ -266,7 +266,6 @@ const ListCaseAcceptOfExpert = () => {
       "case_accident_date",
       "case_accident_time",
       "case_location",
-      "case_accept_status",
     ],
   };
 
@@ -302,12 +301,12 @@ const ListCaseAcceptOfExpert = () => {
   return (
     <div>
       <Helmet>
-        <title>Lists Case - Forensic Science</title>
+        <title>งานตรวจ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
-          { title: "คดีที่ได้รับ" },
-          { title: "รายการคดีที่ได้รับมอบหมาย" },
+          { title: "งานตรวจ" },
+          { title: "รายการงานตรวจที่รับมอบหมายแล้ว" },
         ]}
       />
       <Grid
@@ -321,7 +320,7 @@ const ListCaseAcceptOfExpert = () => {
         }}
       >
         <Grid sx={{ textAlign: "left" }}>
-          <h2>งานตรวจที่รับมอบหมายแล้ว</h2>
+          <h2>รายการงานตรวจที่รับมอบหมายแล้ว</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
           {/* <ButtonAntd

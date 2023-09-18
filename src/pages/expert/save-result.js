@@ -153,19 +153,23 @@ const SaveResultEvidence = () => {
   return (
     <div>
       <Helmet>
-        <title>Get Case - Forensic Science</title>
+        <title>บันทึกผลการตรวจ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
-          { title: "จัดการคดี" },
+          { title: "งานตรวจ" },
           {
-            title: "รายการคดี",
+            title: "รายการงานตรวจที่รับมอบหมายแล้ว",
             path: "/expert/manage-evidence/list-accept/main",
           },
+          { title: "บันทึกผลการตรวจ"},
           { title: `คดีหมายเลข บก. ที่ ${caseData?.case_numboko}` },
         ]}
       />
       <Box sx={{ width: "100%", height: "100%" }}>
+      <Grid sx={{ textAlign: "left", mb: 2 }}>
+          <h2 style={{ color: "var(--color--main)" }}>บันทึกผลการตรวจ</h2>
+        </Grid>
         <Grid sx={{ textAlign: "left", mb: 2 }}>
           <h2>ข้อมูลคดี</h2>
         </Grid>

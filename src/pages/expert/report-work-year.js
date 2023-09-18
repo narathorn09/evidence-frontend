@@ -82,7 +82,7 @@ const ReportWorkOfExpertYear = () => {
     {
       field: "case_save_date",
       headerName: "เดือน",
-      width: 300,
+      width: 380,
       headerClassName: "super-app-theme--header",
       valueGetter: (params) => {
         return params?.row?.case_save_date
@@ -96,7 +96,7 @@ const ReportWorkOfExpertYear = () => {
     {
       field: "count_case",
       headerName: "จำนวนคดีทั้งหมด",
-      width: 280,
+      width: 325,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
@@ -104,7 +104,7 @@ const ReportWorkOfExpertYear = () => {
     {
       field: "count_evidence",
       headerName: "จำนวนวัตถุพยานทั้งหมด",
-      width: 280,
+      width: 325,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
@@ -251,12 +251,12 @@ const ReportWorkOfExpertYear = () => {
   return (
     <div>
       <Helmet>
-        <title>Lists Case - Forensic Science</title>
+        <title>รายงานสรุปผล - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
-          { title: "คดีที่ได้รับ" },
-          { title: "รายการคดีที่ได้รับมอบหมาย" },
+          { title: "รายงานสรุปผล" },
+          { title: "รายงานสรุปผลในรอบปี" },
         ]}
       />
       <Grid

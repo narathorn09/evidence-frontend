@@ -188,7 +188,7 @@ const Profile = () => {
   return (
     <div>
       <Helmet>
-        <title>Profile - Forensic Science</title>
+        <title>ข้อมูลส่วนตัว - Forensic Science</title>
       </Helmet>
       <Box sx={{ width: "100%", height: "100%" }}>
         <Box

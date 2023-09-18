@@ -86,7 +86,7 @@ const ReportWorkOfDirectorMonth = () => {
     {
       field: "case_save_date",
       headerName: "วันที่ลงบันทึกคดี",
-      width: 250,
+      width: 280,
       headerClassName: "super-app-theme--header",
       valueGetter: (params) => {
         return params?.row?.case_save_date
@@ -100,13 +100,13 @@ const ReportWorkOfDirectorMonth = () => {
     {
       field: "case_type",
       headerName: "ประเภทของคดี",
-      width: 200,
+      width: 280,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "case_numboko",
       headerName: "หมายเลข บก.",
-      width: 200,
+      width: 270,
       headerClassName: "super-app-theme--header",
     },
 
@@ -117,14 +117,22 @@ const ReportWorkOfDirectorMonth = () => {
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
-      renderCell: (params) => {
+      valueGetter: (params) => {
         const countEvidenceAll = params.row?.evidence_list
           ?.map((row) =>
             row.evidence_factor?.filter((itemFactor) => itemFactor)
           )
           .flat().length;
-        return countEvidenceAll;
+        return countEvidenceAll || totalEvidenceCount;
       },
+      // renderCell: (params) => {
+      //   const countEvidenceAll = params.row?.evidence_list
+      //     ?.map((row) =>
+      //       row.evidence_factor?.filter((itemFactor) => itemFactor)
+      //     )
+      //     .flat().length;
+      //   return countEvidenceAll;
+      // },
     },
   ];
 
@@ -263,12 +271,12 @@ const ReportWorkOfDirectorMonth = () => {
   return (
     <div>
       <Helmet>
-        <title>Lists Case - Forensic Science</title>
+        <title>รายงานสรุปผล - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
-          { title: "คดีที่ได้รับ" },
-          { title: "รายการคดีที่ได้รับมอบหมาย" },
+          { title: "รายงานสรุปผล" },
+          { title: "รายงานสรุปผลในรอบเดือน" },
         ]}
       />
       <Grid

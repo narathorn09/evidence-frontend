@@ -86,13 +86,13 @@ const GetCaseAssignByExpertId = () => {
   return (
     <div>
       <Helmet>
-        <title>Get Case - Forensic Science</title>
+        <title>งานตรวจ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
-          { title: "จัดการคดี" },
+          { title: "งานตรวจ" },
           {
-            title: "รายการคดี",
+            title: "รายการงานตรวจที่ได้รับมอบหมาย",
             path: "/expert/manage-evidence/list-assign/main",
           },
           { title: `คดีหมายเลข บก. ที่ ${caseData?.case_numboko}` },

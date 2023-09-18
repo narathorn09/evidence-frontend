@@ -29,7 +29,7 @@ const ListExpertByGroup = () => {
     {
       field: "index",
       headerName: "#",
-      width: 90,
+      width: 150,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
@@ -37,31 +37,31 @@ const ListExpertByGroup = () => {
     {
       field: "nametitle",
       headerName: "คำนำหน้าชื่อ",
-      width: 100,
+      width: 150,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "rank",
       headerName: "ยศ",
-      width: 100,
+      width: 150,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "fname",
       headerName: "ชื่อจริง",
-      width: 180,
+      width: 250,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "lname",
       headerName: "นามสกุล",
-      width: 180,
+      width: 250,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "detail",
       headerName: "ดูรายละเอียด",
-      width: 150,
+      width: 200,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
@@ -186,10 +186,10 @@ const ListExpertByGroup = () => {
   return (
     <>
       <Helmet>
-        <title>Lists Expert - Forensic Science</title>
+        <title>ผู้ชำนาญการ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
-        pages={[{ title: "จัดการผู้ใช้" }, { title: "รายชื่อผู้ชำนาญการ" }]}
+        pages={[{ title: "ผู้ชำนาญการ" }, { title: "รายชื่อผู้ชำนาญการ" }]}
       />
       <Grid
         sx={{

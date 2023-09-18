@@ -111,13 +111,75 @@ const ListCaseConfirm = () => {
       headerClassName: "super-app-theme--header",
     },
     {
+      field: "status",
+      headerName: "สถานะการอนุมัติ",
+      width: 200,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "super-app-theme--header",
+      valueGetter: (params) => {
+        let textStatus;
+
+        let check = false;
+        params?.row.evidence_list.forEach((evidence) => {
+          evidence.evidence_factor.forEach((factor) => {
+            if (factor.ef_status === "3") {
+              check = true;
+            }
+          });
+        });
+
+        if (check) {
+          textStatus = "อนุมัติแล้ว";
+        } else {
+          textStatus = "ยังไม่อนุมัติ";
+        }
+
+        return textStatus;
+      },
+      renderCell: (params) => {
+        let textStatus;
+        let colorStatus;
+        let check = false;
+        params?.row.evidence_list.forEach((evidence) => {
+          evidence.evidence_factor.forEach((factor) => {
+            if (factor.ef_status === "3") {
+              check = true;
+            }
+          });
+        });
+
+        if (check) {
+          textStatus = "อนุมัติแล้ว";
+          colorStatus = "var(--color--green)";
+        } else {
+          textStatus = "ยังไม่อนุมัติ";
+          colorStatus = "var(--color--blue)";
+        }
+
+        return <span style={{ color: colorStatus }}>{textStatus}</span>;
+      },
+    },
+    {
       field: "assign_evidence",
       headerName: "อนุมัติงานตรวจ",
       width: 150,
+      align: "center",
+      headerAlign: "center",
       headerClassName: "super-app-theme--header",
       renderCell: (params) => {
+        let check = false;
+        params?.row.evidence_list.forEach((evidence) => {
+          evidence.evidence_factor.forEach((factor) => {
+            if (factor.ef_status === "3") {
+              check = true;
+            }
+          });
+        });
+
         return (
           <ButtonAntd
+            disabled={check}
             onClick={() => {
               navigate(
                 `/director/manage-case/confirm/casebyid/${params?.row?.id}`
@@ -132,7 +194,7 @@ const ListCaseConfirm = () => {
   ];
 
   const csvOptions = {
-    fileName: "รายการคดีที่ได้รับมอบหมาย",
+    fileName: "รายการคดีที่รออนุมัติงานตรวจ",
     utf8WithBom: true,
     fields: [
       "index",
@@ -143,7 +205,7 @@ const ListCaseConfirm = () => {
       "case_accident_date",
       "case_accident_time",
       "case_location",
-      "case_accept_status",
+      "status",
     ],
   };
 
@@ -179,10 +241,10 @@ const ListCaseConfirm = () => {
   return (
     <div>
       <Helmet>
-        <title>Lists Case - Forensic Science</title>
+        <title>คดี - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
-        pages={[{ title: "คดี" }, { title: "รายการคดีที่ได้รับมอบหมาย" }]}
+        pages={[{ title: "คดี" }, { title: "รายการคดีที่รออนุมัติงานตรวจ" }]}
       />
       <Grid
         sx={{
@@ -214,7 +276,10 @@ const ListCaseConfirm = () => {
 
                     e.evidence_list.forEach((evidence) => {
                       evidence.evidence_factor.forEach((factor) => {
-                        if (factor.assign_direc_status === "1" && factor.assign_exp_close_work === "1") {
+                        if (
+                          factor.assign_direc_status === "1" &&
+                          factor.assign_exp_close_work === "1"
+                        ) {
                           check = true;
                         }
                       });

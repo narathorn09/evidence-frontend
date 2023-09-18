@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
-import {  Select } from "antd";
+import { Select } from "antd";
 import dayjs from "dayjs";
 import NoDataUi from "../../components/no-data";
 
@@ -86,7 +86,7 @@ const ReportWorkOfExpertMonth = () => {
     {
       field: "case_save_date",
       headerName: "วันที่ลงบันทึกคดี",
-      width: 250,
+      width: 280,
       headerClassName: "super-app-theme--header",
       valueGetter: (params) => {
         return params?.row?.case_save_date
@@ -95,18 +95,18 @@ const ReportWorkOfExpertMonth = () => {
       },
       renderCell: (params) => {
         return params?.value || "";
-      }
+      },
     },
     {
       field: "case_type",
       headerName: "ประเภทของคดี",
-      width: 200,
+      width: 280,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "case_numboko",
       headerName: "หมายเลข บก.",
-      width: 200,
+      width: 270,
       headerClassName: "super-app-theme--header",
     },
 
@@ -117,14 +117,22 @@ const ReportWorkOfExpertMonth = () => {
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
-      renderCell: (params) => {
+      valueGetter: (params) => {
         const countEvidenceAll = params.row?.evidence_list
           ?.map((row) =>
             row.evidence_factor?.filter((itemFactor) => itemFactor)
           )
           .flat().length;
-        return countEvidenceAll;
+        return countEvidenceAll || totalEvidenceCount;
       },
+      // renderCell: (params) => {
+      //   const countEvidenceAll = params.row?.evidence_list
+      //     ?.map((row) =>
+      //       row.evidence_factor?.filter((itemFactor) => itemFactor)
+      //     )
+      //     .flat().length;
+      //   return countEvidenceAll;
+      // },
     },
   ];
 
@@ -144,11 +152,15 @@ const ReportWorkOfExpertMonth = () => {
   if (items) {
     items.forEach((e) => {
       let check = false;
-      
-      const itemMonth = dayjs(e.case_save_date).format("DD-MM-YYYY").split("-")[1];
-      const itemYear = dayjs(e.case_save_date).format("DD-MM-YYYY").split("-")[2];
+
+      const itemMonth = dayjs(e.case_save_date)
+        .format("DD-MM-YYYY")
+        .split("-")[1];
+      const itemYear = dayjs(e.case_save_date)
+        .format("DD-MM-YYYY")
+        .split("-")[2];
       const checkClosedCase = e.case_status === "2";
-      
+
       if (checkClosedCase) {
         if (
           (!month && !year) ||
@@ -187,30 +199,30 @@ const ReportWorkOfExpertMonth = () => {
 
   // Filter items based on month and year
   const filteredItems = items.filter((e) => {
-
-    const itemMonth = dayjs(e.case_save_date).format("DD-MM-YYYY").split("-")[1];
+    const itemMonth = dayjs(e.case_save_date)
+      .format("DD-MM-YYYY")
+      .split("-")[1];
     const itemYear = dayjs(e.case_save_date).format("DD-MM-YYYY").split("-")[2];
-    const checkClosedCase = e.case_status === "2"
+    const checkClosedCase = e.case_status === "2";
 
-    if(checkClosedCase ){
+    if (checkClosedCase) {
       return (
         (!month && !year) ||
         (itemMonth === month && itemYear === year) ||
         (itemMonth === month && !year)
-      ) 
-    }else{
-      return(null);
+      );
+    } else {
+      return null;
     }
-
   });
 
   // Add the total evidence row to the filtered items
   const rows = filteredItems
     ? filteredItems
-    // .sort((a, b) => {
-    //   // Sort by case_type in ascending order (modify as needed)
-    //   return a.case_type.localeCompare(b.case_type);
-    // })
+        // .sort((a, b) => {
+        //   // Sort by case_type in ascending order (modify as needed)
+        //   return a.case_type.localeCompare(b.case_type);
+        // })
         .map((e, index) => ({
           ...e,
           id: e.case_id,
@@ -263,13 +275,10 @@ const ReportWorkOfExpertMonth = () => {
   return (
     <div>
       <Helmet>
-        <title>Lists Case - Forensic Science</title>
+        <title>รายงานสรุปผล - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
-        pages={[
-          { title: "คดีที่ได้รับ" },
-          { title: "รายการคดีที่ได้รับมอบหมาย" },
-        ]}
+        pages={[{ title: "รายงานสรุปผล" }, { title: "รายงานสรุปผลในรอบเดือน" }]}
       />
       <Grid
         sx={{
