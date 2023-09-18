@@ -10,6 +10,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Card
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
@@ -326,11 +327,26 @@ const CloseWork = () => {
           </Grid>
 
           <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-            <spna>{`วัตถุพยานทั้งหมด: ${countEvidenceAll} \u00A0`} </spna>
+            <Card
+              sx={{
+                p: 1,
+                pl: 2,
+                pr: 2,
+                borderRadius: "8px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+                color: "var(--color--main)",
+                fontSize: "14px",
+              }}
+            >
+              <spna>{`วัตถุพยานทั้งหมด: ${countEvidenceAll} \u00A0`} </spna>
 
-            <spna>{`ตรวจแล้ว: ${countEvidenceHaveResults} \u00A0`} </spna>
+              <spna>{`ตรวจแล้ว: ${countEvidenceHaveResults} \u00A0`} </spna>
 
-            <spna>{`ยังไม่ตรวจ: ${countEvidenceDontHaveResults} \u00A0`} </spna>
+              <spna>{`ยังไม่ตรวจ: ${countEvidenceDontHaveResults}`}</spna>
+            </Card>
           </Grid>
 
           <TableContainer

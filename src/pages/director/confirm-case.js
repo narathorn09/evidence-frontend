@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { Form, Divider, Button, Typography, Tag, Input } from "antd";
+import { Form, Divider, Button, Typography, Tag } from "antd";
 import {
   Box,
   Grid,
@@ -10,6 +10,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Card,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
@@ -197,145 +198,182 @@ const ConfirmCase = () => {
         <Grid sx={{ textAlign: "left", mb: 2 }}>
           <h2 style={{ color: "var(--color--main)" }}>อนุมัติงานตรวจ</h2>
         </Grid>
-        <Grid sx={{ textAlign: "left", mb: 2 }}>
-          <h2>ข้อมูลคดี</h2>
-        </Grid>
-
-        <Form
-          form={form}
-          size="middle "
-          name="basic"
-          labelCol={{
-            span: 4,
+        <Card
+          sx={{
+            p: 1,
+            pl: 3,
+            pr: 3,
+            mt: 2,
+            borderRadius: "8px",
           }}
-          labelAlign="left"
-          wrapperCol={{
-            span: 20,
-          }}
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-          autoComplete="off"
         >
-          <Form.Item
-            label={<span style={{ fontWeight: "bold" }}>หมายเลข บก.</span>}
-            name="case_numboko"
-          >
-            <Typography>{caseData?.case_numboko}</Typography>
-          </Form.Item>
+          <Grid sx={{ textAlign: "left", mb: 2 }}>
+            <h2>ข้อมูลคดี</h2>
+          </Grid>
 
-          <Form.Item
-            label={<span style={{ fontWeight: "bold" }}>ประเภทของคดี</span>}
-            name="case_type"
-          >
-            <Typography>{caseData?.case_type}</Typography>
-          </Form.Item>
-
-          <Form.Item
-            label={
-              <span style={{ fontWeight: "bold" }}>
-                วันและเวลาที่ลงบันทึกคดี
-              </span>
-            }
-            style={{
-              marginBottom: 0,
+          <Form
+            form={form}
+            size="middle "
+            name="basic"
+            labelCol={{
+              span: 4,
             }}
-          >
-            <Form.Item
-              name="case_save_date"
-              style={{
-                textAlign: "start",
-                display: "inline-block",
-              }}
-            >
-              <Typography>
-                {dayjs(caseData?.case_save_date).format("DD MMM YYYY")}
-              </Typography>
-            </Form.Item>
-
-            <Form.Item
-              name="case_save_time"
-              style={{
-                textAlign: "start",
-                display: "inline-block",
-                width: "calc(50% - 8px)",
-                margin: "0 8px",
-              }}
-            >
-              <Typography>
-                {"\u00A0|" +
-                  "\u00A0\u00A0" +
-                  "เวลา" +
-                  " " +
-                  caseData?.case_save_time +
-                  " " +
-                  "น."}
-              </Typography>
-            </Form.Item>
-          </Form.Item>
-
-          <Form.Item
-            label={
-              <span style={{ fontWeight: "bold" }}>วันและเวลาที่เกิดเหตุ</span>
-            }
-            style={{
-              marginBottom: 0,
+            labelAlign="left"
+            wrapperCol={{
+              span: 20,
             }}
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            autoComplete="off"
           >
             <Form.Item
-              name="case_accident_date"
-              style={{
-                textAlign: "start",
-                display: "inline-block",
-              }}
+              label={<span style={{ fontWeight: "bold" }}>หมายเลข บก.</span>}
+              name="case_numboko"
             >
-              <Typography>
-                {dayjs(caseData?.case_accident_date).format("DD MMM YYYY")}
-              </Typography>
+              <Typography>{caseData?.case_numboko}</Typography>
             </Form.Item>
 
             <Form.Item
-              name="case_accident_time"
+              label={<span style={{ fontWeight: "bold" }}>ประเภทของคดี</span>}
+              name="case_type"
+            >
+              <Typography>{caseData?.case_type}</Typography>
+            </Form.Item>
+
+            <Form.Item
+              label={
+                <span style={{ fontWeight: "bold" }}>
+                  วันและเวลาที่ลงบันทึกคดี
+                </span>
+              }
               style={{
-                textAlign: "start",
-                display: "inline-block",
-                width: "calc(50% - 8px)",
-                margin: "0 8px",
+                marginBottom: 0,
               }}
             >
-              <Typography>
-                {"\u00A0|" +
-                  "\u00A0\u00A0" +
-                  "เวลา" +
-                  " " +
-                  caseData?.case_accident_time +
-                  " " +
-                  "น."}
-              </Typography>
-            </Form.Item>
-          </Form.Item>
-          <Form.Item
-            label={
-              <span style={{ fontWeight: "bold" }}>สถานที่ที่เกิดเหตุ</span>
-            }
-            name="case_location"
-            style={{ textAlign: "start" }}
-          >
-            <Typography>{caseData?.case_location}</Typography>
-          </Form.Item>
+              <Form.Item
+                name="case_save_date"
+                style={{
+                  textAlign: "start",
+                  display: "inline-block",
+                }}
+              >
+                <Typography>
+                  {dayjs(caseData?.case_save_date).format("DD MMM YYYY")}
+                </Typography>
+              </Form.Item>
 
-          <Divider />
+              <Form.Item
+                name="case_save_time"
+                style={{
+                  textAlign: "start",
+                  display: "inline-block",
+                  width: "calc(50% - 8px)",
+                  margin: "0 8px",
+                }}
+              >
+                <Typography>
+                  {"\u00A0|" +
+                    "\u00A0\u00A0" +
+                    "เวลา" +
+                    " " +
+                    caseData?.case_save_time +
+                    " " +
+                    "น."}
+                </Typography>
+              </Form.Item>
+            </Form.Item>
+
+            <Form.Item
+              label={
+                <span style={{ fontWeight: "bold" }}>
+                  วันและเวลาที่เกิดเหตุ
+                </span>
+              }
+              style={{
+                marginBottom: 0,
+              }}
+            >
+              <Form.Item
+                name="case_accident_date"
+                style={{
+                  textAlign: "start",
+                  display: "inline-block",
+                }}
+              >
+                <Typography>
+                  {dayjs(caseData?.case_accident_date).format("DD MMM YYYY")}
+                </Typography>
+              </Form.Item>
+
+              <Form.Item
+                name="case_accident_time"
+                style={{
+                  textAlign: "start",
+                  display: "inline-block",
+                  width: "calc(50% - 8px)",
+                  margin: "0 8px",
+                }}
+              >
+                <Typography>
+                  {"\u00A0|" +
+                    "\u00A0\u00A0" +
+                    "เวลา" +
+                    " " +
+                    caseData?.case_accident_time +
+                    " " +
+                    "น."}
+                </Typography>
+              </Form.Item>
+            </Form.Item>
+            <Form.Item
+              label={
+                <span style={{ fontWeight: "bold" }}>สถานที่ที่เกิดเหตุ</span>
+              }
+              name="case_location"
+              style={{ textAlign: "start" }}
+            >
+              <Typography>{caseData?.case_location}</Typography>
+            </Form.Item>
+          </Form>
+        </Card>
+
+        <Divider />
+        <Card
+          sx={{
+            p: 1,
+            pl: 3,
+            pr: 3,
+            mt: 2,
+            borderRadius: "8px",
+          }}
+        >
           <Grid sx={{ textAlign: "left", mb: 3, mt: 2 }}>
             <h2>วัตถุพยานที่ได้รับมอบหมาย</h2>
           </Grid>
 
           <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-            <spna>{`วัตถุพยานทั้งหมด: ${countEvidenceAll} \u00A0`} </spna>
+            <Card
+              sx={{
+                p: 1,
+                pl: 2,
+                pr: 2,
+                borderRadius: "8px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+                color: "var(--color--main)",
+                fontSize: "14px",
+              }}
+            >
+              <spna>{`วัตถุพยานทั้งหมด: ${countEvidenceAll} \u00A0`} </spna>
 
-            <spna>{`ตรวจแล้ว: ${countEvidenceHaveResults} \u00A0`} </spna>
+              <spna>{`ตรวจแล้ว: ${countEvidenceHaveResults} \u00A0`} </spna>
 
-            <spna>{`ยังไม่ตรวจ: ${countEvidenceDontHaveResults} \u00A0`} </spna>
+              <spna>{`ยังไม่ตรวจ: ${countEvidenceDontHaveResults}`}</spna>
+            </Card>
           </Grid>
 
           <TableContainer
@@ -460,30 +498,27 @@ const ConfirmCase = () => {
           >
             <span>{summaryText || "-"}</span>
           </Form.Item>
+        </Card>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              marginTop: "40px",
-            }}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            marginTop: "40px",
+          }}
+        >
+          <Button style={{ marginRight: "10px" }} onClick={() => navigate(-1)}>
+            ย้อนกลับ
+          </Button>
+          <Button
+            disabled={!(countEvidenceAll === countEvidenceHaveResults)}
+            type="primary"
+            onClick={handleConfirmCase}
           >
-            <Button
-              style={{ marginRight: "10px" }}
-              onClick={() => navigate(-1)}
-            >
-              ย้อนกลับ
-            </Button>
-            <Button
-              disabled={!(countEvidenceAll === countEvidenceHaveResults)}
-              type="primary"
-              onClick={handleConfirmCase}
-            >
-              ยืนยัน
-            </Button>
-          </div>
-        </Form>
+            ยืนยัน
+          </Button>
+        </div>
       </Box>
     </div>
   );
