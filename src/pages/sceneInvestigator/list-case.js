@@ -120,6 +120,25 @@ const ListCase = () => {
       },
     },
     {
+      field: "close",
+      headerName: "ปิดคดี",
+      width: 100,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "super-app-theme--header",
+      renderCell: (params) => (
+        <ButtonAntd
+          disabled={params?.row?.case_status !== "1"}
+          onClick={() => {
+            CloseCase(params?.row?.id, params?.row?.case_numboko);
+          }}
+          sx={{ ":hover": { color: "var(--color--main-light9)" } }}
+        >
+          ปิดคดี
+        </ButtonAntd>
+      ),
+    },
+    {
       field: "Detail",
       headerName: "ดูเพิ่มเติม",
       width: 100,
@@ -145,12 +164,12 @@ const ListCase = () => {
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
       renderCell: (params) => {
-        let check = true;  // Initialize check as true
+        let check = true; // Initialize check as true
 
         params?.row.evidence_list?.forEach((evidence) => {
           evidence?.evidence_factor?.forEach((factor) => {
             if (factor.assign_direc_status !== "1") {
-              check = false;  // If any factor's assign_direc_status is not "1", set check to false
+              check = false; // If any factor's assign_direc_status is not "1", set check to false
             }
           });
         });
@@ -168,7 +187,9 @@ const ListCase = () => {
                 <Grid sx={{ mr: 1 }}>
                   <ExclamationCircleOutlined />
                 </Grid>
-                <Grid>ไม่สามารถแก้ไขได้ เนื่องจากมีการกดรับคดีทุกกลุ่มงานแล้ว</Grid>
+                <Grid>
+                  ไม่สามารถแก้ไขได้ เนื่องจากมีการกดรับคดีทุกกลุ่มงานแล้ว
+                </Grid>
               </Box>
             }
             // color={"var(--color--orange)"}
@@ -206,12 +227,12 @@ const ListCase = () => {
       align: "center",
       headerAlign: "center",
       renderCell: (params) => {
-        let check = true;  // Initialize check as true
+        let check = true; // Initialize check as true
 
         params.row.evidence_list?.forEach((evidence) => {
           evidence.evidence_factor?.forEach((factor) => {
             if (factor.assign_direc_status !== "1") {
-              check = false;  // If any factor's assign_direc_status is not "1", set check to false
+              check = false; // If any factor's assign_direc_status is not "1", set check to false
             }
           });
         });
@@ -233,7 +254,9 @@ const ListCase = () => {
                 <Grid sx={{ mr: 1 }}>
                   <ExclamationCircleOutlined />
                 </Grid>
-                <Grid>ไม่สามารถลบได้ เนื่องจากมีการกดรับคดีทุกกลุ่มงานแล้ว</Grid>
+                <Grid>
+                  ไม่สามารถลบได้ เนื่องจากมีการกดรับคดีทุกกลุ่มงานแล้ว
+                </Grid>
               </Box>
             }
             // color={"var(--color--orange)"}
@@ -287,10 +310,63 @@ const ListCase = () => {
     const fetchData = async () => {
       await requestPrivate.get(`/caseByInvesId/${invesId}`).then((response) => {
         setItems(response.data);
+        response?.data?.forEach(async (item) => {
+          if (item.case_status !== "2") {
+            let check = false;
+            check = item.evidence_list.every((evidence) =>
+              evidence.evidence_factor.every(
+                (factor) => factor.ef_status === "3"
+              )
+            );
+            if (check) {
+              await requestPrivate.put(`/caseStatusByCaseId`, {
+                case_id: item?.case_id,
+                case_status: "1",
+              });
+            }
+          }
+        });
       });
     };
     fetchData();
   }, [refetch, invesId]);
+
+  const CloseCase = async (case_id, caseNumboko) => {
+    Swal.fire({
+      title: "คุณต้องการปิดคดี!",
+      text: `คุณต้องการปิดคดีหมายเลข บก. ${caseNumboko}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ตกลง",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await requestPrivate
+            .put(`/caseStatusByCaseId`, {
+              case_id: case_id,
+              case_status: "2",
+            })
+            .then(() => {
+              Swal.fire({
+                title: "ปิดคดีสำเร็จ!",
+                text: `ปิดคดีหมายเลข บก. ${caseNumboko} สำเร็จ`,
+                icon: "success",
+                confirmButtonText: "ตกลง",
+              });
+              setRefetch(!refetch);
+            });
+        } catch (err) {
+          Swal.fire({
+            title: "เกิดข้อผิดพลาด!",
+            text: "เกิดข้อผิดพลาดในการปิดคดี",
+            icon: "error",
+            confirmButtonText: "ตกลง",
+          });
+        }
+      }
+    });
+  };
 
   const RemoveCase = async (caseId, caseNumboko, caseDataById) => {
     Swal.fire({

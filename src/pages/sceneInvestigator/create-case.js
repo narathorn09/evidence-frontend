@@ -233,7 +233,7 @@ const CreateCase = () => {
   useEffect(() => {
     form.setFieldValue(`case_save_date`, dayjs().format("YYYY-MM-DD"));
     form.setFieldValue(`case_save_time`, dayjs().format("HH:mm:ss"));
-  }, [])
+  }, []);
 
   const tailLayout = {
     wrapperCol: {
@@ -655,18 +655,28 @@ const CreateCase = () => {
                         res[index] = re;
                         setEvidence(res);
                       }}
-                      filterOption={(input, option) =>
-                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                      }
+                      // filterOption={(input, option) =>
+                      //   (option?.label ?? "")
+                      //     .toLowerCase()
+                      //     .includes(input.toLowerCase())
+                      // }
                       showSearch
                       placeholder="เลือกประเภทของวัตถุพยาน"
                       optionFilterProp="label"
-                      options={typeEvidence.map((item) => ({
-                        value: item.type_e_id,
-                        label: item.type_e_name,
-                      }))}
+                      options={typeEvidence
+                        .map((ef) => ({
+                          ...ef,
+                          value: ef.type_e_id,
+                          label: ef.type_e_name,
+                        }))
+                        .filter((e) => {
+                          return !handleTypeEvidenceSelected(
+                            typeEvidenceValue,
+                            e.type_e_id
+                          );
+                        })}
                     />
-                      {/* {typeEvidence.map((item, index) => (
+                    {/* {typeEvidence.map((item, index) => (
                         <Select.Option
                           key={index}
                           disabled={handleTypeEvidenceSelected(
@@ -885,6 +895,8 @@ const CreateCase = () => {
                                   const re = {
                                     ...evidence[index]?.evidence_factor[i],
                                     assignGroupId: obj?.value || null,
+                                    ef_photo: evidence[index]?.evidence_factor[i]?.ef_photo || null,
+                                    ef_detail: evidence[index]?.evidence_factor[i]?.ef_detail || "",
                                   };
                                   console.log("re", re);
                                   res[index].evidence_factor[i] = re; // Update the specific evidence_factor
