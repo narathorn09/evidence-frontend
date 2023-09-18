@@ -49,7 +49,12 @@ import ReportWorkOfDirectorYear from "./pages/director/report-work-year";
 import ListExpertByGroup from "./pages/director/list-expert";
 import GetDetailExpertById from "./pages/director/getbyid-expert-detail";
 import CloseCase from "./pages/sceneInvestigator/close-case";
-
+import ListCaseAllClose from "./pages/commander/list-case-close";
+import CaseDetailClose from "./pages/commander/detail-case-close";
+import ListCaseAllWork from "./pages/commander/list-case-work";
+import CaseDetailWork from "./pages/commander/detail-case-work";
+import ReportWorkOfCommanderMonth from "./pages/commander/report-work-month";
+import ReportWorkOfCommanderYear from "./pages/commander/report-work-year";
 
 const App = () => {
   const { auth } = useAuth();
@@ -88,6 +93,12 @@ const App = () => {
           {role === "1" && ( //commander
             <>
               <Route exact path="/home" element={<>Home commander</>} />
+              <Route exact path="/commander/manage-case/list-case-close/main" element={<ListCaseAllClose />} />
+              <Route exact path="/commander/manage-case/list-case-work/main" element={<ListCaseAllWork />} />
+              <Route exact path="/commander/manage-case/list-case-close/detail/:caseId" element={<CaseDetailClose />} />
+              <Route exact path="/commander/manage-case/list-case-work/detail/:caseId" element={<CaseDetailWork />} />
+              <Route exact path="/commander/manage-report/month" element={<ReportWorkOfCommanderMonth />} />
+              <Route exact path="/commander/manage-report/year" element={<ReportWorkOfCommanderYear />} />
             </>
           )}
            {role === "2" && ( //Scene Investigator

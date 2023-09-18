@@ -79,6 +79,44 @@ export const itemCommander = [
     link: "/home",
     linkP: "/home",
   },
+  {
+    key: "G1",
+    label: "คดี",
+    icon: <Work sx={{ fontSize: "20px" }} />,
+    childItems: [
+      {
+        key: "G1-child1",
+        label: "คดีที่ปิดแล้ว",
+        link: "/commander/manage-case/list-case-close/main",
+        linkP: "/commander/manage-case/list-case-close",
+      },
+      {
+        key: "G1-child2",
+        label: "คดีที่ดำเนินการอยู่",
+        link: "/commander/manage-case/list-case-work/main",
+        linkP: "/commander/manage-case/list-case-work",
+      },
+    ],
+  },
+  {
+    key: "G2",
+    label: "รายงานสรุปผล",
+    icon: <Description sx={{ fontSize: "20px" }} />,
+    childItems: [
+      {
+        key: "G1-child1",
+        label: "รายงานสรุปผลในรอบเดือน",
+        link: "/commander/manage-report/month",
+        linkP: "/commander/manage-report/month",
+      },
+      {
+        key: "G1-child2",
+        label: "รายงานสรุปผลในรอบปี",
+        link: "/commander/manage-report/year",
+        linkP: "/commander/manage-report/year",
+      },
+    ],
+  },
 ];
 
 export const itemSceneInvestigator = [
