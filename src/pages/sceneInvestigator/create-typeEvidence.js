@@ -5,6 +5,7 @@ import { Box, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
 
 const CreateTypeEvidence = () => {
   const requestPrivate = useAxiosPrivate();
@@ -12,15 +13,24 @@ const CreateTypeEvidence = () => {
   const [form] = Form.useForm();
 
   const onFinish = async (value) => {
-    // console.log(value);
     try {
       const response = await requestPrivate.post("/typeEvidence", value);
       if (response) {
-        alert(`เพิ่มประเภทของวัตถุพยานสำเร็จ`);
+        Swal.fire({
+          title: "เพิ่มสำเร็จ!",
+          text: "เพิ่มประเภทของวัตถุพยานสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
         navigate(-1);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการเพิ่มประเภทของวัตถุพยาน : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการเพิ่มประเภทของวัตถุพยาน",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -44,7 +54,10 @@ const CreateTypeEvidence = () => {
       <BreadcrumbLayout
         pages={[
           { title: "จัดการประเภทของวัตถุพยาน" },
-          { title: "รายการประเภทของวัตถุพยาน", path: `/inves/manage-type-evidence/list` },
+          {
+            title: "รายการประเภทของวัตถุพยาน",
+            path: `/inves/manage-type-evidence/list`,
+          },
           { title: "เพิ่มประเภทของวัตถุพยาน" },
         ]}
       />
@@ -71,15 +84,6 @@ const CreateTypeEvidence = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
-          // fields={fields}
-          // onFieldsChange={(fieldValues, allFields) => {
-          //   if (fieldValues[0].name[0] === 'username')
-          //   validUsername(fieldValues[0].value);
-          // }}
-          // onValuesChange={(changedValues, allValues) => {
-          //   // if (changedValues?.username)
-          //   handleUsernameChange(changedValues?.username);
-          // }}
         >
           <Form.Item
             label="ปรเภทของวัตถุพยาน"
@@ -88,7 +92,9 @@ const CreateTypeEvidence = () => {
               {
                 required: true,
                 message: (
-                  <span style={{ fontSize: "12px" }}>กรุณากรอกปรเภทของวัตถุพยาน!</span>
+                  <span style={{ fontSize: "12px" }}>
+                    กรุณากรอกปรเภทของวัตถุพยาน!
+                  </span>
                 ),
               },
               {
@@ -122,7 +128,7 @@ const CreateTypeEvidence = () => {
               onClick={() => form.resetFields()}
               style={{ marginLeft: 10 }}
             >
-              รีเซ็ต
+              ล้างค่า
             </Button>
           </Form.Item>
         </Form>

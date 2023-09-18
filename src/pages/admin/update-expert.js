@@ -5,6 +5,7 @@ import { Box, Grid } from "@mui/material";
 import { useNavigate ,useParams} from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
 
 const UpdateExpert = () => {
   const params = useParams();
@@ -58,11 +59,21 @@ const UpdateExpert = () => {
     try {
       const response = await requestPrivate.put("/expert", data);
       if (response) {
-        alert(`แก้ไขข้อมูลสมาชิกสำเร็จ`);
+        Swal.fire({
+          title: "แก้ไขสำเร็จ!",
+          text: "แก้ไขข้อมูลผู้ชำนาญการสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
         navigate(-1);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการแก้ไขข้อมูลสมาชิก : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการแก้ไขข้อมูลผู้ชำนาญการ",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -156,6 +167,7 @@ const UpdateExpert = () => {
               {group.map((group, index) => (
                 <Select.Option
                   key={index}
+                  disabled={group.group_status === "1"}
                   value={group.group_id}
                 >{`${group.group_name}`}</Select.Option>
               ))}

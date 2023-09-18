@@ -1,10 +1,11 @@
-import React, { useEffect ,useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Button, Form, Input } from "antd";
 import { Box, Grid } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
 
 const UpdateTypeEvidence = () => {
   const params = useParams();
@@ -12,11 +13,13 @@ const UpdateTypeEvidence = () => {
   const navigate = useNavigate();
   const [item, setItem] = useState({});
   const [form] = Form.useForm();
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await requestPrivate.get(`/typeEvidenceById/${params?.id}`);
+        const response = await requestPrivate.get(
+          `/typeEvidenceById/${params?.id}`
+        );
         setItem(response?.data[0]);
       } catch (error) {
         console.error(error);
@@ -34,16 +37,25 @@ const UpdateTypeEvidence = () => {
   }, [item]);
 
   const onFinish = async (value) => {
-    const data = {type_e_id: params?.id, ...value}
-    // console.log(data);
+    const data = { type_e_id: params?.id, ...value };
     try {
       const response = await requestPrivate.put("/typeEvidence", data);
       if (response) {
-        alert(`แก้ไขประเภทของวัตถุพยานสำเร็จ`);
+        Swal.fire({
+          title: "แก้ไขสำเร็จ!",
+          text: "แก้ไขประเภทของวัตถุพยานสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
         navigate(-1);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการแก้ไขประเภทของวัตถุพยาน : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการแก้ไขประเภทของวัตถุพยาน",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -66,12 +78,15 @@ const UpdateTypeEvidence = () => {
   return (
     <div>
       <Helmet>
-        <title>Add Type Evidence - Forensic Science</title>
+        <title>Edit Type Evidence - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[
           { title: "จัดการประเภทของวัตถุพยาน" },
-          { title: "รายการประเภทของวัตถุพยาน", path: `/inves/manage-type-evidence/list` },
+          {
+            title: "รายการประเภทของวัตถุพยาน",
+            path: `/inves/manage-type-evidence/list`,
+          },
           { title: "แก้ไขประเภทของวัตถุพยาน" },
         ]}
       />
@@ -98,15 +113,6 @@ const UpdateTypeEvidence = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
-          // fields={fields}
-          // onFieldsChange={(fieldValues, allFields) => {
-          //   if (fieldValues[0].name[0] === 'username')
-          //   validUsername(fieldValues[0].value);
-          // }}
-          // onValuesChange={(changedValues, allValues) => {
-          //   // if (changedValues?.username)
-          //   handleUsernameChange(changedValues?.username);
-          // }}
         >
           <Form.Item
             label="ปรเภทของวัตถุพยาน"
@@ -115,7 +121,9 @@ const UpdateTypeEvidence = () => {
               {
                 required: true,
                 message: (
-                  <span style={{ fontSize: "12px" }}>กรุณากรอกปรเภทของวัตถุพยาน!</span>
+                  <span style={{ fontSize: "12px" }}>
+                    กรุณากรอกปรเภทของวัตถุพยาน!
+                  </span>
                 ),
               },
               {
@@ -145,11 +153,8 @@ const UpdateTypeEvidence = () => {
             <Button onClick={() => navigate(-1)} style={{ marginLeft: 10 }}>
               ยกเลิก
             </Button>
-            <Button
-              onClick={handleResetFields}
-              style={{ marginLeft: 10 }}
-            >
-              รีเซ็ต
+            <Button onClick={handleResetFields} style={{ marginLeft: 10 }}>
+              คืนค่า
             </Button>
           </Form.Item>
         </Form>

@@ -5,6 +5,7 @@ import { Box, Grid } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
 
 const UpdateGroup = () => {
   const params = useParams();
@@ -13,7 +14,13 @@ const UpdateGroup = () => {
   const [form] = Form.useForm();
   const [groupData, setGroupData] = useState({});
   const [director, setDirector] = useState([]);
-  
+  const [group, setGroup] = useState([]);
+
+  const gruopStatus = [
+    {value: '0', text: "เปิด"},
+    {value: '1', text: "ปิด"}
+  ]
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,7 +35,8 @@ const UpdateGroup = () => {
 
   const defaultValues = {
     group_name: groupData?.group_name,
-    director_id: groupData?.director_id
+    director_id: groupData?.director_id,
+    group_status: groupData?.group_status,
   };
 
   useEffect(() => {
@@ -48,23 +56,47 @@ const UpdateGroup = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await requestPrivate.get(`/group`).then((response) => {
+        setGroup(response.data);
+      });
+    };
+    fetchData();
+  }, []);
+
   const onFinish = async (value) => {
     const data = {group_id: params?.id, ...value}
     console.log(data);
     try {
       const response = await requestPrivate.put("/group", data);
       if (response) {
-        alert(`แก้ไขข้อมูลกลุ่มงานสำเร็จ`);
+        Swal.fire({
+          title: "แก้ไขสำเร็จ!",
+          text: "แก้ไขข้อมูลกลุ่มงานสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
         navigate(-1);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการแก้ไขข้อมูลกลุ่มงาน : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการแก้ไขข้อมูลกลุ่มงาน",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
   const onFinishFailed = (errorInfo) => {
     // console.log("Failed:", errorInfo);
     return;
+  };
+
+  const handleDirectorSelected = (valueId, valueSelected) => {
+    if (valueId === valueSelected) return false;
+    return group.some((selected) => selected.director_id === valueSelected);
   };
 
   const handleResetFields = () => {
@@ -170,12 +202,38 @@ const UpdateGroup = () => {
             // ]}
             style={{ textAlign: "start" }}
           >
-            <Select>
+            <Select allowClear={true}>
               {director.map((director, index) => (
                 <Select.Option
                   key={index}
+                  disabled={handleDirectorSelected(groupData?.director_id, director.director_id)}
                   value={director.director_id}
                 >{`${director.director_rank} ${director.director_fname} ${director.director_lname}`}</Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="สถานะของกลุ่มงาน"
+            name="group_status"
+            rules={[
+              {
+                required: true,
+                message: (
+                  <span style={{ fontSize: "12px" }}>
+                    กรุณาเลือกสถานะกลุ่มงาน!
+                  </span>
+                ),
+              },
+            ]}
+            style={{ textAlign: "start" }}
+          >
+            <Select>
+              {gruopStatus.map((item, index) => (
+                <Select.Option
+                  key={index}
+                  value={item.value}
+                >{`${item.text}`}</Select.Option>
               ))}
             </Select>
           </Form.Item>

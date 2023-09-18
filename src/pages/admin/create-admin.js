@@ -5,6 +5,7 @@ import { Box, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
 
 const CreateAdmin = () => {
   const requestPrivate = useAxiosPrivate();
@@ -16,11 +17,21 @@ const CreateAdmin = () => {
     try {
       const response = await requestPrivate.post("/admin", value);
       if (response) {
-        alert(`เพิ่มสมาชิกสำเร็จ`);
+        Swal.fire({
+          title: "เพิ่มสำเร็จ!",
+          text: "เพิ่มผู้ดูแลระบบสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
         navigate(-1);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการเพิ่มสมาชิก : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการเพิ่มผู้ดูแลระบบ",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -256,7 +267,7 @@ const CreateAdmin = () => {
               onClick={() => form.resetFields()}
               style={{ marginLeft: 10 }}
             >
-              รีเซ็ต
+              ล้างค่า
             </Button>
           </Form.Item>
         </Form>

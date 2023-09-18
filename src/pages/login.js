@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Biotech } from "@mui/icons-material";
 import { request } from "../axios-config";
 import { useAuth } from "../contexts/auth-context";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,28 +25,41 @@ const Login = () => {
         if (response.status === 200) {
           const { accessToken } = response.data;
           await setAuthToken(accessToken);
-          setLogin(true);
+          // setLogin(true);
           setLoadings(false);
+          Swal.fire({
+            title: "เข้าสู่ระบบสำเร็จ!",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          navigate("/home")
+
         }
       } catch (err) {
         setLoadings(false);
-        alert("Invalid username / password");
+        Swal.fire({
+          title: "เข้าสู่ระบบไม่สำเร็จ!",
+          text: "โปรดตรวจสอบ username และ password อีกครั้ง",
+          icon: "error",
+          confirmButtonText: "ตกลง",
+        });
       }
     },
     [setAuthToken]
   );
 
-  useEffect(() => {
-    const role = auth?.user?.role;
-    if (role) {
-      if (role === "0") navigate("/home"); //admin
-      else if (role === "1") navigate("/"); //commander
-      else if (role === "2") navigate("/inves/manage-case"); //Scene Investigator
-      else if (role === "3") navigate("/"); //Director
-      else if (role === "4") navigate("/"); //Expert
-      console.log("Auth", auth?.user);
-    }
-  }, [login]);
+  // useEffect(() => {
+    // const role = auth?.user?.role;
+    // if (role) {
+    //   if (role === "0") navigate("/home"); //admin
+    //   else if (role === "1") navigate("/home"); //commander
+    //   else if (role === "2") navigate("/home"); //Scene Investigator
+    //   else if (role === "3") navigate("/home"); //Director
+    //   else if (role === "4") navigate("/home"); //Expert
+    //   console.log("Auth", auth?.user);
+    // }
+  // }, [login]);
 
   // const onFinishFailed = (errorInfo) => {
   //   console.log("Failed:", errorInfo);
@@ -151,16 +165,16 @@ const Login = () => {
             <Form.Item
               label="Username"
               name="username"
-              rules={[
-                {
-                  required: true,
-                  message: (
-                    <span style={{ fontSize: "12px" }}>
-                      กรุณากรอก username!
-                    </span>
-                  ),
-                },
-              ]}
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: (
+              //       <span style={{ fontSize: "12px" }}>
+              //         กรุณากรอก username!
+              //       </span>
+              //     ),
+              //   },
+              // ]}
             >
               <Input />
             </Form.Item>
@@ -168,16 +182,16 @@ const Login = () => {
             <Form.Item
               label="Password"
               name="password"
-              rules={[
-                {
-                  required: true,
-                  message: (
-                    <span style={{ fontSize: "12px" }}>
-                      กรุณากรอก password!
-                    </span>
-                  ),
-                },
-              ]}
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: (
+              //       <span style={{ fontSize: "12px" }}>
+              //         กรุณากรอก password!
+              //       </span>
+              //     ),
+              //   },
+              // ]}
             >
               <Input.Password />
             </Form.Item>

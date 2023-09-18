@@ -10,7 +10,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { AuthProvider } from "./contexts/auth-context";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-
 const themeMUI = createTheme({
   palette: {
     primary: {
@@ -23,28 +22,28 @@ const themeMUI = createTheme({
 });
 
 root.render(
-  <ConfigProvider
-    theme={{
-      token: {
-        colorPrimary: "#7D3232",
-        colorBgBase: "#fffffF",
-        controlOutline: "#7D3232",
-        controlOutlineWidth: 0.5,
-        controlItemBgHover: "rgb(125, 50, 50, 0.09)",
-        controlItemBgActive: "rgb(125, 50, 50, 0.09)",
-        fontFamily: 'Prompt',
-        // algorithm: theme.darkAlgorithm,
-      },
-    }}
-  >
-    <React.StrictMode>
+  <React.StrictMode>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#7D3232",
+          colorBgBase: "#fffffF",
+          controlOutline: "#7D3232",
+          controlOutlineWidth: 0.5,
+          controlItemBgHover: "rgb(125, 50, 50, 0.09)",
+          controlItemBgActive: "rgb(125, 50, 50, 0.09)",
+          fontFamily: "Prompt",
+          // algorithm: theme.darkAlgorithm,
+        },
+      }}
+    >
       <ThemeProvider theme={themeMUI}>
         <AuthProvider>
           <App />
         </AuthProvider>
       </ThemeProvider>
-    </React.StrictMode>
-  </ConfigProvider>
+    </ConfigProvider>
+  </React.StrictMode>
 );
 
 // ReactDOM.render(

@@ -7,10 +7,13 @@ import {
   GridToolbarExportContainer,
   GridCsvExportMenuItem,
 } from "@mui/x-data-grid";
-import { DeleteForever, AddCircle, Edit } from "@mui/icons-material";
+import { DeleteForever, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
+import { Button as ButtonAntd } from "antd";
+import NoDataUi from "../../components/no-data";
 
 const ListGroup = () => {
   const requestPrivate = useAxiosPrivate();
@@ -36,7 +39,7 @@ const ListGroup = () => {
     {
       field: "director",
       headerName: "ผู้กำกับ",
-      width: 360,
+      width: 300,
       headerClassName: "super-app-theme--header",
       valueGetter: (params) =>
         params.row?.director_rank
@@ -46,9 +49,39 @@ const ListGroup = () => {
           : "-",
     },
     {
+      field: "group_status",
+      headerName: "สถานะของกลุ่มงาน",
+      width: 150,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "super-app-theme--header",
+      valueGetter: (params) => (params.value === "0" ? "เปิด" : "ปิด"),
+      renderCell: (params) => {
+        let status = ""; // Default value is an empty string
+
+        if (params.row?.group_status === "0") {
+          status = "เปิด"; // "เปิด" for group_status = "0"
+        } else if (params.row?.group_status === "1") {
+          status = "ปิด"; // "ปิด" for group_status = "1"
+        } else {
+          status = "-"; // Default value for other cases
+        }
+        return (
+          <div
+            style={{
+              color: params.row?.group_status === "0" ? "green" : "red",
+            }}
+          >
+            {status}
+          </div>
+        );
+      },
+    },
+
+    {
       field: "Edit",
       headerName: "แก้ไข",
-      width: 150,
+      width: 100,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
@@ -67,7 +100,7 @@ const ListGroup = () => {
       field: "Delete",
       headerName: "ลบ",
       headerClassName: "super-app-theme--header",
-      width: 150,
+      width: 100,
       align: "center",
       headerAlign: "center",
       renderCell: (params) => (
@@ -93,23 +126,41 @@ const ListGroup = () => {
   }, [refetch]);
 
   const RemoveMember = async (groupId, groupName) => {
-    const confirmed = window.confirm(`คุณต้องการลบ ${groupName}?`);
-    if (confirmed) {
-      try {
-        await requestPrivate.delete(`/groupById/${groupId}`).then(() => {
-          setRefetch(!refetch);
-          alert(`ลบ ${groupName} สำเร็จ`);
-        });
-      } catch (err) {
-        alert(`${err?.data?.message}`);
+    Swal.fire({
+      title: "แจ้งเตือน!",
+      text: `คุณต้องการลบ ${groupName}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ตกลง",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await requestPrivate.delete(`/groupById/${groupId}`).then(() => {
+            Swal.fire({
+              title: "ลบสำเร็จ!",
+              text: `ลบ ${groupName} สำเร็จ`,
+              icon: "success",
+              confirmButtonText: "ตกลง",
+            });
+            setRefetch(!refetch);
+          });
+        } catch (err) {
+          Swal.fire({
+            title: "เกิดข้อผิดพลาด!",
+            text: "เกิดข้อผิดพลาดในการลบกลุ่มงาน",
+            icon: "error",
+            confirmButtonText: "ตกลง",
+          });
+        }
       }
-    }
+    });
   };
 
   const csvOptions = {
     fileName: "รายชื่อกลุ่มงาน",
     utf8WithBom: true,
-    fields: ["index", "group_name", "director"],
+    fields: ["index", "group_name", "director", "group_status"],
   };
 
   function CustomExportButton(props) {
@@ -163,12 +214,15 @@ const ListGroup = () => {
           <h2>รายชื่อกลุ่มงาน</h2>
         </Grid>
         <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          <IconButton onClick={() => navigate("/group-management/create")}>
-            <AddCircle />
-          </IconButton>
+          <ButtonAntd
+            type="primary"
+            onClick={() => navigate("/group-management/create")}
+          >
+            เพิ่ม
+          </ButtonAntd>
         </Grid>
         <DataGrid
-          rows={ 
+          rows={
             items
               ? items?.map((e, index) => ({
                   ...e,
@@ -180,6 +234,7 @@ const ListGroup = () => {
           columns={columns}
           slots={{
             toolbar: CustomToolbar,
+            noRowsOverlay: NoDataUi,
           }}
           sx={{ borderRadius: "8px", height: "400px" }}
         />

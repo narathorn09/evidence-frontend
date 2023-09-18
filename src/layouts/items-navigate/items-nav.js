@@ -1,8 +1,8 @@
-import Icon, {
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+// import Icon, {
+//   UserOutlined,
+//   VideoCameraOutlined,
+//   UploadOutlined,
+// } from "@ant-design/icons";
 import {
   PeopleAlt,
   Workspaces,
@@ -73,42 +73,76 @@ export const itemAdmin = [
 
 export const itemCommander = [
   {
-    key: "1",
-    icon: <UserOutlined />,
-    label: "user",
-    link: "/",
+    key: "G0",
+    label: "หน้าแรก",
+    icon: <Home sx={{ fontSize: "20px" }} />,
+    link: "/home",
+    linkP: "/home",
   },
   {
-    key: "2",
-    icon: <VideoCameraOutlined />,
-    label: "nav 2asd",
-    link: "/2",
+    key: "G1",
+    label: "คดี",
+    icon: <Work sx={{ fontSize: "20px" }} />,
+    childItems: [
+      {
+        key: "G1-child1",
+        label: "คดีที่ปิดแล้ว",
+        link: "/commander/manage-case/list-case-close/main",
+        linkP: "/commander/manage-case/list-case-close",
+      },
+      {
+        key: "G1-child2",
+        label: "คดีที่ดำเนินการอยู่",
+        link: "/commander/manage-case/list-case-work/main",
+        linkP: "/commander/manage-case/list-case-work",
+      },
+    ],
   },
   {
-    key: "3",
-    icon: <UploadOutlined />,
-    label: "nav 3asd",
-    link: "/3",
+    key: "G2",
+    label: "รายงานสรุปผล",
+    icon: <Description sx={{ fontSize: "20px" }} />,
+    childItems: [
+      {
+        key: "G1-child1",
+        label: "รายงานสรุปผลในรอบเดือน",
+        link: "/commander/manage-report/month",
+        linkP: "/commander/manage-report/month",
+      },
+      {
+        key: "G1-child2",
+        label: "รายงานสรุปผลในรอบปี",
+        link: "/commander/manage-report/year",
+        linkP: "/commander/manage-report/year",
+      },
+    ],
   },
 ];
 
 export const itemSceneInvestigator = [
   {
     key: "G0",
-    label: "จัดการคดี",
-    icon: <Work sx={{ fontSize: "20px" }} />,
-    link: "/inves/manage-case",
-    linkP: "/inves/manage-case",
+    label: "หน้าแรก",
+    icon: <Home sx={{ fontSize: "20px" }} />,
+    link: "/home",
+    linkP: "/home",
   },
   {
     key: "G1",
+    label: "จัดการคดี",
+    icon: <Work sx={{ fontSize: "20px" }} />,
+    link: "/inves/manage-case/list",
+    linkP: "/inves/manage-case",
+  },
+  {
+    key: "G2",
     label: "จัดการประเภทวัตถุพยาน",
-    icon: <Description sx={{ fontSize: "20px" }} />,
+    icon: <Workspaces sx={{ fontSize: "20px" }} />,
     link: "/inves/manage-type-evidence/list",
     linkP: "/inves/manage-type-evidence",
   },
   {
-    key: "G2",
+    key: "G3",
     label: "รายงานสรุปผล",
     icon: <Description sx={{ fontSize: "20px" }} />,
     link: "/inves/manage-report",
@@ -116,5 +150,111 @@ export const itemSceneInvestigator = [
   },
 ];
 
-export const itemDirector = [];
-export const itemExpert = [];
+export const itemDirector = [
+  {
+    key: "G0",
+    label: "หน้าแรก",
+    icon: <Home sx={{ fontSize: "20px" }} />,
+    link: "/home",
+    linkP: "/home",
+  },
+  {
+    key: "G1",
+    label: "คดี",
+    icon: <Work sx={{ fontSize: "20px" }} />,
+    childItems: [
+      {
+        key: "G1-child1",
+        label: "คดีที่ได้รับ",
+        link: "/director/manage-case/list-assign/main",
+        linkP: "/director/manage-case/list-assign",
+      },
+      {
+        key: "G1-child2",
+        label: "มอบหมายงานตรวจ",
+        link: "/director/manage-case/list-accept/main",
+        linkP: "/director/manage-case/list-accept",
+      },
+      {
+        key: "G1-child3",
+        label: "อนุมัติงานตรวจ",
+        link: "/director/manage-case/confirm",
+        linkP: "/director/manage-case/confirm",
+      },
+    ],
+  },
+  {
+    key: "G2",
+    label: "ผู้ชำนาญการ",
+    icon: <PeopleAlt sx={{ fontSize: "20px" }} />,
+    link: "/director/manage-expert",
+    linkP: "/director/manage-expert",
+  },
+  {
+    key: "G3",
+    label: "รายงานสรุปผล",
+    icon: <Description sx={{ fontSize: "20px" }} />,
+    childItems: [
+      {
+        key: "G3-child1",
+        label: "รายงานสรุปผลในรอบเดือน",
+        link: "/director/manage-report/month",
+        linkP: "/director/manage-report/month",
+      },
+      {
+        key: "G3-child2",
+        label: "รายงานสรุปผลในรอบปี",
+        link: "/director/manage-report/year",
+        linkP: "/director/manage-report/year",
+      },
+    ],
+  },
+];
+
+export const itemExpert = [
+  {
+    key: "G0",
+    label: "หน้าแรก",
+    icon: <Home sx={{ fontSize: "20px" }} />,
+    link: "/home",
+    linkP: "/home",
+  },
+  {
+    key: "G1",
+    label: "งานตรวจ",
+    icon: <Work sx={{ fontSize: "20px" }} />,
+    childItems: [
+      {
+        key: "G1-child1",
+        label: "งานตรวจที่ได้รับ",
+        link: "/expert/manage-evidence/list-assign/main",
+        linkP: "/expert/manage-evidence/list-assign",
+      },
+      {
+        key: "G1-child2",
+        label: "จัดการงานตรวจ",
+        link: "/expert/manage-evidence/list-accept/main",
+        linkP: "/expert/manage-evidence/list-accept",
+      },
+    ],
+  },
+  {
+    key: "G2",
+    label: "รายงานสรุปผล",
+    icon: <Description sx={{ fontSize: "20px" }} />,
+    childItems: [
+      {
+        key: "G2-child1",
+        label: "รายงานสรุปผลในรอบเดือน",
+        link: "/expert/manage-report/month",
+        linkP: "/expert/manage-report/month",
+      },
+      {
+        key: "G2-child2",
+        label: "รายงานสรุปผลในรอบปี",
+        link: "/expert/manage-report/year",
+        linkP: "/expert/manage-report/year",
+      },
+    ],
+  },
+];

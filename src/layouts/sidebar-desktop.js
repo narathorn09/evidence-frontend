@@ -119,7 +119,7 @@ const SidebarDesktop = () => {
           <Grid
             sx={{
               fontWeight: "light",
-              fontSize: "10px",
+              fontSize: "12px",
               color: "var(--color--main)",
             }}
           >

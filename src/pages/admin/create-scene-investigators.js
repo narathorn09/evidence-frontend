@@ -5,6 +5,7 @@ import { Box, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
+import Swal from "sweetalert2";
 
 const CreateSceneInvestigator = () => {
   const requestPrivate = useAxiosPrivate();
@@ -29,11 +30,21 @@ const CreateSceneInvestigator = () => {
     try {
       const response = await requestPrivate.post("/sceneInvestigator", value);
       if (response) {
-        alert(`เพิ่มสมาชิกสำเร็จ`);
+         Swal.fire({
+          title: "เพิ่มสำเร็จ!",
+          text: "เพิ่มพนักงานตรวจสถานที่เกิดเหตุสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
         navigate(-1);
       }
     } catch (err) {
-      alert(`เกิดปัญหาในการเพิ่มสมาชิก : ${err}`);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "เกิดข้อผิดพลาดในการเพิ่มพนักงานตรวจสถานที่เกิดเหตุ",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
     }
   };
 
@@ -142,6 +153,7 @@ const CreateSceneInvestigator = () => {
               {group.map((group, index) => (
                 <Select.Option
                   key={index}
+                  disabled={group.group_status === "1"}
                   value={group.group_id}
                 >{`${group.group_name}`}</Select.Option>
               ))}
@@ -347,7 +359,7 @@ const CreateSceneInvestigator = () => {
               ยกเลิก
             </Button>
             <Button onClick={handleResetFields} style={{ marginLeft: 10 }}>
-              รีเซ็ต
+              ล้างค่า
             </Button>
           </Form.Item>
         </Form>

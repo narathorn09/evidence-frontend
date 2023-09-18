@@ -27,7 +27,11 @@
   --color--main-light8: rgb(125, 50, 50, 0.8);
   --color--main-light9: rgb(125, 50, 50, 0.9);
   
-  --color--white: #FFFFFF
+  --color--white:  #FFFFFF;
+  --color--blue:   #2D79FA;
+  --color--yellow: #F0EB46;
+  --color--orange: #F08930;
+  --color--green:  #5DFA4F;
 }
 
 
