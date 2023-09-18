@@ -14,6 +14,7 @@ import useAxiosPrivate from "../../hook/use-axios-private";
 import Swal from "sweetalert2";
 import { Button as ButtonAntd } from "antd";
 import { useAuth } from "../../contexts/auth-context";
+import NoDataUi from "../../components/no-data";
 
 const ListExpertByGroup = () => {
   const requestPrivate = useAxiosPrivate();
@@ -230,6 +231,7 @@ const ListExpertByGroup = () => {
           columns={columns}
           slots={{
             toolbar: CustomToolbar,
+            noRowsOverlay: NoDataUi,
           }}
           sx={{ borderRadius: "8px", height: "400px" }}
         />

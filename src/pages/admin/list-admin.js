@@ -13,6 +13,7 @@ import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 import Swal from "sweetalert2";
 import { Button as ButtonAntd } from "antd";
+import NoDataUi from "../../components/no-data";
 
 const ListAdmin = () => {
   const requestPrivate = useAxiosPrivate();
@@ -204,6 +205,7 @@ const ListAdmin = () => {
           columns={columns}
           slots={{
             toolbar: CustomToolbar,
+            noRowsOverlay: NoDataUi,
           }}
           sx={{ borderRadius: "8px", height: "400px" }}
         />

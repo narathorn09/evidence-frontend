@@ -14,6 +14,7 @@ import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 import { Button as ButtonAntd } from "antd";
 import dayjs from "dayjs";
+import NoDataUi from "../../components/no-data";
 
 const ListCaseAccept = () => {
   const { auth } = useAuth();
@@ -264,6 +265,7 @@ const ListCaseAccept = () => {
           columns={columns}
           slots={{
             toolbar: CustomToolbar,
+            noRowsOverlay: NoDataUi,
           }}
           sx={{ borderRadius: "8px", height: "460px" }}
         />
