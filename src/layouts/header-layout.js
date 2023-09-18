@@ -22,7 +22,16 @@ const Header = ({ openNavMobile }) => {
           signal: controller.signal,
         });
         isMounted && setMe(response?.data);
-        if (response.status !== 200) navigate("/login");
+        if (response.status !== 200) {
+          Swal.fire({
+            title: "โปรดเข้าสู่ระบบอีกครั้ง!",
+            text: "Token หมดอายุหรือมีการเข้าสู่ระบบจากอุปกรณ์อื่น",
+            icon: "warning",
+            confirmButtonText: "ตกลง",
+            // cancelButtonText: "ยกเลิก",
+          });
+          navigate("/login");
+        }
       } catch (error) {
         console.error(error);
       }

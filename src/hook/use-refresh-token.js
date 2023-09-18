@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { request } from "../axios-config";
 import { useAuth } from "../contexts/auth-context";
+import Swal from "sweetalert2";
 
 const useRefreshToken = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const useRefreshToken = () => {
       await setAuthToken(response.data.accessToken);
       return response.data.accessToken;
     } catch (err) {
-      navigate("/login");
+      console.error(err);
     }
   };
 
