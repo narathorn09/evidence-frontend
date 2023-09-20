@@ -59,6 +59,7 @@ import HomeCommander from "./pages/commander/home-commander";
 import HomeInves from "./pages/sceneInvestigator/home-inves";
 import HomeDirector from "./pages/director/home-director";
 import HomeExpert from "./pages/expert/home-expert";
+import GetCaseConfirmById from "./pages/director/getbyid-case-con";
 
 const App = () => {
   const { auth } = useAuth();
@@ -134,6 +135,7 @@ const App = () => {
               <Route exact path="/director/manage-report/year" element={<ReportWorkOfDirectorYear />} />
               <Route exact path="/director/manage-expert" element={<ListExpertByGroup />} />
               <Route exact path="/director/manage-expert/detail/:expertId" element={<GetDetailExpertById />} />
+              <Route exact path="/director/manage-case/confirm/casedetail/:caseId" element={<GetCaseConfirmById />} />
 
             </>
           )}

@@ -45,7 +45,9 @@ const HomeExpert = () => {
     fetchData();
   }, [expertId]);
 
-  const colors = ["#E6F69D", "#64C2A6", "#2D87BB", "#AADEA7"];
+  const colors = ["#3AB0FF", "#64C2A6","#FFB562",  "#F87474", "#99F2ED"];
+
+  // const colors = ["#E6F69D", "#64C2A6", "#2D87BB", "#AADEA7"];
 
   const data = [
     {
@@ -56,26 +58,28 @@ const HomeExpert = () => {
       path: null,
     },
     {
-      id: 1,
-      value: count?.countCaseAssign,
-      label: "จำนวนงานตรวจที่ได้รับ",
-      color: colors[0],
-      path: "/expert/manage-evidence/list-assign/main",
+      id: 3,
+      value: count?.countCaseClose,
+      label: "จำนวนงานตรวจที่ปิดแล้ว",
+      color: colors[1],
+      path: "/expert/manage-evidence/list-accept/main",
     },
     {
       id: 2,
       value: count?.countCaseWork,
       label: "จำนวนงานตรวจที่ยังไม่ปิด",
-      color: colors[1],
+      color: colors[2],
       path: "/expert/manage-evidence/list-accept/main",
     },
     {
-      id: 3,
-      value: count?.countCaseClose,
-      label: "จำนวนงานตรวจที่ปิดแล้ว",
+      id: 1,
+      value: count?.countCaseAssign,
+      label: "จำนวนงานตรวจที่ได้รับ",
       color: colors[3],
-      path: "/expert/manage-evidence/list-accept/main",
+      path: "/expert/manage-evidence/list-assign/main",
     },
+
+
     // {
     //   id: 3,
     //   value: count?.countCaseWork,

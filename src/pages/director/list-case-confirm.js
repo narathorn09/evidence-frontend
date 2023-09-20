@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
-import { Button as ButtonAntd } from "antd";
+import { Button as ButtonAntd, Tag } from "antd";
 import dayjs from "dayjs";
 import NoDataUi from "../../components/no-data";
 
@@ -112,9 +112,29 @@ const ListCaseConfirm = () => {
       headerClassName: "super-app-theme--header",
     },
     {
+      field: "Detail",
+      headerName: "ดูเพิ่มเติม",
+      width: 100,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "super-app-theme--header",
+      renderCell: (params) => (
+        <IconButton
+          onClick={() => {
+            navigate(
+              `/director/manage-case/confirm/casedetail/${params?.row?.id}`
+            );
+          }}
+          sx={{ ":hover": { color: "var(--color--main-light9)" } }}
+        >
+          <Visibility />
+        </IconButton>
+      ),
+    },
+    {
       field: "status",
       headerName: "สถานะการอนุมัติ",
-      width: 200,
+      width: 150,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
@@ -152,19 +172,23 @@ const ListCaseConfirm = () => {
 
         if (check) {
           textStatus = "อนุมัติแล้ว";
-          colorStatus = "var(--color--green)";
+          colorStatus = "green";
         } else {
           textStatus = "ยังไม่อนุมัติ";
-          colorStatus = "var(--color--blue)";
+          colorStatus = "orange";
         }
 
-        return <span style={{ color: colorStatus }}>{textStatus}</span>;
+        return (
+          <Tag color={colorStatus}>
+            <span style={{ fontSize: "13px" }}>{textStatus}</span>
+          </Tag>
+        );
       },
     },
     {
       field: "assign_evidence",
       headerName: "อนุมัติงานตรวจ",
-      width: 150,
+      width: 200,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",

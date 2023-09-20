@@ -45,7 +45,9 @@ const HomeDirector = () => {
     fetchData();
   }, [DirectorId]);
 
-  const colors = ["#E6F69D", "#64C2A6", "#2D87BB", "#AADEA7"];
+  const colors = ["#3AB0FF", "#64C2A6","#FFB562",  "#F87474", "#99F2ED"];
+
+  // const colors = ["#E6F69D", "#64C2A6", "#2D87BB", "#AADEA7"];
 
   const data = [
     {
@@ -56,33 +58,35 @@ const HomeDirector = () => {
       path: null,
     },
     {
+      id: 4,
+      value: count?.countCaseConfirmed,
+      label: "จำนวนคดีที่อนุมัติแล้ว",
+      color: colors[1],
+      path: "/director/manage-case/confirm",
+    },
+    {
+      id: 3,
+      value: count?.countCaseConfirm,
+      label: "จำนวนคดีที่รออนุมัติงานตรวจ",
+      color: colors[2],
+      path: "/director/manage-case/confirm",
+    },
+    {
       id: 1,
       value: count?.countCaseAssign,
       label: "จำนวนคดีที่ได้รับมอบหมาย",
-      color: colors[0],
+      color: colors[3],
       path: "/director/manage-case/list-assign/main",
     },
     {
       id: 2,
       value: count?.countCaseAccept,
       label: "จำนวนคดีที่รับมอบหมายแล้ว",
-      color: colors[1],
+      color: colors[4],
       path: "/director/manage-case/list-accept/main",
     },
-    {
-      id: 3,
-      value: count?.countCaseConfirm,
-      label: "จำนวนคดีที่รออนุมัติงานตรวจ",
-      color: colors[3],
-      path: "/director/manage-case/confirm",
-    },
-    {
-      id: 4,
-      value: count?.countCaseConfirmed,
-      label: "จำนวนคดีที่อนุมัติแล้ว",
-      color: colors[2],
-      path: "/director/manage-case/confirm",
-    },
+
+
   ];
 
   const style = {

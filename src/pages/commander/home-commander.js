@@ -27,7 +27,9 @@ const HomeCommander = () => {
     fetchData();
   }, []);
 
-  const colors = ["#E6F69D", "#64C2A6", "#2D87BB"];
+  const colors = ["#3AB0FF", "#FFB562",  "#64C2A6"];
+
+  // const colors = ["#E6F69D", "#64C2A6", "#2D87BB"];
 
   const data = [
     {

@@ -71,7 +71,8 @@ const HomeInves = () => {
     fetchData();
   }, [invesId]);
 
-  const colors = ["#E6F69D", "#64C2A6", "#2D87BB", "#AADEA7"];
+  const colors = ["#3AB0FF", "#FFB562", "#64C2A6", "#99F2ED"];
+  // const colors = ["#7D3234", "#FFB562", "#64C2A6", "#2D87BB", "#AADEA7"];
 
   const data = [
     {
@@ -92,14 +93,14 @@ const HomeInves = () => {
       id: 2,
       value: count?.countCaseFinish,
       label: "จำนวนคดีที่ดำเนินเสร็จสิ้น",
-      color: colors[3],
+      color: colors[2],
       path: "/inves/manage-case/list",
     },
     {
       id: 3,
       value: count?.countCaseWork,
       label: "จำนวนคดีที่อยู่ระหว่างดำเนินการ",
-      color: colors[2],
+      color: colors[3],
       path: "/inves/manage-case/list",
     },
   ];
