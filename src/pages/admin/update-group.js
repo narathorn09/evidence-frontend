@@ -113,7 +113,7 @@ const UpdateGroup = () => {
   return (
     <div>
       <Helmet>
-        <title>Edit Group - Forensic Science</title>
+        <title>แก้ไขข้อมูลกลุ่มงาน - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

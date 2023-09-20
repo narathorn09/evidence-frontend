@@ -65,7 +65,7 @@ const CreateAdmin = () => {
   return (
     <div>
       <Helmet>
-        <title>Add Admin - Forensic Science</title>
+        <title>เพิ่มผู้ดูแลระบบ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

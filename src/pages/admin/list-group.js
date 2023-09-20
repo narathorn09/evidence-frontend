@@ -195,7 +195,7 @@ const ListGroup = () => {
   return (
     <div>
       <Helmet>
-        <title>Lists Group - Forensic Science</title>
+        <title>รายชื่อกลุ่มงาน - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[{ title: "จัดการกลุ่มงาน" }, { title: "รายชื่อกลุ่มงาน" }]}

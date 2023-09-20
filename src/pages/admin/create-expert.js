@@ -98,7 +98,7 @@ const CreateExpert = () => {
   return (
     <div>
       <Helmet>
-        <title>Add Expert - Forensic Science</title>
+        <title>เพิ่มผู้ชำนาญการ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

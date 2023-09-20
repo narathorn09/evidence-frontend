@@ -183,7 +183,7 @@ const ListSceneInvestigator = () => {
   return (
     <>
       <Helmet>
-        <title>Lists Scene Investigator - Forensic Science</title>
+        <title>รายชื่อพนักงานตรวจสถานที่เกิดเหตุ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

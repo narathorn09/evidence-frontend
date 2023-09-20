@@ -96,7 +96,7 @@ const CreateGroup = () => {
   return (
     <div>
       <Helmet>
-        <title>Add Group - Forensic Science</title>
+        <title>เพิ่มกลุ่มงาน - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

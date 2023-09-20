@@ -90,7 +90,7 @@ const UpdateAdmin = () => {
   return (
     <div>
       <Helmet>
-        <title>Edit Admin - Forensic Science</title>
+        <title>แก้ไขข้อมูลผู้ดูแลระบบ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

@@ -165,7 +165,7 @@ const ListAdmin = () => {
   return (
     <div>
       <Helmet>
-        <title>Lists Admin - Forensic Science</title>
+        <title>รายชื่อผู้ดูแลระบบ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[{ title: "จัดการผู้ใช้" }, { title: "รายชื่อผู้ดูแลระบบ" }]}

@@ -177,7 +177,7 @@ const ListCommander = () => {
   return (
     <>
       <Helmet>
-        <title>Lists Commander - Forensic Science</title>
+        <title>รายชื่อผู้การ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[{ title: "จัดการผู้ใช้" }, { title: "รายชื่อผู้การ" }]}
