@@ -153,7 +153,7 @@ const ListCaseAcceptOfExpert = () => {
     {
       field: "status",
       headerName: "สถานะการอนุมัติ",
-      width: 200,
+      width: 150,
       align: "center",
       headerAlign: "center",
       headerClassName: "super-app-theme--header",
@@ -194,6 +194,61 @@ const ListCaseAcceptOfExpert = () => {
           colorStatus = "green";
         } else {
           textStatus = "ยังไม่อนุมัติ";
+          colorStatus = "orange";
+        }
+
+        return (
+          <Tag color={colorStatus}>
+            <span style={{ fontSize: "13px" }}>{textStatus}</span>
+          </Tag>
+        );
+      },
+    },
+    {
+      field: "work_status",
+      headerName: "สถานะการปิดงานตรวจ",
+      width: 150,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "super-app-theme--header",
+      valueGetter: (params) => {
+        let textStatus;
+        let check = false; // Initialize check as true
+
+        params.row.evidence_list?.forEach((evidence) => {
+          evidence.evidence_factor?.forEach((factor) => {
+            if (factor.assign_exp_close_work === "1") {
+              check = true; // If any factor's assign_direc_status is not "1", set check to false
+            }
+          });
+        });
+
+        if (check) {
+          textStatus = "ปิดงานตรวจแล้ว";
+        } else {
+          textStatus = "ยังไม่ปิดงานตรวจ";
+        }
+
+        return textStatus;
+      },
+      renderCell: (params) => {
+        let textStatus;
+        let colorStatus;
+        let check = false; // Initialize check as true
+
+        params.row.evidence_list?.forEach((evidence) => {
+          evidence.evidence_factor?.forEach((factor) => {
+            if (factor.assign_exp_close_work === "1") {
+              check = true; // If any factor's assign_direc_status is not "1", set check to false
+            }
+          });
+        });
+
+        if (check) {
+          textStatus = "ปิดงานตรวจแล้ว";
+          colorStatus = "green";
+        } else {
+          textStatus = "ยังไม่ปิดงานตรวจ";
           colorStatus = "orange";
         }
 
@@ -321,6 +376,8 @@ const ListCaseAcceptOfExpert = () => {
       "case_accident_date",
       "case_accident_time",
       "case_location",
+      "status",
+      "work_status"
     ],
   };
 
