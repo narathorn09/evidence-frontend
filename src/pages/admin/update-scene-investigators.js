@@ -115,7 +115,7 @@ const UpdateSceneInvestigator = () => {
   return (
     <div>
       <Helmet>
-        <title>Edit Scene Investigator - Forensic Science</title>
+        <title>แก้ไขข้อมูลพนักงานตรวจสถานที่เกิดเหตุ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

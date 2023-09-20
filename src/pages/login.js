@@ -68,7 +68,7 @@ const Login = () => {
   return (
     <div>
       <Helmet>
-        <title>Login - Forensic Science</title>
+        <title>เข้าสู่ระบบ - Forensic Science</title>
       </Helmet>
 
       <Box

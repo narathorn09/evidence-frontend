@@ -84,7 +84,7 @@ const CreateDirector = () => {
   return (
     <div>
       <Helmet>
-        <title>Add Director - Forensic Science</title>
+        <title>เพิ่มผู้กำกับ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

@@ -141,13 +141,13 @@ export const itemSceneInvestigator = [
     link: "/inves/manage-type-evidence/list",
     linkP: "/inves/manage-type-evidence",
   },
-  {
-    key: "G3",
-    label: "รายงานสรุปผล",
-    icon: <Description sx={{ fontSize: "20px" }} />,
-    link: "/inves/manage-report",
-    linkP: "/inves/manage-report",
-  },
+  // {
+  //   key: "G3",
+  //   label: "รายงานสรุปผล",
+  //   icon: <Description sx={{ fontSize: "20px" }} />,
+  //   link: "/inves/manage-report",
+  //   linkP: "/inves/manage-report",
+  // },
 ];
 
 export const itemDirector = [

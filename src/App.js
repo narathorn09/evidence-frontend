@@ -55,6 +55,11 @@ import ListCaseAllWork from "./pages/commander/list-case-work";
 import CaseDetailWork from "./pages/commander/detail-case-work";
 import ReportWorkOfCommanderMonth from "./pages/commander/report-work-month";
 import ReportWorkOfCommanderYear from "./pages/commander/report-work-year";
+import HomeCommander from "./pages/commander/home-commander";
+import HomeInves from "./pages/sceneInvestigator/home-inves";
+import HomeDirector from "./pages/director/home-director";
+import HomeExpert from "./pages/expert/home-expert";
+import GetCaseConfirmById from "./pages/director/getbyid-case-con";
 
 const App = () => {
   const { auth } = useAuth();
@@ -92,19 +97,19 @@ const App = () => {
           )}
           {role === "1" && ( //commander
             <>
-              <Route exact path="/home" element={<>Home commander</>} />
+              <Route exact path="/home" element={<HomeCommander />} />
               <Route exact path="/commander/manage-case/list-case-close/main" element={<ListCaseAllClose />} />
               <Route exact path="/commander/manage-case/list-case-work/main" element={<ListCaseAllWork />} />
               <Route exact path="/commander/manage-case/list-case-close/detail/:caseId" element={<CaseDetailClose />} />
               <Route exact path="/commander/manage-case/list-case-work/detail/:caseId" element={<CaseDetailWork />} />
               <Route exact path="/commander/manage-report/month" element={<ReportWorkOfCommanderMonth />} />
               <Route exact path="/commander/manage-report/year" element={<ReportWorkOfCommanderYear />} />
+              
             </>
           )}
            {role === "2" && ( //Scene Investigator
             <>
-              <Route exact path="/home" element={<>Home Scene Investigator</>} />
-              <Route exact path="/inves/manage-case" element={<>Scene Investigator</>} />
+              <Route exact path="/home" element={<HomeInves />} />
               <Route exact path="/inves/manage-case/list" element={<ListCase />} />
               <Route exact path="/inves/manage-case/create" element={<CreateCase />} />
               <Route exact path="/inves/manage-case/casebyid/:caseId" element={<GetCaseById />} />
@@ -118,7 +123,7 @@ const App = () => {
           )}
            {role === "3" && ( //Director
             <>
-              <Route exact path="/home" element={<>Home Director</>} />
+              <Route exact path="/home" element={<HomeDirector />} />
               <Route exact path="/director/manage-case/list-assign/main" element={<ListCaseAssign />} />
               <Route exact path="/director/manage-case/list-accept/main" element={<ListCaseAccept />} />
               <Route exact path="/director/manage-case/list-assign/casebyid/:caseId" element={<GetCaseAssignById />} />
@@ -130,12 +135,13 @@ const App = () => {
               <Route exact path="/director/manage-report/year" element={<ReportWorkOfDirectorYear />} />
               <Route exact path="/director/manage-expert" element={<ListExpertByGroup />} />
               <Route exact path="/director/manage-expert/detail/:expertId" element={<GetDetailExpertById />} />
+              <Route exact path="/director/manage-case/confirm/casedetail/:caseId" element={<GetCaseConfirmById />} />
 
             </>
           )}
            {role === "4" && ( //Expert
             <>
-              <Route exact path="/home" element={<>Home Expert</>} />
+              <Route exact path="/home" element={<HomeExpert />} />
               <Route exact path="/expert/manage-evidence/list-assign/main" element={<ListCaseAssignByExpertId />} />
               <Route exact path="/expert/manage-evidence/list-accept/main" element={<ListCaseAcceptOfExpert />} />
               <Route exact path="/expert/manage-evidence/list-accept/saveResult/:caseId" element={<SaveResultEvidence />} />

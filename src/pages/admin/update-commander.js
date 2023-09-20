@@ -97,7 +97,7 @@ const UpdateCommander = () => {
   return (
     <div>
       <Helmet>
-        <title>Edit Commander - Forensic Science</title>
+        <title>แก้ไขข้อมูลผู้การ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

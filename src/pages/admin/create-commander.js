@@ -84,7 +84,7 @@ const CreateCommander = () => {
   return (
     <div>
       <Helmet>
-        <title>Add Commander - Forensic Science</title>
+        <title>เพิ่มผู้การ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

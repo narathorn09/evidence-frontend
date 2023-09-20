@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
-import { Button as ButtonAntd } from "antd";
+import { Button as ButtonAntd, Tag } from "antd";
 import dayjs from "dayjs";
 import exportPdf from "../../libs/export-pdf";
 import NoDataUi from "../../components/no-data";
@@ -149,6 +149,60 @@ const ListCaseAcceptOfExpert = () => {
       headerName: "สถานที่ที่เกิดเหตุ",
       width: 400,
       headerClassName: "super-app-theme--header",
+    },
+    {
+      field: "status",
+      headerName: "สถานะการอนุมัติ",
+      width: 200,
+      align: "center",
+      headerAlign: "center",
+      headerClassName: "super-app-theme--header",
+      valueGetter: (params) => {
+        let textStatus;
+
+        let check = false;
+        params?.row.evidence_list.forEach((evidence) => {
+          evidence.evidence_factor.forEach((factor) => {
+            if (factor.ef_status === "3") {
+              check = true;
+            }
+          });
+        });
+
+        if (check) {
+          textStatus = "อนุมัติแล้ว";
+        } else {
+          textStatus = "ยังไม่อนุมัติ";
+        }
+
+        return textStatus;
+      },
+      renderCell: (params) => {
+        let textStatus;
+        let colorStatus;
+        let check = false;
+        params?.row.evidence_list.forEach((evidence) => {
+          evidence.evidence_factor.forEach((factor) => {
+            if (factor.ef_status === "3") {
+              check = true;
+            }
+          });
+        });
+
+        if (check) {
+          textStatus = "อนุมัติแล้ว";
+          colorStatus = "green";
+        } else {
+          textStatus = "ยังไม่อนุมัติ";
+          colorStatus = "orange";
+        }
+
+        return (
+          <Tag color={colorStatus}>
+            <span style={{ fontSize: "13px" }}>{textStatus}</span>
+          </Tag>
+        );
+      },
     },
     {
       field: "Detail",

@@ -98,7 +98,7 @@ const CreateSceneInvestigator = () => {
   return (
     <div>
       <Helmet>
-        <title>Add Scene Investigator - Forensic Science</title>
+        <title>เพิ่มพนักงานตรวจสถานที่เกิดเหตุ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

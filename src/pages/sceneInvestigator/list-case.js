@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
-import { Button as ButtonAntd, Tooltip } from "antd";
+import { Button as ButtonAntd, Tooltip, Tag } from "antd";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
 import NoDataUi from "../../components/no-data";
@@ -108,16 +108,20 @@ const ListCase = () => {
         let colorStatus;
         if (params?.row?.case_status === "0") {
           textStatus = "อยู่ระหว่างดำเนินการ";
-          colorStatus = "var(--color--blue)";
+          colorStatus = "blue";
         } else if (params?.row?.case_status === "1") {
           textStatus = "ดำเนินการเสร็จสิ้น";
-          colorStatus = "var(--color--green)";
+          colorStatus = "green";
         } else if (params?.row?.case_status === "2") {
           textStatus = "ปิดคดีแล้ว";
-          colorStatus = "var(--color--orange)";
+          colorStatus = "orange";
         }
 
-        return <span style={{ color: colorStatus }}>{textStatus}</span>;
+        return (
+          <Tag color={colorStatus} >
+            <span style={{fontSize: "13px"}}>{textStatus}</span>
+          </Tag>
+        );
       },
     },
     {
@@ -194,7 +198,7 @@ const ListCase = () => {
               </Box>
             }
             // color={"var(--color--orange)"}
-            color={"#f50"}
+            // color={"#f50"}
             style={{ cursor: "pointer", textAlign: "center" }}
           >
             {/* <IconButton
@@ -261,7 +265,7 @@ const ListCase = () => {
               </Box>
             }
             // color={"var(--color--orange)"}
-            color={"#f50"}
+            // color={"#f50"}
             style={{ cursor: "pointer", textAlign: "center" }}
           >
             {/* <IconButton

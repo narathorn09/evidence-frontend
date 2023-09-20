@@ -112,7 +112,7 @@ const UpdateExpert = () => {
   return (
     <div>
       <Helmet>
-        <title>Edit Expert - Forensic Science</title>
+        <title>แก้ไขข้อมูลผู้ชำนาญการ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

@@ -98,7 +98,7 @@ const UpdateDirector = () => {
   return (
     <div>
       <Helmet>
-        <title>Edit Director - Forensic Science</title>
+        <title>แก้ไขข้อมูลผู้กำกับ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[

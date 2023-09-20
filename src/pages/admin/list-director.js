@@ -177,7 +177,7 @@ const ListDirector = () => {
   return (
     <>
       <Helmet>
-        <title>Lists Director - Forensic Science</title>
+        <title>รายชื่อผู้กำกับ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[{ title: "จัดการผู้ใช้" }, { title: "รายชื่อผู้กำกับ" }]}

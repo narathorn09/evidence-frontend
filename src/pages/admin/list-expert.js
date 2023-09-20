@@ -183,7 +183,7 @@ const ListExpert = () => {
   return (
     <>
       <Helmet>
-        <title>Lists Expert - Forensic Science</title>
+        <title>รายชื่อผู้ชำนาญการ - Forensic Science</title>
       </Helmet>
       <BreadcrumbLayout
         pages={[{ title: "จัดการผู้ใช้" }, { title: "รายชื่อผู้ชำนาญการ" }]}
