@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
 import Swal from "sweetalert2";
-import { Button as ButtonAntd } from "antd";
+import { Button as ButtonAntd , Input} from "antd";
 import { useAuth } from "../../contexts/auth-context";
 import NoDataUi from "../../components/no-data";
 
@@ -24,7 +24,8 @@ const ListExpertByGroup = () => {
   const { auth } = useAuth();
   const [groupId, setGroupId] = useState(null);
   const [DirectorId, setDirectorId] = useState(null);
-
+  const [searchFname, setSearchFname] = useState("")
+  const [searchLname, setSearchLname] = useState("")
 
   const columns = [
     {
@@ -117,38 +118,6 @@ const ListExpertByGroup = () => {
   }, [groupId]);
 
 
-  const RemoveMember = async (memId, username) => {
-    Swal.fire({
-      title: "แจ้งเตือน!",
-      text: `คุณต้องการลบชื่อผู้ใช้ ${username}?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "ตกลง",
-      cancelButtonText: "ยกเลิก",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await requestPrivate.delete(`/memberById/${memId}`).then(() => {
-            Swal.fire({
-              title: "ลบสำเร็จ!",
-              text: `ลบ ${username} สำเร็จ`,
-              icon: "success",
-              confirmButtonText: "ตกลง",
-            });
-            setRefetch(!refetch);
-          });
-        } catch (err) {
-          Swal.fire({
-            title: "เกิดข้อผิดพลาด!",
-            text: "เกิดข้อผิดพลาดในการลบผู้ใช้ระบบ",
-            icon: "error",
-            confirmButtonText: "ตกลง",
-          });
-        }
-      }
-    });
-  };
-
   const csvOptions = {
     fileName: "รายชื่อผู้ชำนาญการ",
     utf8WithBom: true,
@@ -184,6 +153,18 @@ const ListExpertByGroup = () => {
     );
   }
 
+  const filteredArray = items.filter((e) => {
+    const Fname =
+      !searchFname ||
+      e.expert_fname.toLowerCase().includes(searchFname.toLowerCase());
+    const Lname =
+      !searchLname ||
+      e.expert_lname.toLowerCase().includes(searchLname.toLowerCase());
+    
+
+    return Fname && Lname;
+  });
+
   return (
     <>
       <Helmet>
@@ -205,18 +186,27 @@ const ListExpertByGroup = () => {
         <Grid sx={{ textAlign: "left" }}>
           <h2>รายชื่อผู้ชำนาญการ</h2>
         </Grid>
-        <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          {/* <ButtonAntd
-            type="primary"
-            onClick={() => navigate("/user-management/expert/create")}
-          >
-            เพิ่ม
-          </ButtonAntd> */}
+        <Grid container  spacing={2} sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+          <Grid item xs={12} sm={4} md={3}>
+            <Input
+              placeholder="ค้นหาชื่อจริง"
+              value={searchFname}
+              onChange={(e) => setSearchFname(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4} md={3}>
+            <Input
+              placeholder="ค้นหานามสกุล"
+              value={searchLname}
+              onChange={(e) => setSearchLname(e.target.value)}
+            />
+          </Grid>
+        
         </Grid>
         <DataGrid
           rows={
             items
-              ? items?.map((e, index) => ({
+              ? filteredArray?.map((e, index) => ({
                   ...e,
                   id: e.expert_id,
                   index: index + 1,

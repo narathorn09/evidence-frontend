@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
-import { Button as ButtonAntd, Tooltip, Tag } from "antd";
+import { Button as ButtonAntd, Tooltip, Tag, Select, Input } from "antd";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
 import NoDataUi from "../../components/no-data";
@@ -25,6 +25,8 @@ const ListCase = () => {
   const [items, setItems] = useState([]);
   const [refetch, setRefetch] = useState(false);
   const [invesId, setInvesId] = useState();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchStatus, setSearchStatus] = useState("");
 
   const columns = [
     {
@@ -418,6 +420,17 @@ const ListCase = () => {
     );
   }
 
+  const filteredArray = items.filter((e) => {
+    const caseNumbokoMatch =
+      !searchQuery ||
+      e.case_numboko.toLowerCase().includes(searchQuery.toLowerCase());
+    const statusMatch =
+      !searchStatus ||
+      e.case_status === searchStatus
+
+    return caseNumbokoMatch && statusMatch;
+  });
+
   return (
     <div>
       <Helmet>
@@ -447,10 +460,45 @@ const ListCase = () => {
             เพิ่ม
           </ButtonAntd>
         </Grid>
+        <Grid container  spacing={2} sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+          <Grid item xs={12} sm={4} md={3}>
+            <Input
+              placeholder="ค้นหาหมายเลข บก."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4} md={3}>
+            <Select
+              allowClear
+              style={{
+                width: "100%",
+                marginRight: "20px",
+              }}
+              placeholder="เลือกสถานะของคดี"
+              onChange={(value) => setSearchStatus(value)}
+              value={searchStatus}
+              options={[
+                {
+                  value: "0",
+                  label: "อยู่ระหว่างดำเนินการ",
+                },
+                {
+                  value: "1",
+                  label: "ดำเนินการเสร็จสิ้น",
+                },
+                {
+                  value: "2",
+                  label: "ปิดคดีแล้ว",
+                },
+              ]}
+            />
+          </Grid>
+        </Grid>
         <DataGrid
           rows={
             items
-              ? items?.map((e, index) => ({
+              ? filteredArray?.map((e, index) => ({
                   ...e,
                   id: e.case_id,
                   index: index + 1,
