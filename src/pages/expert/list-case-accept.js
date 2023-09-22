@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
-import { Button as ButtonAntd, Tag } from "antd";
+import { Button as ButtonAntd, Tag, Input, Select } from "antd";
 import dayjs from "dayjs";
 import exportPdf from "../../libs/export-pdf";
 import NoDataUi from "../../components/no-data";
@@ -25,6 +25,8 @@ const ListCaseAcceptOfExpert = () => {
   const [refetch, setRefetch] = useState(false);
   const [expertId, setExpertId] = useState(null);
   const [typeEvidence, setTypeEvidence] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchStatus, setSearchStatus] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -377,7 +379,7 @@ const ListCaseAcceptOfExpert = () => {
       "case_accident_time",
       "case_location",
       "status",
-      "work_status"
+      "work_status",
     ],
   };
 
@@ -410,6 +412,21 @@ const ListCaseAcceptOfExpert = () => {
     );
   }
 
+  const filteredArray = items.filter((e) => {
+    const caseNumbokoMatch =
+      !searchQuery ||
+      e.case_numboko.toLowerCase().includes(searchQuery.toLowerCase());
+    const statusMatch =
+      !searchStatus ||
+      e.evidence_list.every((evidence) => {
+        return evidence.evidence_factor.every((factor) => {
+          return factor.assign_exp_close_work === searchStatus;
+        });
+      });
+
+    return caseNumbokoMatch && statusMatch;
+  });
+
   return (
     <div>
       <Helmet>
@@ -434,18 +451,41 @@ const ListCaseAcceptOfExpert = () => {
         <Grid sx={{ textAlign: "left" }}>
           <h2>รายการงานตรวจที่รับมอบหมายแล้ว</h2>
         </Grid>
-        <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          {/* <ButtonAntd
-            type="primary"
-            onClick={() => navigate("/inves/manage-case/create")}
-          >
-            เพิ่ม
-          </ButtonAntd> */}
+        <Grid container  spacing={2} sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+          <Grid item xs={12} sm={4} md={3}>
+            <Input
+              placeholder="ค้นหาหมายเลข บก."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4} md={3}>
+            <Select
+              allowClear
+              style={{
+                width: "100%",
+                marginRight: "20px",
+              }}
+              placeholder="เลือกสถานะการปิดงานตรวจ"
+              onChange={(value) => setSearchStatus(value)}
+              value={searchStatus}
+              options={[
+                {
+                  value: "1",
+                  label: "ปิดงานตรวจแล้ว",
+                },
+                {
+                  value: "0",
+                  label: "ยังไม่ปิดงานตรวจ",
+                },
+              ]}
+            />
+          </Grid>
         </Grid>
         <DataGrid
           rows={
             items
-              ? items
+              ? filteredArray
                   ?.map((e) => {
                     let check = false;
 

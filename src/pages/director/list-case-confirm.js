@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import BreadcrumbLayout from "../../components/breadcrumbs";
 import useAxiosPrivate from "../../hook/use-axios-private";
-import { Button as ButtonAntd, Tag } from "antd";
+import { Button as ButtonAntd, Tag, Input, Select } from "antd";
 import dayjs from "dayjs";
 import NoDataUi from "../../components/no-data";
 
@@ -22,6 +22,8 @@ const ListCaseConfirm = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [DirectorId, setDirectorId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchStatus, setSearchStatus] = useState("");
 
   useEffect(() => {
     const data = { id: auth?.user?.id, role: auth?.user?.role };
@@ -263,6 +265,22 @@ const ListCaseConfirm = () => {
     );
   }
 
+  const filteredArray = items.filter((e) => {
+    const caseNumbokoMatch =
+      !searchQuery ||
+      e.case_numboko.toLowerCase().includes(searchQuery.toLowerCase());
+    const statusMatch =
+      !searchStatus ||
+      e.evidence_list.every((evidence) => {
+        return evidence.evidence_factor.every((factor) => {
+          return factor.ef_status === searchStatus;
+        });
+      });
+
+    return caseNumbokoMatch && statusMatch;
+  });
+
+
   return (
     <div>
       <Helmet>
@@ -284,18 +302,41 @@ const ListCaseConfirm = () => {
         <Grid sx={{ textAlign: "left" }}>
           <h2>รายการคดีที่รออนุมัติงานตรวจ</h2>
         </Grid>
-        <Grid sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-          {/* <ButtonAntd
-            type="primary"
-            onClick={() => navigate("/inves/manage-case/create")}
-          >
-            เพิ่ม
-          </ButtonAntd> */}
+        <Grid container  spacing={2} sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+          <Grid item xs={12} sm={4} md={3}>
+            <Input
+              placeholder="ค้นหาหมายเลข บก."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4} md={3}>
+            <Select
+              allowClear
+              style={{
+                width: "100%",
+                marginRight: "20px",
+              }}
+              placeholder="เลือกสถานะการอนุมัติ"
+              onChange={(value) => setSearchStatus(value)}
+              value={searchStatus}
+              options={[
+                {
+                  value: "3",
+                  label: "อนุมัติแล้ว",
+                },
+                {
+                  value: "2",
+                  label: "ยังไม่อนุมัติ",
+                },
+              ]}
+            />
+          </Grid>
         </Grid>
         <DataGrid
           rows={
             items
-              ? items
+              ? filteredArray
                   ?.map((e) => {
                     let check = false;
 
