@@ -219,10 +219,12 @@ const ReportWorkOfExpertMonth = () => {
   // Add the total evidence row to the filtered items
   const rows = filteredItems
     ? filteredItems
-        // .sort((a, b) => {
-        //   // Sort by case_type in ascending order (modify as needed)
-        //   return a.case_type.localeCompare(b.case_type);
-        // })
+        .sort((a, b) => {
+          // Sort by 'case_save_date' in ascending order
+          return (
+            new Date(a.case_save_date) - new Date(b.case_save_date)
+          );
+        })
         .map((e, index) => ({
           ...e,
           id: e.case_id,

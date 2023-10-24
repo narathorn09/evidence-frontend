@@ -144,12 +144,25 @@ const AssignEvidence = () => {
     }
   }, [caseData]);
 
+  // const countAssignEvidence = async (expertId) => {
+  //   try {
+  //     const response = await requestPrivate.get(
+  //       `/countAssignEvidence/${expertId}`
+  //     );
+  //     return response.data.count;
+  //   } catch (err) {
+  //     alert(`เกิดข้อผิดพลาดในการนับจำนวนงานที่ได้รับมอบหมาย : ${err}`);
+  //   }
+  // };
   const countAssignEvidence = async (expertId) => {
     try {
       const response = await requestPrivate.get(
-        `/countAssignEvidence/${expertId}`
+        `/detailExpertById/${expertId}`
       );
-      return response.data.count;
+      const numEvidenceNoResult = response?.data?.count?.numEvidenceNoResult
+      const numEvidenceHaveResult = response?.data?.count?.numEvidenceHaveResult
+      const total = numEvidenceHaveResult + numEvidenceNoResult
+      return numEvidenceNoResult
     } catch (err) {
       alert(`เกิดข้อผิดพลาดในการนับจำนวนงานที่ได้รับมอบหมาย : ${err}`);
     }
