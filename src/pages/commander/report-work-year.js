@@ -141,7 +141,7 @@ const ReportWorkOfCommanderYear = () => {
               // console.log("evidenceCount", itemMonth,evidenceCount);
             } else {
               monthCounts[itemMonth] = 1;
-              eCounts[itemMonth] = 1;
+              eCounts[itemMonth] = evidenceCount;
             }
           }
         }
@@ -186,6 +186,12 @@ const ReportWorkOfCommanderYear = () => {
                 dayjs(e.case_save_date).format("DD-MM-YYYY").split("-")[1]
             )
         )
+        .sort((a, b) => {
+          // Sort by 'case_save_date' in ascending order
+          return (
+            new Date(a.case_save_date) - new Date(b.case_save_date)
+          );
+        })
         .map((e, newIndex) => ({
           ...e,
           index: newIndex + 1,
